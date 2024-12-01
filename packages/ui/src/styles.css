@@ -17,6 +17,9 @@
    --color-highlight: rgba(230, 157, 11, 0.175);
    --color-highlight-foreground: #764d08;
 
+   --font-primary: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
    --shadow-button: 0px 3px 3px -1px rgba(24, 24, 24, 0.09), 0px 0px 0px 1px
       rgba(24, 24, 24, 0.09);
 

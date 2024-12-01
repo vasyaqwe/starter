@@ -1,0 +1,18 @@
+{
+   "extends": "@project/tsconfig/base.json",
+   "compilerOptions": {
+      "useDefineForClassFields": true,
+      "lib": ["es2023", "dom", "dom.iterable"],
+      "module": "esnext",
+      "moduleResolution": "bundler",
+      "jsx": "react-jsx",
+      "baseUrl": ".",
+      "paths": {
+         "@/*": ["./src/*"]
+      },
+      "incremental": true,
+      "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+   },
+   //including packages makes autoimports work, but breaks build - so dev only
+   "include": ["src", "../../packages"]
+}

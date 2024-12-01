@@ -1,8 +1,8 @@
 {
    "name": "@project/server",
    "scripts": {
-      "dev": "bun run --env-file=../../.env --hot src/index.ts",
-      "start": "bun src/index.ts",
+      "dev": "nodemon",
+      "start": "bun run --env-file=../../.env ./src/index.ts",
       "typecheck": "tsc --noEmit"
    },
    "dependencies": {

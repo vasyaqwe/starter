@@ -4,8 +4,10 @@ import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
 import { logger } from "hono/logger"
+import { z } from "zod"
 import type { AppContext } from "./context"
 import { handleError } from "./error/utils"
+import { zValidator } from "./utils"
 
 export const ALLOWED_ORIGINS = ["https://www.project.io", "https://project.io"]
 
@@ -49,12 +51,28 @@ app.use(logger())
    // })
    .onError(handleError)
 
-const routes = app.get("/", (c) => {
-   return c.json({
-      message: "Hello from Hono!",
+const routes = app
+   .get("/hello", (c) => {
+      return c.json({
+         message: "Hello from Hono!",
+      })
    })
-})
+   .post(
+      "/post",
+      zValidator(
+         "json",
+         z.object({
+            someData: z.string(),
+         }),
+      ),
+      (c) => {
+         const data = c.req.valid("json")
+         return c.json({
+            message: data,
+         })
+      },
+   )
 
-export type AppType = typeof routes
+export type AppRoutes = typeof routes
 
 export default app
