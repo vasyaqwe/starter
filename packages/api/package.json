@@ -1,0 +1,41 @@
+{
+   "name": "@project/api",
+   "version": "0.1.0",
+   "private": true,
+   "type": "module",
+   "exports": {
+      ".": {
+         "types": "./dist/index.d.ts",
+         "default": "./src/index.ts"
+      },
+      "./utils": {
+         "types": "./dist/utils.d.ts",
+         "default": "./src/utils.ts"
+      },
+      "./user/*": {
+         "types": "./dist/user/*.d.ts",
+         "default": "./src/user/*.ts"
+      },
+      "./error/*": {
+         "types": "./dist/error/*.d.ts",
+         "default": "./src/error/*.ts"
+      }
+   },
+   "license": "MIT",
+   "scripts": {
+      "build": "tsc",
+      "clean": "rm -rf .turbo node_modules",
+      "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+   },
+   "dependencies": {
+      "@hono/zod-validator": "^0.4.1",
+      "@project/db": "workspace:*",
+      "@project/env": "workspace:*",
+      "hono": "^4.6.12",
+      "remeda": "^2.17.4",
+      "zod": "^3.23.8"
+   },
+   "devDependencies": {
+      "@project/tsconfig": "workspace:*"
+   }
+}
