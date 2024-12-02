@@ -1,15 +1,9 @@
-ARG BUN_IMAGE_PROD=docker.io/oven/bun:1.1.13-slim
+ARG BUN_IMAGE_PROD=docker.io/oven/bun:1.1.15-slim
 
 FROM ${BUN_IMAGE_PROD} AS base
 
 WORKDIR /app
 ENV NODE_ENV="production"
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
-
-FROM base as install
 
 COPY ./package.json ./
 COPY ./tooling/typescript/package.json ./tooling/typescript/package.json
@@ -17,12 +11,19 @@ COPY ./packages/db/package.json ./packages/db/package.json
 COPY ./packages/api/package.json ./packages/api/package.json
 COPY ./packages/env/package.json ./packages/env/package.json
 COPY ./apps/server/package.json ./apps/server/package.json
-RUN bun install --production
+
+FROM base AS install
+
+RUN bun install --ci
 
 FROM base AS build
 
-COPY --from=install ./node_modules ./node_modules
-COPY ./packages ./packages
+COPY --from=install ./app/node_modules ./node_modules
+COPY ./tooling/typescript ./tooling/typescript
+COPY ./packages/db ./packages/db
+COPY ./packages/api ./packages/api
+COPY ./packages/env ./packages/env
+COPY ./apps/server ./apps/server
 
 RUN bun run --cwd ./packages/db build && \
     bun run --cwd ./packages/api build && \
@@ -33,7 +34,8 @@ FROM base AS start
 COPY --from=build /app/packages/db ./packages/db
 COPY --from=build /app/packages/api ./packages/api
 COPY --from=build /app/packages/env ./packages/env
+COPY --from=build /app/apps/server ./apps/server
 COPY --from=install /app/node_modules ./node_modules
 
-EXPOSE 3000
+EXPOSE 8080
 CMD [ "bun", "run", "--cwd", "/app/apps/server", "start" ]
