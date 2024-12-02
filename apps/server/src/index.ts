@@ -1,4 +1,4 @@
-import app from "../../../packages/api/src/index"
+import app from "@project/api"
 
 const server = Bun.serve({
    port: 8080,

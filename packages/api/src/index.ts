@@ -57,6 +57,21 @@ const routes = app
          message: "Hello from Hono!",
       })
    })
+   .get(
+      "/post/:id",
+      zValidator(
+         "param",
+         z.object({
+            id: z.string(),
+         }),
+      ),
+      (c) => {
+         const data = c.req.valid("param")
+         return c.json({
+            message: data,
+         })
+      },
+   )
    .post(
       "/post",
       zValidator(
