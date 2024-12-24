@@ -151,15 +151,15 @@ export const authRoute = createRouter()
    .all(
       "/:provider/callback",
       zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
+      zValidator("query", z.object({ code: z.string(), state: z.string() })),
       async (c) => {
          const redirect = getCookie(c, "redirect") ?? env.client.WEB_DOMAIN
          const redirectUrl = new URL(redirect)
 
          const provider = c.req.valid("param").provider
-         const code = c.req.query("code")
+         const { code, state } = c.req.valid("query")
 
          const stateCookie = getCookie(c, `${provider}_oauth_state`)
-         const state = c.req.query("state")
 
          if (
             !state ||
