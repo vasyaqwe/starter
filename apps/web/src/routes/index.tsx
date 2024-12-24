@@ -1,4 +1,5 @@
-import { type InferRequestInput, hc } from "@/lib/hono"
+import { type InferRequestInput, handleHonoResponse, hc } from "@/lib/hono"
+import { Button } from "@project/ui/components/button"
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 
@@ -9,36 +10,29 @@ export const Route = createFileRoute("/")({
 const someQuery = () =>
    queryOptions({
       queryKey: ["query"],
-      queryFn: async () => {
-         const res = await hc.hello.$get()
-         return res.ok ? res.json() : Promise.reject(await res.json())
-      },
+      queryFn: async () => handleHonoResponse(await hc.hello.$get()),
    })
 const someQuery2 = ({ id }: { id: string }) =>
    queryOptions({
       queryKey: ["query2", id],
-      queryFn: async () => {
-         const res = await hc.post[":id"].$get({ param: { id } })
-         return res.ok ? res.json() : Promise.reject(await res.json())
-      },
+      queryFn: async () =>
+         handleHonoResponse(await hc.post[":id"].$get({ param: { id } })),
    })
 
 function RouteComponent() {
    const query = useQuery(someQuery())
    const query2 = useQuery(someQuery2({ id: "123" }))
    const mutation = useMutation({
-      mutationFn: async (data: InferRequestInput<typeof hc.post.$post>) => {
-         const res = await hc.post.$post(data)
-         return res.ok ? res.json() : Promise.reject(await res.json())
-      },
+      mutationFn: async (data: InferRequestInput<typeof hc.post.$post>) =>
+         handleHonoResponse(await hc.post.$post(data)),
       onSuccess: async (data) => {
          window.alert(data.message.someData)
       },
    })
 
    return (
-      <>
-         <p>
+      <div className="mt-20 flex flex-col items-center gap-4">
+         <p className="text-gray-11">
             {query.isPending
                ? "Loading..."
                : query.isError
@@ -54,14 +48,16 @@ function RouteComponent() {
                  : query2.data?.message.id}
          </p>
 
-         <button
-            className="cursor-pointer hover:underline"
+         <Button
             onClick={() =>
                mutation.mutate({ json: { someData: "some data here" } })
             }
          >
             post something
-         </button>
-      </>
+         </Button>
+         <Button variant="secondary">secondary button</Button>
+         <Button variant="destructive">destructive button</Button>
+         <Button variant="ghost">ghost button</Button>
+      </div>
    )
 }

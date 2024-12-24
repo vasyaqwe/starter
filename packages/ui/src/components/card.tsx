@@ -3,7 +3,7 @@ import React from "react"
 import { cn } from "../utils"
 
 const cardVariants = cva(
-   `rounded-xl border bg-background dark:bg-muted/50 p-6 shadow-sm has-[[data-card-header=true]]:p-0`,
+   `rounded-xl border border-gray-4 bg-gray-2 p-6 shadow-sm has-[[data-card-header=true]]:p-0`,
 )
 
 const Card = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(
@@ -33,7 +33,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
    <p
       ref={ref}
-      className={cn("mt-2 text-foreground/75 text-sm", className)}
+      className={cn("mt-2 text-gray-11 text-sm", className)}
       {...props}
    />
 ))

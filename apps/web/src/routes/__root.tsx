@@ -4,6 +4,7 @@ import {
    createRootRouteWithContext,
    useMatches,
 } from "@tanstack/react-router"
+import { useTheme } from "next-themes"
 import { type ReactNode, useEffect } from "react"
 
 export const Route = createRootRouteWithContext<{
@@ -13,6 +14,20 @@ export const Route = createRootRouteWithContext<{
 })
 
 function RootComponent() {
+   const { resolvedTheme } = useTheme()
+
+   useEffect(() => {
+      if (resolvedTheme === "dark") {
+         document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", "#0a0a0b")
+      } else {
+         document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", "#FFFFFF")
+      }
+   }, [resolvedTheme])
+
    return (
       <Meta>
          <Outlet />

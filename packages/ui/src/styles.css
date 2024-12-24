@@ -1,27 +1,10 @@
 @import "tailwindcss";
+@import "tailwix";
 @plugin "tailwindcss-animate";
 
 @theme default {
-   --color-background: #fefcfb;
-   --color-foreground: #140d30;
-   --color-brand: #52409c;
-   --color-popover: #fff;
-   --color-primary: #7760d2;
-   --color-secondary: #f9f8f9;
-   --color-muted: #f3f2f3;
-   --color-muted-foreground: #6c656c;
-   --color-border: #e6e5e6;
-   --color-destructive: #ef4444;
-   --color-destructive-foreground: #fff;
-   --color-elevated: #f8f6f6;
-   --color-highlight: rgba(230, 157, 11, 0.175);
-   --color-highlight-foreground: #764d08;
-
    --font-primary: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-   --shadow-button: 0px 3px 3px -1px rgba(24, 24, 24, 0.09), 0px 0px 0px 1px
-      rgba(24, 24, 24, 0.09);
 
    --ease-vaul: cubic-bezier(0.32, 0.72, 0, 1);
 
@@ -57,6 +40,8 @@
       }
    }
 }
+
+@variant dark (&:where(.dark, .dark *));
 
 @layer components {
    .squircle {
@@ -198,12 +183,12 @@
 }
 
 /* reset */
-.hide-scrollbar {
+.scrollbar-hidden {
    -ms-overflow-style: none;
    scrollbar-width: none;
 }
 
-.hide-scrollbar::-webkit-scrollbar {
+.scrollbar-hidden::-webkit-scrollbar {
    display: none !important;
 }
 
