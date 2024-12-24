@@ -1,13 +1,17 @@
 import type { Database } from "@project/db/client"
-import type { env } from "@project/env"
+import type { Session, User } from "@project/db/schema/user"
+import type { Env } from "@project/env"
 import type { Context } from "hono"
 
 type Variables = {
    db: Database
+   user: User
+   session: Session
+   env: Env
 }
 
 export type AppContext = {
-   Bindings: typeof env
+   Bindings: Env
    Variables: Variables
 }
 

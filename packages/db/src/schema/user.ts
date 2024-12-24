@@ -1,9 +1,10 @@
 import { relations } from "drizzle-orm"
 import {
+   boolean,
    index,
-   integer,
    primaryKey,
    text,
+   timestamp,
    uniqueIndex,
 } from "drizzle-orm/pg-core"
 import { pgTable } from "drizzle-orm/pg-core"
@@ -18,8 +19,8 @@ export const user = pgTable(
       email: text(),
       name: text(),
       avatarUrl: text(),
-      emailVerified: integer().notNull().default(0),
-      onboardingCompleted: integer().notNull().default(0),
+      emailVerified: boolean().notNull().default(false),
+      onboardingCompleted: boolean().notNull().default(false),
       ...lifecycleDates,
    },
    (table) => [uniqueIndex("user_email_idx").on(table.email)],
@@ -58,7 +59,7 @@ export const emailVerificationCode = pgTable(
    "email_verification_code",
    {
       id: tableId("verification_code"),
-      expiresAt: integer().notNull(),
+      expiresAt: timestamp().notNull(),
       code: text().notNull(),
       userId: text().notNull(),
       email: text().notNull().unique(),
@@ -68,7 +69,7 @@ export const emailVerificationCode = pgTable(
 
 export const session = pgTable("session", {
    id: text().primaryKey(),
-   expiresAt: integer().notNull(),
+   expiresAt: timestamp().notNull(),
    userId: text()
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
@@ -76,13 +77,6 @@ export const session = pgTable("session", {
 
 export const selectSessionInput = createSelectSchema(session)
 export const selectUserInput = createSelectSchema(user)
-export const insertUserInput = z
-   .object({
-      email: z.string().email(),
-   })
-   .extend({
-      referralCode: z.string().optional(),
-   })
 
 export const insertOauthAccountInput = createInsertSchema(oauthAccount, {
    providerUserId: z.string().min(1),
@@ -94,7 +88,7 @@ export const updateUserInput = createSelectSchema(user, {
    name: z.string().min(1),
 }).partial()
 
-export const verifyLoginCodeInput = createInsertSchema(
+export const verifyLoginOTPInput = createInsertSchema(
    emailVerificationCode,
 ).pick({
    code: true,
@@ -104,5 +98,3 @@ export const verifyLoginCodeInput = createInsertSchema(
 export type Session = z.infer<typeof selectSessionInput>
 export type User = z.infer<typeof selectUserInput>
 export type OauthProvider = (typeof oauthProviders)[number]
-export type SendLoginCodeInput = z.infer<typeof insertUserInput>
-export type VerifyLoginCodeInput = z.infer<typeof verifyLoginCodeInput>

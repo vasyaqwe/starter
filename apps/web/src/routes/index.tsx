@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
 const someQuery = () =>
    queryOptions({
       queryKey: ["query"],
-      queryFn: async () => handleHonoResponse(await hc.hello.$get()),
+      queryFn: async () => handleHonoResponse(await hc.api.hello.$get()),
    })
 const someQuery2 = ({ id }: { id: string }) =>
    queryOptions({

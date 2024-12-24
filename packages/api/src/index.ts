@@ -1,17 +1,18 @@
 import { db } from "@project/db/client"
 import { env } from "@project/env"
-import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
 import { logger } from "hono/logger"
 import { z } from "zod"
-import type { AppContext } from "./context"
 import { handleError } from "./error/utils"
-import { zValidator } from "./utils"
+import { authMiddleware } from "./user/auth/middleware"
+import { authRoute } from "./user/auth/route"
+import { userRoute } from "./user/route"
+import { createRouter, zValidator } from "./utils"
 
 export const ALLOWED_ORIGINS = ["https://www.project.io", "https://project.io"]
 
-const app = new Hono<AppContext>()
+const app = createRouter()
 
 app.use(logger())
    .use((c, next) => {
@@ -22,6 +23,17 @@ app.use(logger())
       })
       return handler(c, next)
    })
+   .onError(handleError)
+
+const publicRoutes = createRouter()
+   .route("/auth", authRoute)
+   .get("/hello", (c) => {
+      return c.json({
+         message: "Hello from Hono!",
+      })
+   })
+
+const protectedRoutes = createRouter()
    .use((c, next) => {
       const handler = csrf({
          origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
@@ -32,9 +44,10 @@ app.use(logger())
       c.set("db", db)
       return next()
    })
+   .use(authMiddleware)
    // .use("*", async (c, next) => {
    //    const sentryMiddleware = sentry({
-   //       enabled: c.env.ENVIRONMENT === "production",
+   //       enabled: env.server.NODE_ENV === "production",
    //    })
    //    return await sentryMiddleware(c, next)
    // })
@@ -49,14 +62,7 @@ app.use(logger())
    //       headers,
    //    })
    // })
-   .onError(handleError)
-
-const routes = app
-   .get("/hello", (c) => {
-      return c.json({
-         message: "Hello from Hono!",
-      })
-   })
+   .route("/user", userRoute)
    .get(
       "/post/:id",
       zValidator(
@@ -87,6 +93,8 @@ const routes = app
          })
       },
    )
+
+const routes = app.route("/api", publicRoutes).route("/", protectedRoutes)
 
 export type AppRoutes = typeof routes
 

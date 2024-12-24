@@ -1,7 +1,22 @@
-import type { ValidationTargets } from "hono"
+import { Hono, type ValidationTargets } from "hono"
 import { validator } from "hono/validator"
 import { ZodError, type ZodSchema, type z } from "zod"
+import type { AppContext } from "./context"
 import { parseZodErrorIssues } from "./error/utils"
+
+export const createRouter = () => new Hono<AppContext>()
+
+export const appendSearchParams = (
+   url: string,
+   params: Record<string, string>,
+) => {
+   const urlObj = new URL(url)
+   // biome-ignore lint/complexity/noForEach: <explanation>
+   Object.entries(params).forEach(([key, value]) => {
+      urlObj.searchParams.append(key, value)
+   })
+   return urlObj.toString()
+}
 
 export const zValidator = <
    T extends ZodSchema,
