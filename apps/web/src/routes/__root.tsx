@@ -5,7 +5,7 @@ import {
    useMatches,
 } from "@tanstack/react-router"
 import { useTheme } from "next-themes"
-import { type ReactNode, useEffect } from "react"
+import * as React from "react"
 
 export const Route = createRootRouteWithContext<{
    queryClient: QueryClient
@@ -16,7 +16,7 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
    const { resolvedTheme } = useTheme()
 
-   useEffect(() => {
+   React.useEffect(() => {
       if (resolvedTheme === "dark") {
          document
             .querySelector('meta[name="theme-color"]')
@@ -35,11 +35,11 @@ function RootComponent() {
    )
 }
 
-function Meta({ children }: { children: ReactNode }) {
+function Meta({ children }: { children: React.ReactNode }) {
    const matches = useMatches()
    const meta = matches.at(-1)?.meta?.find((meta) => meta?.title)
 
-   useEffect(() => {
+   React.useEffect(() => {
       document.title = [meta?.title ?? "Project"].filter(Boolean).join(" · ")
    }, [meta])
 

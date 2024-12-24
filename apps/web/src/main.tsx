@@ -16,7 +16,7 @@ import {
 } from "@tanstack/react-router"
 import { routerWithQueryClient } from "@tanstack/react-router-with-query"
 import { ThemeProvider } from "next-themes"
-import React from "react"
+import * as React from "react"
 import ReactDOM from "react-dom/client"
 import { routeTree } from "./routeTree.gen"
 
