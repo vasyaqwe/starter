@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { type InferSelectModel, relations } from "drizzle-orm"
 import {
    boolean,
    index,
@@ -8,8 +8,7 @@ import {
    uniqueIndex,
 } from "drizzle-orm/pg-core"
 import { pgTable } from "drizzle-orm/pg-core"
-import { createInsertSchema, createSelectSchema } from "drizzle-zod"
-import { z } from "zod"
+import { createSelectSchema } from "drizzle-zod"
 import { lifecycleDates, tableId } from "../utils"
 
 export const user = pgTable(
@@ -75,26 +74,13 @@ export const session = pgTable("session", {
       .references(() => user.id, { onDelete: "cascade" }),
 })
 
-export const selectSessionInput = createSelectSchema(session)
-export const selectUserInput = createSelectSchema(user)
-
-export const insertOauthAccountInput = createInsertSchema(oauthAccount, {
-   providerUserId: z.string().min(1),
-}).omit({
-   userId: true,
-})
-
-export const updateUserInput = createSelectSchema(user, {
-   name: z.string().min(1),
-}).partial()
-
-export const verifyLoginOTPInput = createInsertSchema(
+export const verifyLoginOTPInput = createSelectSchema(
    emailVerificationCode,
 ).pick({
    code: true,
    userId: true,
 })
 
-export type Session = z.infer<typeof selectSessionInput>
-export type User = z.infer<typeof selectUserInput>
+export type Session = InferSelectModel<typeof session>
+export type User = InferSelectModel<typeof user>
 export type OauthProvider = (typeof oauthProviders)[number]
