@@ -48,14 +48,6 @@ function createRouter() {
          defaultPendingMs: 150,
          defaultPendingMinMs: 200,
          defaultPreloadStaleTime: 0,
-         defaultPendingComponent: () => (
-            <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 w-full">
-               {/* <Icons.logo className="mx-auto size-6 animate-fade-in opacity-0 drop-shadow-md [--animation-delay:100ms]" /> */}
-               <h1 className="mt-5 animate-fade-in text-center font-medium text-gray-11 opacity-0 duration-500 [--animation-delay:500ms]">
-                  Workspace is loading..
-               </h1>
-            </div>
-         ),
          defaultNotFoundComponent: NotFound,
          defaultErrorComponent: CatchBoundary,
       }),

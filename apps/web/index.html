@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="font-primary antialiased">
+<html lang="en" class="font-primary antialiased [--bottom-menu-height:52px] overflow-hidden">
 
 <head>
   <meta charset="UTF-8" />
@@ -14,8 +14,9 @@
   <meta name="description" content="">
 </head>
 
-<body class="text-base bg-white dark:bg-gray-2 text-gray-12">
-  <div id="app"></div>
+<body>
+  <div id="app"
+    class="text-base bg-white dark:bg-gray-2 text-foreground md:flex selection:bg-gray-12 selection:text-gray-1"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

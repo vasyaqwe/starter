@@ -3,7 +3,7 @@ import type * as React from "react"
 import { cn } from "../utils"
 
 const cardVariants = cva(
-   `rounded-xl border border-gray-4 bg-gray-2 p-6 shadow-sm has-[[data-card-header]]:p-0`,
+   `rounded-xl border border-elevated bg-gray-2 p-6 shadow-sm has-[[data-card-header]]:p-0`,
 )
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {

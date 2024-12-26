@@ -9,10 +9,10 @@ const buttonVariants = cva(
    {
       variants: {
          variant: {
-            default: `bg-gray-12 text-gray-1 shadow-sm hover:bg-black-a10 dark:hover:bg-white dark:hover:brightness-110`,
-            secondary: `bg-gray-4 hover:bg-gray-a5`,
+            default: `bg-gray-12 text-gray-1 shadow-sm hover:bg-black-a10 dark:hover:bg-white dark:hover:brightness-100`,
+            secondary: `bg-elevated hover:bg-gray-a5`,
             destructive: `bg-red-9 hover:bg-red-10 text-white`,
-            ghost: "hover:bg-gray-4",
+            ghost: "hover:bg-elevated",
          },
          size: {
             default: "h-8 rounded-[10px] px-3 text-sm",

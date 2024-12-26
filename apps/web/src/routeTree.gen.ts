@@ -11,9 +11,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SomethingImport } from './routes/something'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const SomethingRoute = SomethingImport.update({
+  id: '/something',
+  path: '/something',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +39,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/something': {
+      id: '/something'
+      path: '/something'
+      fullPath: '/something'
+      preLoaderRoute: typeof SomethingImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/something': typeof SomethingRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/something': typeof SomethingRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/something': typeof SomethingRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/something'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/something'
+  id: '__root__' | '/' | '/something'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SomethingRoute: typeof SomethingRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SomethingRoute: SomethingRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/something"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/something": {
+      "filePath": "something.tsx"
     }
   }
 }
