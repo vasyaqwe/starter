@@ -1,5 +1,5 @@
 import "@project/ui/styles.css"
-import type { ErrorCode } from "@project/api/error/schema"
+import type { HonoError } from "@/lib/hono"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import * as Portal from "@radix-ui/react-portal"
 import { QueryClient } from "@tanstack/react-query"
@@ -117,10 +117,7 @@ declare module "@tanstack/react-router" {
 
 declare module "@tanstack/react-query" {
    interface Register {
-      defaultError: {
-         code: ErrorCode
-         message: string
-      }
+      defaultError: HonoError
    }
 }
 
