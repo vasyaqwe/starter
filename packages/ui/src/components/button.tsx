@@ -4,15 +4,15 @@ import { focusStyles } from "../constants"
 import { cn } from "../utils"
 
 const buttonVariants = cva(
-   `inline-flex cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap 
-    disabled:opacity-70 disabled:cursor-not-allowed border border-transparent`,
+   `inline-flex cursor-pointer items-center font-semibold justify-center gap-1.5 whitespace-nowrap 
+    disabled:opacity-70 disabled:cursor-not-allowed border dark:shadow-md`,
    {
       variants: {
          variant: {
-            default: `bg-gray-12 text-gray-1 shadow-sm hover:bg-black-a10 dark:hover:bg-white dark:hover:brightness-100`,
-            secondary: `bg-elevated hover:bg-gray-a5`,
-            destructive: `bg-red-9 hover:bg-red-10 text-white`,
-            ghost: "hover:bg-elevated",
+            default: `bg-gray-12 text-gray-1 dark:shadow-md shadow-sm border-gray-12 hover:bg-black-a10 dark:hover:bg-white dark:hover:brightness-100`,
+            secondary: `bg-gray-3 dark:bg-gray-4 hover:bg-gray-a4 border-gray-a3`,
+            destructive: `bg-red-9 hover:bg-red-10 text-white dark:border-red-11/45 border-red-11`,
+            ghost: "border-transparent shadow-none hover:bg-gray-3 dark:hover:bg-gray-4",
          },
          size: {
             default: "h-8 rounded-[10px] px-3 text-sm",

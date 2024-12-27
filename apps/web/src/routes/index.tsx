@@ -1,5 +1,7 @@
 import { hc, honoMutationFn, honoQueryFn } from "@/lib/hono"
 import { Button } from "@project/ui/components/button"
+import { Card } from "@project/ui/components/card"
+import { Loading } from "@project/ui/components/loading"
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import type { InferRequestType } from "hono"
@@ -35,7 +37,7 @@ function RouteComponent() {
    })
 
    return (
-      <div className="mt-20 flex flex-col items-center gap-4">
+      <Card className="mx-auto mt-20 flex w-full max-w-xl flex-col items-center gap-4">
          <p className="text-gray-11">
             {query.isPending
                ? "Loading..."
@@ -53,11 +55,18 @@ function RouteComponent() {
          </p>
 
          <Button onClick={() => mutation.mutate({ someData: "some data" })}>
-            post something
+            {mutation.isPending ? (
+               <>
+                  <Loading />
+                  posting..
+               </>
+            ) : (
+               "post something"
+            )}
          </Button>
          <Button variant="secondary">secondary button</Button>
          <Button variant="destructive">destructive button</Button>
          <Button variant="ghost">ghost button</Button>
-      </div>
+      </Card>
    )
 }
