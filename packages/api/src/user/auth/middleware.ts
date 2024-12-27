@@ -1,5 +1,6 @@
 import { sha256 } from "@oslojs/crypto/sha2"
 import { encodeHexLowerCase } from "@oslojs/encoding"
+import type { HonoContext } from "@project/api/context"
 import { eq } from "@project/db"
 import { session, user } from "@project/db/schema/user"
 import { createMiddleware } from "hono/factory"
@@ -9,7 +10,6 @@ import {
    getSessionTokenCookie,
    setSessionTokenCookie,
 } from "."
-import type { HonoContext } from "../../context"
 import { SESSION_EXPIRATION_SECONDS } from "./constants"
 
 const validateSessionToken = async (c: HonoContext, token: string) => {

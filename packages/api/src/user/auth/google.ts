@@ -1,3 +1,4 @@
+import type { HonoContext } from "@project/api/context"
 import { eq } from "@project/db"
 import { oauthAccount, user } from "@project/db/schema/user"
 import { env } from "@project/env"
@@ -6,7 +7,6 @@ import { getCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"
 import ky from "ky"
 import { createSession } from "."
-import type { HonoContext } from "../../context"
 
 export const googleClient = () =>
    new Google(

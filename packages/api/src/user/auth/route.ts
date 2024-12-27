@@ -1,3 +1,6 @@
+import { cookieOptions } from "@project/api/cookie/constants"
+import { handleError } from "@project/api/error/utils"
+import { createRouter, zValidator } from "@project/api/utils"
 import { eq } from "@project/db"
 import {
    oauthProviders,
@@ -10,9 +13,6 @@ import { getCookie, setCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"
 import { z } from "zod"
 import { createSession, generateEmailOTP, verifyEmailOTP } from "."
-import { cookieOptions } from "../../cookie/constants"
-import { handleError } from "../../error/utils"
-import { createRouter, zValidator } from "../../utils"
 import { createGoogleSession, googleClient } from "./google"
 
 export const authRoute = createRouter()

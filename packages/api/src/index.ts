@@ -1,14 +1,14 @@
+import { handleError } from "@project/api/error/utils"
+import { authMiddleware } from "@project/api/user/auth/middleware"
+import { authRoute } from "@project/api/user/auth/route"
+import { userRoute } from "@project/api/user/route"
+import { createRouter, zValidator } from "@project/api/utils"
 import { db } from "@project/db/client"
 import { env } from "@project/env"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
 import { logger } from "hono/logger"
 import { z } from "zod"
-import { handleError } from "./error/utils"
-import { authMiddleware } from "./user/auth/middleware"
-import { authRoute } from "./user/auth/route"
-import { userRoute } from "./user/route"
-import { createRouter, zValidator } from "./utils"
 
 export const ALLOWED_ORIGINS = ["https://www.project.io", "https://project.io"]
 

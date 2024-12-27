@@ -1,4 +1,4 @@
-import { createRouter } from "../utils"
+import { createRouter } from "@project/api/utils"
 import { deleteSessionTokenCookie, invalidateSession } from "./auth"
 
 export const userRoute = createRouter()

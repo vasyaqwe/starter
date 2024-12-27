@@ -1,6 +1,6 @@
+import type { HonoContext } from "@project/api/context"
 import { HTTPException } from "hono/http-exception"
 import { ZodError, type ZodIssue } from "zod"
-import type { HonoContext } from "../context"
 import type { ErrorCode } from "./schema"
 
 export const statusToCode = (status: number): ErrorCode => {

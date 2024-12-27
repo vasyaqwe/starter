@@ -17,14 +17,14 @@
       "typecheck": "tsc --noEmit --emitDeclarationOnly false"
    },
    "dependencies": {
-      "@tailwindcss/postcss": "^4.0.0-beta.8",
       "class-variance-authority": "^0.7.0",
       "input-otp": "^1.2.4",
       "react": "^19.0.0",
       "react-dom": "^19.0.0",
       "sonner": "^1.4.41",
-      "tailwind-merge": "^2.3.0",
+      "@tailwindcss/postcss": "^4.0.0-beta.8",
       "tailwindcss": "^4.0.0-beta.8",
+      "tailwind-merge": "^2.3.0",
       "tailwindcss-animate": "^1.0.7",
       "tailwix": "^3.0.0",
       "zustand": "^5.0.1"

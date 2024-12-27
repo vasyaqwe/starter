@@ -14,7 +14,7 @@
       "strict": true,
       "noUncheckedIndexedAccess": true,
       "checkJs": true,
-      "module": "Preserve",
+      "module": "ESNext",
       "moduleResolution": "Bundler",
       "noEmit": true,
       "jsx": "react-jsx"
