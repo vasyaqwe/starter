@@ -1,6 +1,12 @@
 import { OnlineIndicator, UserAvatar } from "@/ui/components/user-avatar"
 import { Button } from "@project/ui/components/button"
 import { Icons } from "@project/ui/components/icons"
+import { Kbd } from "@project/ui/components/kbd"
+import {
+   Tooltip,
+   TooltipPopup,
+   TooltipTrigger,
+} from "@project/ui/components/tooltip"
 import { cn } from "@project/ui/utils"
 import { createFileRoute } from "@tanstack/react-router"
 
@@ -289,18 +295,32 @@ function RouteComponent() {
          <div className="border-gray-4 border-t bg-background">
             <div className="mx-auto flex max-w-4xl items-center gap-2 p-2 md:p-4">
                <div className="flex items-center gap-0.5">
-                  <Button
-                     size={"icon"}
-                     variant={"ghost"}
-                  >
-                     <Icons.paperClip className="size-[22px]" />
-                  </Button>
-                  <Button
-                     size={"icon"}
-                     variant={"ghost"}
-                  >
-                     <Icons.facePlus className="size-[22px]" />
-                  </Button>
+                  <Tooltip>
+                     <TooltipTrigger
+                        render={
+                           <Button
+                              size={"icon"}
+                              variant={"ghost"}
+                           />
+                        }
+                     >
+                        <Icons.paperClip className="size-[22px]" />
+                     </TooltipTrigger>
+                     <TooltipPopup>Attach files</TooltipPopup>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger
+                        render={
+                           <Button
+                              size={"icon"}
+                              variant={"ghost"}
+                           />
+                        }
+                     >
+                        <Icons.facePlus className="size-[22px]" />
+                     </TooltipTrigger>
+                     <TooltipPopup>Add emoji</TooltipPopup>
+                  </Tooltip>
                </div>
                <div className="relative flex-1">
                   <input
@@ -308,25 +328,34 @@ function RouteComponent() {
                      className="min-h-[41px] w-full rounded-full border border-gray-4 bg-gray-2 px-4 py-2 outline-hidden dark:border-gray-5 dark:bg-gray-3"
                      placeholder="Chat.."
                   />
-                  <Button
-                     className="absolute right-1 bottom-1 size-[33px]"
-                     size={"icon-sm"}
-                     aria-label="Send message"
-                  >
-                     <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        className="size-5"
+                  <Tooltip>
+                     <TooltipTrigger
+                        render={
+                           <Button
+                              className="absolute right-1 bottom-1 size-[33px]"
+                              size={"icon-sm"}
+                              aria-label="Send message"
+                           />
+                        }
                      >
-                        <path
-                           d="M6 9.8304C7.55556 7.727 9.37278 5.83783 11.4057 4.20952C11.5801 4.06984 11.79 4 12 4M18 9.8304C16.4444 7.727 14.6272 5.83783 12.5943 4.20952C12.4199 4.06984 12.21 4 12 4M12 4V20"
-                           stroke="currentColor"
-                           strokeWidth="2.5"
-                           strokeLinecap="round"
-                           strokeLinejoin="round"
-                        />
-                     </svg>
-                  </Button>
+                        <svg
+                           viewBox="0 0 24 24"
+                           fill="none"
+                           className="size-5"
+                        >
+                           <path
+                              d="M6 9.8304C7.55556 7.727 9.37278 5.83783 11.4057 4.20952C11.5801 4.06984 11.79 4 12 4M18 9.8304C16.4444 7.727 14.6272 5.83783 12.5943 4.20952C12.4199 4.06984 12.21 4 12 4M12 4V20"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                           />
+                        </svg>
+                     </TooltipTrigger>
+                     <TooltipPopup className={"pr-[3px]"}>
+                        Send <Kbd>Enter</Kbd>
+                     </TooltipPopup>
+                  </Tooltip>
                </div>
             </div>
          </div>

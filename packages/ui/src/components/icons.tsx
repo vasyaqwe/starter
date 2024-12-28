@@ -101,7 +101,7 @@ export const Icons = {
                stroke="currentColor"
                strokeLinecap="round"
                strokeLinejoin="round"
-               strokeWidth="1.75"
+               strokeWidth="1.5"
             />
          </g>
       </svg>
@@ -140,7 +140,7 @@ export const Icons = {
                stroke="currentColor"
                strokeLinecap="round"
                strokeLinejoin="round"
-               strokeWidth="1.75"
+               strokeWidth="1.5"
             />
             <path
                d="m9.633,3.018c-3.694.192-6.633,3.239-6.633,6.982,0,3.866,3.134,7,7,7,3.742,0,6.79-2.939,6.982-6.633"
@@ -148,7 +148,7 @@ export const Icons = {
                stroke="currentColor"
                strokeLinecap="round"
                strokeLinejoin="round"
-               strokeWidth="1.75"
+               strokeWidth="1.5"
             />
             <line
                x1="12.5"
@@ -159,7 +159,7 @@ export const Icons = {
                stroke="currentColor"
                strokeLinecap="round"
                strokeLinejoin="round"
-               strokeWidth="1.75"
+               strokeWidth="1.5"
             />
          </g>
       </svg>

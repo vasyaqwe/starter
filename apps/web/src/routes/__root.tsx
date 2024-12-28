@@ -1,4 +1,5 @@
 import { BottomNavigation } from "@/routes/-components/bottom-navigation"
+import { TooltipProvider } from "@project/ui/components/tooltip"
 import { cn } from "@project/ui/utils"
 import type { QueryClient } from "@tanstack/react-query"
 import {
@@ -41,18 +42,20 @@ function RootComponent() {
 
    return (
       <Meta>
-         {/* <ModalProvider /> */}
-         <Sidebar />
-         <main
-            className={cn(
-               "flex h-[calc(100svh-var(--bottom-navigation-height))] md:h-svh md:flex-1",
-            )}
-         >
-            <div className={cn("relative flex flex-1 flex-col")}>
-               <Outlet />
-            </div>
-         </main>
-         <BottomNavigation />
+         <TooltipProvider>
+            {/* <ModalProvider /> */}
+            <Sidebar />
+            <main
+               className={cn(
+                  "flex h-[calc(100svh-var(--bottom-navigation-height))] md:h-svh md:flex-1",
+               )}
+            >
+               <div className={cn("relative flex flex-1 flex-col")}>
+                  <Outlet />
+               </div>
+            </main>
+            <BottomNavigation />
+         </TooltipProvider>
       </Meta>
    )
 }

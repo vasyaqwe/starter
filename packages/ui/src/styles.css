@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tailwix";
-@plugin "tailwindcss-animate";
 
 @theme default {
    --color-foreground: var(--color-gray-12);
