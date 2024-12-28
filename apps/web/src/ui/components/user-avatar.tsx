@@ -55,14 +55,14 @@ export function OnlineIndicator() {
    // const isUserOnline = usePresenceStore.use.isUserOnline()
    // const isOnline = user.id === currentUser.id || isUserOnline(user.id ?? "")
 
-   const isOnline = false
+   const isOnline = true
 
    return (
       <span
          title={"Online"}
          data-online-indicator
          className={cn(
-            "-right-0.5 -bottom-0.5 absolute block size-(--online-indicator-size) rounded-full border-[3px] border-background bg-green-500 transition-all duration-300",
+            "-right-0.5 -bottom-0.5 absolute block size-(--online-indicator-size) rounded-full border-[3px] border-white bg-green-500 transition-all duration-300 dark:border-gray-2",
             isOnline
                ? "visible scale-100 opacity-100"
                : "invisible scale-0 opacity-0",

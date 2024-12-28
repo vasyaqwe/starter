@@ -251,7 +251,7 @@ function RouteComponent() {
                                           <div
                                              key={message.id}
                                              className={cn(
-                                                "mt-[3px] w-fit max-w-xl bg-gray-4 px-3 py-2 dark:shadow-md",
+                                                "mt-[3px] w-fit max-w-xl bg-gray-3 px-3 py-2 dark:bg-gray-5 dark:shadow-md",
                                                 isMessageMine
                                                    ? "rounded-r-lg rounded-l-3xl"
                                                    : "rounded-r-3xl rounded-l-lg",
@@ -286,7 +286,7 @@ function RouteComponent() {
             </div>
             <div ref={scroll} />
          </div>
-         <div className="border-gray-4 border-t bg-white dark:bg-gray-2">
+         <div className="border-gray-4 border-t bg-background">
             <div className="mx-auto flex max-w-4xl items-center gap-2 p-2 md:p-4">
                <div className="flex items-center gap-0.5">
                   <Button
