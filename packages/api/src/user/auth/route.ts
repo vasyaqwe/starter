@@ -8,6 +8,7 @@ import {
    verifyLoginOTPInput,
 } from "@project/db/schema/user"
 import { env } from "@project/env"
+import { logger } from "@project/shared/logger"
 import { generateCodeVerifier, generateState } from "arctic"
 import { getCookie, setCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"
@@ -60,7 +61,7 @@ export const authRoute = createRouter()
             })
 
             if (env.server.NODE_ENV === "development") {
-               console.info(`OTP CODE: ${verificationCode}`)
+               logger.info(`OTP CODE: ${verificationCode}`)
             } else {
                throw new HTTPException(400, {
                   message: "Not implemented",
@@ -191,7 +192,7 @@ export const authRoute = createRouter()
       if (!redirect) return handleError(error, c)
 
       // c.get("sentry").captureException(error)
-      console.error(error)
+      logger.error(error)
 
       const session = c.get("session")
 

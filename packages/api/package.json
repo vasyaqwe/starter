@@ -28,10 +28,11 @@
       "typecheck": "tsc --noEmit --emitDeclarationOnly false"
    },
    "dependencies": {
-      "@oslojs/crypto": "^1.0.1",
-      "@oslojs/encoding": "^1.1.0",
       "@project/db": "workspace:*",
       "@project/env": "workspace:*",
+      "@project/shared": "workspace:*",
+      "@oslojs/crypto": "^1.0.1",
+      "@oslojs/encoding": "^1.1.0",
       "arctic": "^2.3.3",
       "hono": "^4.6.12",
       "ky": "^1.7.4",

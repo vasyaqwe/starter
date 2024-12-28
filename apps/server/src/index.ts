@@ -1,4 +1,5 @@
 import app from "@project/api"
+import { logger } from "@project/shared/logger"
 
 const server = Bun.serve({
    port: 8080,
@@ -6,4 +7,4 @@ const server = Bun.serve({
    fetch: app.fetch,
 })
 
-console.log("server running", server.port)
+logger.info("server running", server.port)

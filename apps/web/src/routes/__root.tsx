@@ -45,7 +45,7 @@ function RootComponent() {
          <Sidebar />
          <main
             className={cn(
-               "flex h-[calc(100svh-var(--bottom-menu-height))] md:h-svh md:flex-1",
+               "flex h-[calc(100svh-var(--bottom-navigation-height))] md:h-svh md:flex-1",
             )}
          >
             <div className={cn("relative flex flex-1 flex-col")}>

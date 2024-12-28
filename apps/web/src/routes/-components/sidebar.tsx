@@ -1,5 +1,5 @@
+import { Route as chatRoute } from "@/routes/chat"
 import { Route as homeRoute } from "@/routes/index"
-import { Route as somethingRoute } from "@/routes/something"
 import { Button } from "@project/ui/components/button"
 import { Icons } from "@project/ui/components/icons"
 import { cn } from "@project/ui/utils"
@@ -27,13 +27,13 @@ export function Sidebar() {
                   </li>
                   <li>
                      <Link
-                        to={somethingRoute.to}
+                        to={chatRoute.to}
                         className={cn(
                            "group flex h-8 items-center gap-2 rounded-[10px] border border-transparent px-2 font-semibold text-base text-foreground/70 leading-none hover:bg-(--hover) hover:text-foreground aria-[current=page]:bg-(--hover) aria-[current=page]:text-foreground",
                         )}
                      >
-                        <Icons.home className="size-5" />
-                        Something
+                        <Icons.chat className="size-5" />
+                        Chat
                      </Link>
                   </li>
                </ul>

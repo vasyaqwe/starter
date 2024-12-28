@@ -1,5 +1,6 @@
 import "@project/ui/styles.css"
 import type { HonoError } from "@/lib/hono"
+import { logger } from "@project/shared/logger"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import * as Portal from "@radix-ui/react-portal"
 import { QueryClient } from "@tanstack/react-query"
@@ -33,7 +34,7 @@ function createRouter() {
          },
          mutations: {
             onError: (error) => {
-               console.log(error)
+               logger.error(error)
                window.alert(error.message)
                // return toast.error("An unknown error occurred")
             },

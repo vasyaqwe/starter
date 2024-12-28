@@ -1,4 +1,5 @@
 import type { HonoContext } from "@project/api/context"
+import { logger } from "@project/shared/logger"
 import { HTTPException } from "hono/http-exception"
 import { ZodError, type ZodIssue } from "zod"
 import type { ErrorCode } from "./schema"
@@ -66,7 +67,7 @@ export const parseZodErrorIssues = (issues: ZodIssue[]): string => {
 
 export const handleError = (error: Error, c: HonoContext) => {
    // c.get("sentry")?.captureException(error)
-   console.error(error)
+   logger.error(error)
 
    if (error instanceof ZodError) {
       return c.json(
