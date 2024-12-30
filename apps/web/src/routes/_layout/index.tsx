@@ -6,7 +6,7 @@ import { queryOptions, useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import type { InferRequestType } from "hono"
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_layout/")({
    component: RouteComponent,
 })
 

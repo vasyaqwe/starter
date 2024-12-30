@@ -1,6 +1,3 @@
-import { BottomNavigation } from "@/routes/-components/bottom-navigation"
-import { TooltipProvider } from "@project/ui/components/tooltip"
-import { cn } from "@project/ui/utils"
 import type { QueryClient } from "@tanstack/react-query"
 import {
    Outlet,
@@ -9,7 +6,6 @@ import {
 } from "@tanstack/react-router"
 import { useTheme } from "next-themes"
 import * as React from "react"
-import { Sidebar } from "./-components/sidebar"
 
 export const Route = createRootRouteWithContext<{
    queryClient: QueryClient
@@ -42,20 +38,8 @@ function RootComponent() {
 
    return (
       <Meta>
-         <TooltipProvider>
-            {/* <ModalProvider /> */}
-            <Sidebar />
-            <main
-               className={cn(
-                  "flex h-[calc(100svh-var(--bottom-navigation-height))] md:h-svh md:flex-1",
-               )}
-            >
-               <div className={cn("relative flex flex-1 flex-col")}>
-                  <Outlet />
-               </div>
-            </main>
-            <BottomNavigation />
-         </TooltipProvider>
+         {/* <ModalProvider /> */}
+         <Outlet />
       </Meta>
    )
 }

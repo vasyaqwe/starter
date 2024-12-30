@@ -2,6 +2,7 @@ import "@project/ui/styles.css"
 import type { HonoError } from "@/lib/hono"
 import { logger } from "@project/shared/logger"
 import { Button, buttonVariants } from "@project/ui/components/button"
+import { TooltipProvider } from "@project/ui/components/tooltip"
 import * as Portal from "@radix-ui/react-portal"
 import { QueryClient } from "@tanstack/react-query"
 // import { Toaster, toast } from "@project/ui/components/toast"
@@ -131,8 +132,10 @@ ReactDOM.createRoot(document.getElementById("app")!).render(
          enableSystem
          disableTransitionOnChange
       >
-         <RouterProvider router={createRouter()} />
-         <Portal.Root>{/* <Toaster /> */}</Portal.Root>
+         <TooltipProvider>
+            <RouterProvider router={createRouter()} />
+            <Portal.Root>{/* <Toaster /> */}</Portal.Root>
+         </TooltipProvider>
       </ThemeProvider>
    </React.StrictMode>,
 )

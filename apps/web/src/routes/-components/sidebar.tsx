@@ -1,5 +1,5 @@
-import { Route as chatRoute } from "@/routes/chat"
-import { Route as homeRoute } from "@/routes/index"
+import { Route as chatRoute } from "@/routes/_layout/chat"
+import { Route as indexRoute } from "@/routes/_layout/index"
 import { Button } from "@project/ui/components/button"
 import { Icons } from "@project/ui/components/icons"
 import { cn } from "@project/ui/utils"
@@ -16,7 +16,7 @@ export function Sidebar() {
                <ul className="space-y-1">
                   <li>
                      <Link
-                        to={homeRoute.to}
+                        to={indexRoute.to}
                         className={cn(
                            "group flex h-8 items-center gap-2 rounded-[10px] border border-transparent px-2 font-semibold text-base text-foreground/70 leading-none hover:bg-(--hover) hover:text-foreground aria-[current=page]:bg-(--hover) aria-[current=page]:text-foreground",
                         )}

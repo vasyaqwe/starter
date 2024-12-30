@@ -17,13 +17,11 @@ import {
 import { cn } from "@project/ui/utils"
 import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/chat")({
+export const Route = createFileRoute("/_layout/chat")({
    component: RouteComponent,
 })
 
-const scroll = (node: HTMLElement | null) => {
-   node?.scrollIntoView()
-}
+const scroll = (node: HTMLElement | null) => node?.scrollIntoView()
 
 function RouteComponent() {
    const messages = [
