@@ -164,4 +164,60 @@ export const Icons = {
          </g>
       </svg>
    ),
+   ellipsisHorizontal: (props: IconProps) => (
+      <svg
+         xmlns="http://www.w3.org/2000/svg"
+         fill="none"
+         viewBox="0 0 24 24"
+         strokeWidth="1.5"
+         stroke="currentColor"
+         {...props}
+      >
+         <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+         />
+      </svg>
+   ),
+   trash: (props: IconProps) => (
+      <svg
+         xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 20 20"
+         {...props}
+      >
+         <g fill="currentColor">
+            <line
+               x1="17"
+               y1="5"
+               x2="3"
+               y2="5"
+               fill="none"
+               stroke="currentColor"
+               strokeLinecap="round"
+               strokeLinejoin="round"
+               strokeWidth="1.75"
+            />
+            <rect
+               x="8"
+               y="3"
+               width="4"
+               height="2"
+               stroke="currentColor"
+               strokeLinecap="round"
+               strokeLinejoin="round"
+               strokeWidth="1.75"
+               fill="currentColor"
+            />
+            <path
+               d="m14.95,8l-.355,7.1c-.053,1.064-.932,1.9-1.998,1.9h-5.195c-1.066,0-1.944-.836-1.998-1.9l-.355-7.1"
+               fill="none"
+               stroke="currentColor"
+               strokeLinecap="round"
+               strokeLinejoin="round"
+               strokeWidth="1.75"
+            />
+         </g>
+      </svg>
+   ),
 }

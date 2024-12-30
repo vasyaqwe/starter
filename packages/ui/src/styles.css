@@ -2,8 +2,13 @@
 @import "tailwix";
 
 @theme default {
+   --cursor: pointer;
+
    --color-foreground: var(--color-gray-12);
    --color-background: #fff;
+   --color-accent: #4186f6;
+
+   --radius-3xl: 1.25rem;
 
    --text-base: 0.95rem;
    --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,

@@ -4,7 +4,7 @@ import { focusStyles } from "../constants"
 import { cn } from "../utils"
 
 const buttonVariants = cva(
-   `inline-flex cursor-pointer items-center font-semibold justify-center gap-1.5 whitespace-nowrap 
+   `inline-flex cursor-(--cursor) items-center font-semibold justify-center gap-1.5 whitespace-nowrap 
     disabled:opacity-70 disabled:cursor-not-allowed border dark:shadow-md`,
    {
       variants: {

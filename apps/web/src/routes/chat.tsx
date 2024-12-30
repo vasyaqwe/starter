@@ -1,7 +1,13 @@
 import { OnlineIndicator, UserAvatar } from "@/ui/components/user-avatar"
-import { Button } from "@project/ui/components/button"
+import { Button, buttonVariants } from "@project/ui/components/button"
 import { Icons } from "@project/ui/components/icons"
 import { Kbd } from "@project/ui/components/kbd"
+import {
+   Menu,
+   MenuItem,
+   MenuPopup,
+   MenuTrigger,
+} from "@project/ui/components/menu"
 import {
    Tooltip,
    TooltipPopup,
@@ -28,6 +34,15 @@ function RouteComponent() {
             avatarUrl: "https://i.pravatar.cc/150?img=1",
          },
          createdAt: new Date("2024-12-28T09:00:00"),
+      },
+      {
+         content: "Yes you!",
+         sender: {
+            id: "2",
+            name: "Jane",
+            avatarUrl: "https://i.pravatar.cc/150?img=2",
+         },
+         createdAt: new Date("2024-12-28T09:01:00"),
       },
       {
          content: "Yes you!",
@@ -214,7 +229,7 @@ function RouteComponent() {
       })),
    }))
 
-   const currentUserId = "2"
+   const currentUserId = "1"
 
    return (
       <>
@@ -222,7 +237,7 @@ function RouteComponent() {
             <div className="mx-auto w-full max-w-4xl px-4">
                {groupedMessages.map((dateGroup) => (
                   <div key={dateGroup.date}>
-                     <p className="mt-7 text-center font-semibold text-foreground/75 text-sm uppercase">
+                     <p className="mt-7 text-center font-semibold text-foreground/60 text-sm uppercase">
                         {dateGroup.date}
                      </p>
                      {dateGroup.groups.map((group, index) =>
@@ -242,7 +257,7 @@ function RouteComponent() {
                               >
                                  <OnlineIndicator />
                               </UserAvatar>
-                              <div className="mt-1">
+                              <div className="mt-1 w-full">
                                  {group.messages.map(
                                     (message, index, messages) => {
                                        const isLast =
@@ -253,32 +268,70 @@ function RouteComponent() {
                                        const isMessageMine =
                                           currentUserId === group.sender?.id
 
+                                       const conditionalClassNames = cn(
+                                          "w-fit max-w-xl px-3 py-2 dark:shadow-md",
+                                          isMessageMine
+                                             ? "rounded-r-md rounded-l-3xl bg-accent text-white"
+                                             : "rounded-r-3xl rounded-l-md bg-gray-3 dark:bg-gray-5",
+                                          isTheOnlyOne ? "!rounded-3xl" : "",
+                                          isFirst && !isMessageMine
+                                             ? "rounded-tl-3xl"
+                                             : "",
+                                          isLast && !isMessageMine
+                                             ? "rounded-bl-3xl"
+                                             : "",
+                                          isFirst && isMessageMine
+                                             ? "rounded-tr-3xl"
+                                             : "",
+                                          isLast && isMessageMine
+                                             ? "rounded-br-3xl"
+                                             : "",
+                                       )
+
                                        return (
                                           <div
                                              key={message.id}
                                              className={cn(
-                                                "mt-[3px] w-fit max-w-xl bg-gray-3 px-3 py-2 dark:bg-gray-5 dark:shadow-md",
+                                                "group mt-0.5 flex items-center justify-end gap-2",
                                                 isMessageMine
-                                                   ? "rounded-r-lg rounded-l-3xl"
-                                                   : "rounded-r-3xl rounded-l-lg",
-                                                isTheOnlyOne
-                                                   ? "!rounded-3xl"
-                                                   : "",
-                                                isFirst && !isMessageMine
-                                                   ? "rounded-tl-3xl"
-                                                   : "",
-                                                isLast && !isMessageMine
-                                                   ? "rounded-bl-3xl"
-                                                   : "",
-                                                isFirst && isMessageMine
-                                                   ? "rounded-tr-3xl"
-                                                   : "",
-                                                isLast && isMessageMine
-                                                   ? "rounded-br-3xl"
-                                                   : "",
+                                                   ? ""
+                                                   : "flex-row-reverse",
                                              )}
                                           >
-                                             {message.content}
+                                             <div className="opacity-0 group-hover:opacity-100 has-[[data-popup-open]]:opacity-100">
+                                                <Menu>
+                                                   <MenuTrigger
+                                                      className={buttonVariants(
+                                                         {
+                                                            variant: "ghost",
+                                                            size: "icon-sm",
+                                                         },
+                                                      )}
+                                                   >
+                                                      <Icons.ellipsisHorizontal className="size-[22px]" />
+                                                   </MenuTrigger>
+                                                   <MenuPopup
+                                                      align={
+                                                         isMessageMine
+                                                            ? "end"
+                                                            : "start"
+                                                      }
+                                                   >
+                                                      <MenuItem destructive>
+                                                         <Icons.trash />
+                                                         Delete
+                                                      </MenuItem>
+                                                   </MenuPopup>
+                                                </Menu>
+                                             </div>
+                                             <div
+                                                className={cn(
+                                                   "w-fit max-w-xl shrink-0 px-3 py-2 dark:shadow-md",
+                                                   conditionalClassNames,
+                                                )}
+                                             >
+                                                {message.content}
+                                             </div>
                                           </div>
                                        )
                                     },
