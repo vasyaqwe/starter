@@ -1,6 +1,13 @@
 import { Route as chatRoute } from "@/routes/_layout/chat"
 import { Route as indexRoute } from "@/routes/_layout/index"
-import { Button } from "@project/ui/components/button"
+import { Route as loginRoute } from "@/routes/login"
+import {
+   Accordion,
+   AccordionItem,
+   AccordionPanel,
+   AccordionTrigger,
+} from "@project/ui/components/accordion"
+import { Button, buttonVariants } from "@project/ui/components/button"
 import { Icons } from "@project/ui/components/icons"
 import { cn } from "@project/ui/utils"
 import { Link } from "@tanstack/react-router"
@@ -12,13 +19,14 @@ export function Sidebar() {
    return (
       <aside className="z-[10] h-svh w-[15rem] max-md:hidden">
          <div className="fixed flex h-full w-[15rem] flex-col border-gray-4 border-r p-4 shadow-xs">
-            <nav className="my-4 overflow-y-auto [--hover:var(--color-gray-3)] dark:[--hover:var(--color-gray-4)]">
+            <nav className="my-4 overflow-y-auto">
                <ul className="space-y-1">
                   <li>
                      <Link
                         to={indexRoute.to}
                         className={cn(
-                           "group flex h-8 items-center gap-2 rounded-[10px] border border-transparent px-2 font-semibold text-base text-foreground/70 leading-none hover:bg-(--hover) hover:text-foreground aria-[current=page]:bg-(--hover) aria-[current=page]:text-foreground",
+                           buttonVariants({ variant: "ghost" }),
+                           "group flex justify-start gap-2 px-2 font-semibold text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
                         )}
                      >
                         <Icons.home className="size-5" />
@@ -29,7 +37,8 @@ export function Sidebar() {
                      <Link
                         to={chatRoute.to}
                         className={cn(
-                           "group flex h-8 items-center gap-2 rounded-[10px] border border-transparent px-2 font-semibold text-base text-foreground/70 leading-none hover:bg-(--hover) hover:text-foreground aria-[current=page]:bg-(--hover) aria-[current=page]:text-foreground",
+                           buttonVariants({ variant: "ghost" }),
+                           "group flex justify-start gap-2 px-2 font-semibold text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
                         )}
                      >
                         <Icons.chat className="size-5" />
@@ -37,7 +46,47 @@ export function Sidebar() {
                      </Link>
                   </li>
                </ul>
+               <Accordion className={"mt-4"}>
+                  <AccordionItem>
+                     <AccordionTrigger
+                        className={cn(
+                           buttonVariants({ variant: "ghost", size: "sm" }),
+                           "mb-1 justify-start font-semibold",
+                        )}
+                     >
+                        Favorites
+                        <Icons.chevronDown className="-rotate-90 mt-[3px] size-2 shrink-0 transition-transform duration-200 group-data-[panel-open]:rotate-0" />
+                     </AccordionTrigger>
+                     <AccordionPanel>
+                        <ul className="space-y-1">
+                           <li>
+                              <Link
+                                 to={loginRoute.to}
+                                 className={cn(
+                                    buttonVariants({ variant: "ghost" }),
+                                    "group flex justify-start gap-2 px-2.5 text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:bg-transparent",
+                                 )}
+                              >
+                                 Item 1
+                              </Link>
+                           </li>
+                           <li>
+                              <Link
+                                 to={loginRoute.to}
+                                 className={cn(
+                                    buttonVariants({ variant: "ghost" }),
+                                    "group flex justify-start gap-2 px-2.5 text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:bg-transparent",
+                                 )}
+                              >
+                                 Item 2
+                              </Link>
+                           </li>
+                        </ul>
+                     </AccordionPanel>
+                  </AccordionItem>
+               </Accordion>
             </nav>
+
             <div className="mt-auto">
                <Button
                   className="text-foreground/90"

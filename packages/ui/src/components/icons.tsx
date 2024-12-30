@@ -164,6 +164,22 @@ export const Icons = {
          </g>
       </svg>
    ),
+   chevronDown: (props: IconProps) => (
+      <svg
+         viewBox="0 0 10 7"
+         fill="none"
+         xmlns="http://www.w3.org/2000/svg"
+         {...props}
+      >
+         <path
+            d="M1 1.13916C2.06206 2.60104 3.30708 3.91044 4.70212 5.03336C4.87737 5.17443 5.12263 5.17443 5.29788 5.03336C6.69292 3.91044 7.93794 2.60104 9 1.13916"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+         />
+      </svg>
+   ),
    ellipsisHorizontal: (props: IconProps) => (
       <svg
          xmlns="http://www.w3.org/2000/svg"

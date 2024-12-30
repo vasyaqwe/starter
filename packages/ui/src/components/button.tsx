@@ -13,11 +13,11 @@ const buttonVariants = cva(
             dark:data-[popup-open]:bg-white data-[popup-open]:bg-black-a10`,
             secondary: `bg-gray-3 dark:bg-gray-4 hover:bg-gray-a4 border-gray-a3 data-[popup-open]:bg-gray-3 dark:data-[popup-open]:bg-gray-4`,
             destructive: `bg-red-9 hover:bg-red-10 text-white dark:border-red-11/65 border-red-11`,
-            ghost: "border-transparent shadow-none hover:bg-gray-3 data-[popup-open]:bg-gray-3 dark:shadow-none dark:data-[popup-open]:bg-gray-4 dark:hover:bg-gray-4",
+            ghost: "border-transparent shadow-none [--hover:var(--color-gray-3)] hover:bg-(--hover) aria-[current=page]:bg-(--hover) data-[popup-open]:bg-(--hover) dark:shadow-none dark:[--hover:var(--color-gray-4)]",
          },
          size: {
             default: "h-8 rounded-[10px] px-3 text-sm",
-            sm: "h-8 rounded-lg px-2.5 text-sm",
+            sm: "h-7 rounded-lg px-2.5 text-sm",
             lg: "h-10 gap-2 rounded-xl px-4 text-base",
             xl: "h-11 gap-3 rounded-xl px-4 text-base",
             icon: "size-9 gap-0 rounded-full",
