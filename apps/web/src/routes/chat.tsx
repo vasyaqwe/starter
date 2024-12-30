@@ -8,6 +8,7 @@ import {
    MenuPopup,
    MenuTrigger,
 } from "@project/ui/components/menu"
+import { ScrollArea } from "@project/ui/components/scroll-area"
 import {
    Tooltip,
    TooltipPopup,
@@ -233,7 +234,7 @@ function RouteComponent() {
 
    return (
       <>
-         <div className="overflow-y-auto pb-8">
+         <ScrollArea className="pb-8">
             <div className="mx-auto w-full max-w-4xl px-4">
                {groupedMessages.map((dateGroup) => (
                   <div key={dateGroup.date}>
@@ -344,7 +345,7 @@ function RouteComponent() {
                ))}
             </div>
             <div ref={scroll} />
-         </div>
+         </ScrollArea>
          <div className="border-gray-4 border-t bg-background">
             <div className="mx-auto flex max-w-4xl items-center gap-2 p-2 md:p-4">
                <div className="flex items-center gap-0.5">
