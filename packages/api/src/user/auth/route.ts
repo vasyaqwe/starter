@@ -1,4 +1,4 @@
-import { cookieOptions } from "@project/api/cookie/constants"
+import { COOKIE_OPTIONS } from "@project/api/cookie/constants"
 import { handleError } from "@project/api/error/utils"
 import { createRouter, zValidator } from "@project/api/utils"
 import { eq } from "@project/db"
@@ -115,10 +115,7 @@ export const authRoute = createRouter()
          const provider = c.req.valid("param").provider
          const redirect = c.req.valid("query").redirect ?? env.client.WEB_DOMAIN
 
-         setCookie(c, "redirect", redirect, {
-            ...cookieOptions(),
-            maxAge: 60 * 10,
-         })
+         setCookie(c, "redirect", redirect, COOKIE_OPTIONS)
 
          const state = generateState()
 
@@ -136,14 +133,13 @@ export const authRoute = createRouter()
                ["profile", "email"],
             )
 
-            setCookie(c, "google_oauth_state", state, {
-               ...cookieOptions(),
-               maxAge: 60 * 10,
-            })
-            setCookie(c, "google_oauth_code_verifier", codeVerifier, {
-               ...cookieOptions(),
-               maxAge: 60 * 10,
-            })
+            setCookie(c, "google_oauth_state", state, COOKIE_OPTIONS)
+            setCookie(
+               c,
+               "google_oauth_code_verifier",
+               codeVerifier,
+               COOKIE_OPTIONS,
+            )
 
             return c.redirect(url.toString())
          }

@@ -5,7 +5,7 @@ import {
    encodeHexLowerCase,
 } from "@oslojs/encoding"
 import type { HonoContext } from "@project/api/context"
-import { cookieOptions } from "@project/api/cookie/constants"
+import { COOKIE_OPTIONS } from "@project/api/cookie/constants"
 import { TimeSpan, createDate, isWithinExpirationDate } from "@project/api/date"
 import { eq } from "@project/db"
 import type { Database } from "@project/db/client"
@@ -35,14 +35,14 @@ export const getSessionTokenCookie = (c: HonoContext) =>
 
 export const setSessionTokenCookie = (c: HonoContext, token: string) => {
    setCookie(c, SESSION_COOKIE_NAME, token, {
-      ...cookieOptions(),
-      maxAge: Date.now() + 1000 * SESSION_EXPIRATION_SECONDS,
+      ...COOKIE_OPTIONS,
+      maxAge: SESSION_EXPIRATION_SECONDS,
    })
 }
 
 export const deleteSessionTokenCookie = (c: HonoContext) => {
    setCookie(c, SESSION_COOKIE_NAME, "", {
-      ...cookieOptions(),
+      ...COOKIE_OPTIONS,
       maxAge: 0,
    })
 }

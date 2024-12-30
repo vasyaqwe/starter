@@ -21,7 +21,7 @@ export const TooltipArrow = TooltipPrimitive.Arrow
 export function TooltipPopup({
    className,
    children,
-   sideOffset = 10,
+   sideOffset = 7,
    ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Positioner>) {
    return (
@@ -32,12 +32,12 @@ export function TooltipPopup({
          >
             <TooltipPrimitive.Popup
                className={cn(
-                  "rounded-lg border border-gray-3 bg-white px-2 py-[3px] text-sm shadow-xs dark:border-gray-6 dark:bg-gray-4 dark:shadow-md",
-                  "origin-(--transform-origin) transition-all data-[ending-style]:scale-90 data-[starting-style]:scale-90 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 data-[instant]:duration-0",
+                  "rounded-lg border border-gray-4 bg-white px-2 py-[3px] text-sm shadow-xs dark:border-gray-6 dark:bg-gray-4 dark:shadow-md",
+                  "origin-(--transform-origin) transition-all data-[ending-style]:scale-95 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 data-[instant]:duration-0",
                   className,
                )}
             >
-               <TooltipArrow
+               {/* <TooltipArrow
                   className={cn(
                      "flex data-[side=top]:bottom-[-8px] data-[side=top]:rotate-180",
                      "data-[side=bottom]:top-[-8px] data-[side=bottom]:rotate-0",
@@ -61,7 +61,7 @@ export function TooltipPopup({
                         className="fill-gray-3 dark:fill-gray-6"
                      />
                   </svg>
-               </TooltipArrow>
+               </TooltipArrow> */}
                {children}
             </TooltipPrimitive.Popup>
          </TooltipPositioner>
