@@ -2,6 +2,7 @@ import { Select as SelectPrimitive } from "@base-ui-components/react/select"
 import {
    menuItemDestructiveStyles,
    menuItemStyles,
+   popupSeparatorStyles,
    popupStyles,
    popupTransitionStyles,
 } from "../constants"
@@ -15,7 +16,6 @@ export const SelectIcon = SelectPrimitive.Icon
 export const SelectItemIndicator = SelectPrimitive.ItemIndicator
 export const SelectItemText = SelectPrimitive.ItemText
 export const SelectGroup = SelectPrimitive.Group
-export const SelectSeparator = SelectPrimitive.Separator
 export const SelectPortal = SelectPrimitive.Portal
 export const SelectBackdrop = SelectPrimitive.Backdrop
 export const SelectPositioner = SelectPrimitive.Positioner
@@ -63,7 +63,7 @@ export function SelectItem({
          {...props}
       >
          <SelectItemIndicator className="col-start-1">
-            <Icons.check className={"size-[18px] text-foreground/90"} />
+            <Icons.check className={"size-[18px] text-white/90"} />
          </SelectItemIndicator>
          <SelectItemText className={"col-start-2"}>{children}</SelectItemText>
       </SelectPrimitive.Item>
@@ -95,5 +95,17 @@ export function SelectPopup({
             </SelectPrimitive.Popup>
          </SelectPositioner>
       </SelectPortal>
+   )
+}
+
+export function SelectSeparator({
+   className,
+   ...props
+}: React.ComponentProps<typeof SelectPrimitive.Separator>) {
+   return (
+      <SelectPrimitive.Separator
+         className={cn(popupSeparatorStyles, className)}
+         {...props}
+      />
    )
 }

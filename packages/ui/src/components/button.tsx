@@ -8,13 +8,18 @@ const buttonVariants = cva(
    {
       variants: {
          variant: {
-            default: `bg-primary-12 text-primary-1 shadow-sm dark:shadow-md border-primary-12 hover:bg-black-a10 dark:hover:bg-white dark:hover:brightness-100 
-            dark:data-[popup-open]:bg-white data-[popup-open]:bg-black-a10`,
-            secondary: `dark:shadow-md shadow-xs bg-primary-3 dark:bg-primary-4 hover:bg-primary-a4 border-primary-a3 data-[popup-open]:bg-primary-3 dark:data-[popup-open]:bg-primary-4`,
-            destructive: `dark:shadow-md shadow-xs bg-red-9 hover:bg-red-10 text-white dark:border-red-11/65 border-red-11`,
-            ghost: "border-transparent [--hover:var(--color-primary-3)] hover:bg-(--hover) aria-[current=page]:bg-(--hover) data-[popup-open]:bg-(--hover) dark:shadow-none dark:[--hover:var(--color-primary-4)]",
-            popover:
-               "justify-start gap-2 border-transparent font-normal hover:bg-primary-11 hover:shadow-lg focus-visible:bg-primary-11 focus-visible:shadow-lg focus-visible:outline-none focus-visible:outline-hidden dark:focus-visible:bg-primary-6 dark:hover:bg-primary-6",
+            default: `shadow-sm bg-primary-12 text-primary-1 border-primary-12 hover:bg-black-a10 data-[popup-open]:bg-black-a10
+                      dark:shadow-md dark:bg-primary-7 dark:text-primary-12 dark:border-primary-8 dark:hover:bg-primary-8/80
+                      dark:hover:border-primary-9 dark:data-[popup-open]:border-primary-9 dark:data-[popup-open]:bg-primary-8/80`,
+            // default (white in dark mode): `shadow-sm dark:shadow-md bg-primary-12 text-primary-1 border-primary-12 hover:bg-black-a10 dark:hover:bg-white dark:data-[popup-open]:bg-white data-[popup-open]:bg-black-a10`,
+            secondary: `shadow-xs bg-primary-3 border-primary-a3 data-[popup-open]:bg-primary-3 hover:bg-primary-a4
+                        dark:shadow-md dark:bg-primary-4 dark:data-[popup-open]:bg-primary-4`,
+            destructive: `shadow-xs bg-red-9 border-red-11 text-white hover:bg-red-10 dark:shadow-md dark:border-red-11/65`,
+            ghost: `border-transparent [--hover:var(--color-primary-3)] hover:bg-(--hover) aria-[current=page]:bg-(--hover) data-[popup-open]:bg-(--hover) 
+                    dark:[--hover:var(--color-primary-4)]`,
+            popover: `justify-start gap-2 border-transparent font-normal hover:bg-primary-11 hover:shadow-lg
+                      focus-visible:outline-none focus-visible:outline-hidden focus-visible:bg-primary-11 focus-visible:shadow-lg
+                      dark:hover:bg-primary-6 dark:focus-visible:bg-primary-6`,
          },
          size: {
             default: "h-8 rounded-[10px] px-3 text-sm",

@@ -41,12 +41,7 @@ function RouteComponent() {
                         We'll send you a one-time password.
                      </FieldDescription>
                   </Field>
-                  <Button
-                     variant={"secondary"}
-                     className="mt-4 w-full"
-                  >
-                     Continue
-                  </Button>
+                  <Button className="mt-5 w-full">Continue</Button>
                </form>
             </Card>
          </main>

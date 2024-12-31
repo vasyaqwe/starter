@@ -7,6 +7,7 @@ import {
    Select,
    SelectItem,
    SelectPopup,
+   SelectSeparator,
    SelectTrigger,
    SelectValue,
 } from "@project/ui/components/select"
@@ -84,6 +85,7 @@ function RouteComponent() {
                   <SelectItem value="sans">Sans</SelectItem>
                   <SelectItem value="serif">Serif</SelectItem>
                   <SelectItem value="mono">Monospace</SelectItem>
+                  <SelectSeparator />
                   <SelectItem value="cursive">Cursive</SelectItem>
                </SelectPopup>
             </Select>

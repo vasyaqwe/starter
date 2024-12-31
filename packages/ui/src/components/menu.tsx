@@ -2,6 +2,7 @@ import { Menu as MenuPrimitive } from "@base-ui-components/react/menu"
 import {
    menuItemDestructiveStyles,
    menuItemStyles,
+   popupSeparatorStyles,
    popupStyles,
    popupTransitionStyles,
 } from "../constants"
@@ -11,7 +12,6 @@ import { buttonVariants } from "./button"
 export const Menu = MenuPrimitive.Root
 export const MenuTrigger = MenuPrimitive.Trigger
 export const MenuGroup = MenuPrimitive.Group
-export const MenuSeparator = MenuPrimitive.Separator
 export const MenuCheckboxItem = MenuPrimitive.CheckboxItem
 // export const MenuRadioGroup = MenuPrimitive.RadioGroup
 export const MenuRadioItem = MenuPrimitive.RadioItem
@@ -68,5 +68,17 @@ export function MenuPopup({
             </MenuPrimitive.Popup>
          </MenuPositioner>
       </MenuPortal>
+   )
+}
+
+export function MenuSeparator({
+   className,
+   ...props
+}: React.ComponentProps<typeof MenuPrimitive.Separator>) {
+   return (
+      <MenuPrimitive.Separator
+         className={cn(popupSeparatorStyles, className)}
+         {...props}
+      />
    )
 }

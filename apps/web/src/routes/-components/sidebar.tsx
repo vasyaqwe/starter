@@ -10,6 +10,7 @@ import {
 } from "@project/ui/components/accordion"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { Icons } from "@project/ui/components/icons"
+import { ScrollArea } from "@project/ui/components/scroll-area"
 import { cn } from "@project/ui/utils"
 import { Link } from "@tanstack/react-router"
 import { useTheme } from "next-themes"
@@ -19,8 +20,8 @@ export function Sidebar() {
 
    return (
       <aside className="z-[10] h-svh w-[15rem] max-md:hidden">
-         <div className="fixed flex h-full w-[15rem] flex-col border-primary-4 border-r p-4 shadow-xs">
-            <nav className="my-4 overflow-y-auto">
+         <div className="fixed flex h-full w-[15rem] flex-col border-primary-4 border-r shadow-xs">
+            <ScrollArea render={<nav className="p-4" />}>
                <ul className="space-y-1">
                   <li>
                      <Link
@@ -98,9 +99,8 @@ export function Sidebar() {
                      </AccordionPanel>
                   </AccordionItem>
                </Accordion>
-            </nav>
-
-            <div className="mt-auto">
+            </ScrollArea>
+            <div className="mt-auto p-4 pt-1">
                <Button
                   className="text-foreground/90"
                   onClick={() => setTheme(theme === "light" ? "dark" : "light")}
