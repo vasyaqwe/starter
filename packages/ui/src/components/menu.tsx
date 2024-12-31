@@ -1,6 +1,7 @@
 import { Menu as MenuPrimitive } from "@base-ui-components/react/menu"
 import { popupStyles, popupTransitionStyles } from "../constants"
 import { cn } from "../utils"
+import { buttonVariants } from "./button"
 
 export const Menu = MenuPrimitive.Root
 export const MenuTrigger = MenuPrimitive.Trigger
@@ -12,6 +13,7 @@ export const MenuRadioItem = MenuPrimitive.RadioItem
 export const MenuPortal = MenuPrimitive.Portal
 export const MenuBackdrop = MenuPrimitive.Backdrop
 export const MenuPositioner = MenuPrimitive.Positioner
+export const MenuArrow = MenuPrimitive.Arrow
 
 export function MenuItem({
    className,
@@ -24,11 +26,12 @@ export function MenuItem({
    return (
       <MenuPrimitive.Item
          className={cn(
-            "flex cursor-(--cursor) items-center gap-2 rounded-[calc(12px-var(--padding))] px-2 py-[5px] hover:shadow-lg focus:shadow-lg focus:outline-hidden",
+            buttonVariants({ variant: "popover" }),
+            "flex rounded-[calc(12px-var(--padding))] px-2 py-[5px] text-base focus-visible:border-transparent",
             "[&>svg]:size-5 [&>svg]:text-gray-8 hover:[&>svg]:text-white focus:[&>svg]:text-white dark:[&>svg]:text-gray-11",
             destructive
-               ? "hover:bg-red-9 focus:bg-red-9"
-               : "hover:bg-gray-11 focus:bg-gray-11 dark:focus:bg-gray-6 dark:hover:bg-gray-6",
+               ? "hover:bg-red-9 focus-visible:bg-red-9 dark:focus-visible:bg-red-9 dark:hover:bg-red-9"
+               : "",
             className,
          )}
          {...props}

@@ -12,7 +12,7 @@ export const popupTransitionStyles = cn(
 )
 
 export const popupStyles = cn(
-   "rounded-xl border border-transparent bg-gray-12 text-white shadow-md focus:outline-none dark:border-gray-4 dark:border-gray-6 dark:bg-gray-3 dark:shadow-lg",
+   "rounded-xl bg-gray-12 text-white shadow-md outline-1 outline-transparent outline-offset-0 dark:bg-gray-3 dark:shadow-lg dark:outline-gray-4 dark:outline-gray-6",
 )
 
 export const inputStyles = cn(

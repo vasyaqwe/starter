@@ -8,6 +8,11 @@ import {
    MenuPopup,
    MenuTrigger,
 } from "@project/ui/components/menu"
+import {
+   Popover,
+   PopoverPopup,
+   PopoverTrigger,
+} from "@project/ui/components/popover"
 import { ScrollArea } from "@project/ui/components/scroll-area"
 import {
    Tooltip,
@@ -360,19 +365,49 @@ function RouteComponent() {
                      </TooltipTrigger>
                      <TooltipPopup>Attach files</TooltipPopup>
                   </Tooltip>
-                  <Tooltip>
-                     <TooltipTrigger
-                        render={
+                  <Popover>
+                     <Tooltip>
+                        <TooltipTrigger
+                           render={
+                              <PopoverTrigger
+                                 render={
+                                    <Button
+                                       size={"icon"}
+                                       variant={"ghost"}
+                                    />
+                                 }
+                              >
+                                 <Icons.facePlus className="size-[22px]" />
+                              </PopoverTrigger>
+                           }
+                        />
+                        <TooltipPopup>Add emoji</TooltipPopup>
+                     </Tooltip>
+                     <PopoverPopup className={"grid grid-cols-4"}>
+                        {[
+                           "😑",
+                           "😑",
+                           "😑",
+                           "😑",
+                           "😑",
+                           "😑",
+                           "😑",
+                           "😑",
+                           "😑",
+                           "😑",
+                           "😑",
+                        ].map((emoji, index) => (
                            <Button
-                              size={"icon"}
-                              variant={"ghost"}
-                           />
-                        }
-                     >
-                        <Icons.facePlus className="size-[22px]" />
-                     </TooltipTrigger>
-                     <TooltipPopup>Add emoji</TooltipPopup>
-                  </Tooltip>
+                              key={index}
+                              variant={"popover"}
+                              size={"icon-sm"}
+                              className="justify-center"
+                           >
+                              <span className="-mt-px block">{emoji}</span>
+                           </Button>
+                        ))}
+                     </PopoverPopup>
+                  </Popover>
                </div>
                <div className="relative flex-1">
                   <input
