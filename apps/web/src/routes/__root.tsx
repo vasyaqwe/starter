@@ -1,3 +1,4 @@
+import { useLocalStorage } from "@/interactions/use-local-storage"
 import type { QueryClient } from "@tanstack/react-query"
 import {
    Outlet,
@@ -23,7 +24,6 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
    const { resolvedTheme } = useTheme()
-
    React.useEffect(() => {
       if (resolvedTheme === "dark") {
          document
@@ -35,6 +35,11 @@ function RootComponent() {
             ?.setAttribute("content", "#FFFFFF")
       }
    }, [resolvedTheme])
+
+   const [cursor] = useLocalStorage("cursor", "default")
+   React.useEffect(() => {
+      document.documentElement.style.setProperty("--cursor", cursor)
+   }, [])
 
    return (
       <Meta>

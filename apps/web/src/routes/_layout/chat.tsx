@@ -276,7 +276,7 @@ function RouteComponent() {
                                           "w-fit max-w-xl px-3 py-2 dark:shadow-md",
                                           isMessageMine
                                              ? "rounded-r-md rounded-l-3xl bg-accent text-white"
-                                             : "rounded-r-3xl rounded-l-md bg-gray-3 dark:bg-gray-5",
+                                             : "rounded-r-3xl rounded-l-md bg-primary-3 dark:bg-primary-5",
                                           isTheOnlyOne ? "!rounded-3xl" : "",
                                           isFirst && !isMessageMine
                                              ? "rounded-tl-3xl"
@@ -349,7 +349,7 @@ function RouteComponent() {
             </div>
             <div ref={scroll} />
          </ScrollArea>
-         <div className="border-gray-4 border-t bg-background">
+         <div className="border-primary-4 border-t bg-background">
             <div className="mx-auto flex max-w-4xl items-center gap-2 p-2 md:p-4">
                <div className="flex items-center gap-0.5">
                   <Tooltip>
@@ -412,7 +412,7 @@ function RouteComponent() {
                <div className="relative flex-1">
                   <input
                      autoFocus
-                     className="min-h-[41px] w-full rounded-full border border-gray-4 bg-gray-2 px-4 py-2 outline-hidden dark:border-gray-5 dark:bg-gray-3"
+                     className="min-h-[41px] w-full rounded-full border border-primary-4 bg-primary-2 px-4 py-2 outline-hidden dark:border-primary-5 dark:bg-primary-3"
                      placeholder="Chat.."
                   />
                   <Tooltip>

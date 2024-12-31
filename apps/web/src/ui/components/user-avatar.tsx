@@ -61,7 +61,7 @@ export function OnlineIndicator() {
          title={"Online"}
          data-online-indicator
          className={cn(
-            "-right-0.5 -bottom-0.5 absolute block size-(--online-indicator-size) rounded-full border-[3px] border-white bg-green-500 transition-all duration-300 dark:border-gray-2",
+            "-right-0.5 -bottom-0.5 absolute block size-(--online-indicator-size) rounded-full border-[3px] border-white bg-green-500 transition-all duration-300 dark:border-primary-2",
             isOnline
                ? "visible scale-100 opacity-100"
                : "invisible scale-0 opacity-0",

@@ -1,5 +1,10 @@
 import { Menu as MenuPrimitive } from "@base-ui-components/react/menu"
-import { popupStyles, popupTransitionStyles } from "../constants"
+import {
+   menuItemDestructiveStyles,
+   menuItemStyles,
+   popupStyles,
+   popupTransitionStyles,
+} from "../constants"
 import { cn } from "../utils"
 import { buttonVariants } from "./button"
 
@@ -27,11 +32,8 @@ export function MenuItem({
       <MenuPrimitive.Item
          className={cn(
             buttonVariants({ variant: "popover" }),
-            "flex rounded-[calc(12px-var(--padding))] px-2 py-[5px] text-base focus-visible:border-transparent",
-            "[&>svg]:size-5 [&>svg]:text-gray-8 hover:[&>svg]:text-white focus:[&>svg]:text-white dark:[&>svg]:text-gray-11",
-            destructive
-               ? "hover:bg-red-9 focus-visible:bg-red-9 dark:focus-visible:bg-red-9 dark:hover:bg-red-9"
-               : "",
+            menuItemStyles,
+            destructive ? menuItemDestructiveStyles : "",
             className,
          )}
          {...props}
@@ -40,6 +42,7 @@ export function MenuItem({
       </MenuPrimitive.Item>
    )
 }
+
 export function MenuPopup({
    className,
    children,

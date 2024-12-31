@@ -6,11 +6,10 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/_layout/settings")({
    component: RouteComponent,
-   validateSearch: (
-      search: Record<string, unknown>,
-   ): { tab: "general" | "preferences" } => ({
-      tab: (search.tab as never) ?? "general",
-   }),
+   validateSearch: (search: Record<string, unknown>) =>
+      ({
+         tab: (search.tab as "general" | "preferences") ?? "general",
+      }) as { tab?: "general" | "preferences" },
 })
 
 function RouteComponent() {
@@ -39,7 +38,7 @@ function RouteComponent() {
                </div>
                <TabsPanel
                   value={"general"}
-                  className={"divide-y divide-gray-4"}
+                  className={"divide-y divide-primary-4"}
                >
                   <div className="py-6">
                      <h2 className="font-semibold text-lg">Some setting</h2>
@@ -50,7 +49,7 @@ function RouteComponent() {
                </TabsPanel>
                <TabsPanel
                   value={"preferences"}
-                  className={"divide-y divide-gray-4"}
+                  className={"divide-y divide-primary-4"}
                >
                   <div className="py-6">
                      <div className="flex items-center justify-between">

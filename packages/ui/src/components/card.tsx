@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority"
 import { cn } from "../utils"
 
 const cardVariants = cva(
-   `rounded-2xl border border-gray-4 bg-gray-1 dark:bg-gray-3/60 p-6 shadow-xs dark:shadow-md has-[[data-card-header]]:p-0`,
+   `rounded-2xl border border-primary-4 bg-primary-1 dark:bg-primary-3/60 p-6 shadow-xs dark:shadow-md has-[[data-card-header]]:p-0`,
 )
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
@@ -26,7 +26,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"h2">) {
 function CardDescription({ className, ...props }: React.ComponentProps<"p">) {
    return (
       <p
-         className={cn("mt-2 text-gray-11 text-sm", className)}
+         className={cn("mt-2 text-primary-11 text-sm", className)}
          {...props}
       />
    )

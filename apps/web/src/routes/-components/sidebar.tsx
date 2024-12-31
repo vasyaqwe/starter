@@ -19,7 +19,7 @@ export function Sidebar() {
 
    return (
       <aside className="z-[10] h-svh w-[15rem] max-md:hidden">
-         <div className="fixed flex h-full w-[15rem] flex-col border-gray-4 border-r p-4 shadow-xs">
+         <div className="fixed flex h-full w-[15rem] flex-col border-primary-4 border-r p-4 shadow-xs">
             <nav className="my-4 overflow-y-auto">
                <ul className="space-y-1">
                   <li>

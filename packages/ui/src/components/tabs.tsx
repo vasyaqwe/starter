@@ -23,7 +23,7 @@ function TabsTab({
    return (
       <TabsPrimitive.Tab
          className={cn(
-            "inline-flex h-8 cursor-(--cursor) items-center justify-center rounded-full px-2.5 aria-selected:bg-gray-12 aria-selected:text-gray-1 dark:aria-selected:bg-gray-4 dark:aria-selected:text-gray-12",
+            "inline-flex h-8 cursor-(--cursor) items-center justify-center rounded-full px-2.5 aria-selected:bg-primary-12 aria-selected:text-primary-1 dark:aria-selected:bg-primary-5 dark:aria-selected:text-primary-12",
             "text-foreground/75 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-70 aria-selected:shadow-xs",
             focusStyles,
             className,

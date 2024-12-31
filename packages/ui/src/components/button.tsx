@@ -8,13 +8,13 @@ const buttonVariants = cva(
    {
       variants: {
          variant: {
-            default: `bg-gray-12 text-gray-1 shadow-sm dark:shadow-md border-gray-12 hover:bg-black-a10 dark:hover:bg-white dark:hover:brightness-100 
+            default: `bg-primary-12 text-primary-1 shadow-sm dark:shadow-md border-primary-12 hover:bg-black-a10 dark:hover:bg-white dark:hover:brightness-100 
             dark:data-[popup-open]:bg-white data-[popup-open]:bg-black-a10`,
-            secondary: `dark:shadow-md shadow-xs bg-gray-3 dark:bg-gray-4 hover:bg-gray-a4 border-gray-a3 data-[popup-open]:bg-gray-3 dark:data-[popup-open]:bg-gray-4`,
+            secondary: `dark:shadow-md shadow-xs bg-primary-3 dark:bg-primary-4 hover:bg-primary-a4 border-primary-a3 data-[popup-open]:bg-primary-3 dark:data-[popup-open]:bg-primary-4`,
             destructive: `dark:shadow-md shadow-xs bg-red-9 hover:bg-red-10 text-white dark:border-red-11/65 border-red-11`,
-            ghost: "border-transparent [--hover:var(--color-gray-3)] hover:bg-(--hover) aria-[current=page]:bg-(--hover) data-[popup-open]:bg-(--hover) dark:shadow-none dark:[--hover:var(--color-gray-4)]",
+            ghost: "border-transparent [--hover:var(--color-primary-3)] hover:bg-(--hover) aria-[current=page]:bg-(--hover) data-[popup-open]:bg-(--hover) dark:shadow-none dark:[--hover:var(--color-primary-4)]",
             popover:
-               "justify-start gap-2 border-transparent font-normal hover:bg-gray-11 hover:shadow-lg focus-visible:bg-gray-11 focus-visible:shadow-lg focus-visible:outline-none focus-visible:outline-hidden dark:focus-visible:bg-gray-6 dark:hover:bg-gray-6",
+               "justify-start gap-2 border-transparent font-normal hover:bg-primary-11 hover:shadow-lg focus-visible:bg-primary-11 focus-visible:shadow-lg focus-visible:outline-none focus-visible:outline-hidden dark:focus-visible:bg-primary-6 dark:hover:bg-primary-6",
          },
          size: {
             default: "h-8 rounded-[10px] px-3 text-sm",
