@@ -2,9 +2,7 @@ import { Select as SelectPrimitive } from "@base-ui-components/react/select"
 import {
    menuItemDestructiveStyles,
    menuItemStyles,
-   popupSeparatorStyles,
    popupStyles,
-   popupTransitionStyles,
 } from "../constants"
 import { cn } from "../utils"
 import { buttonVariants } from "./button"
@@ -85,8 +83,8 @@ export function SelectPopup({
          >
             <SelectPrimitive.Popup
                className={cn(
-                  popupStyles,
-                  popupTransitionStyles,
+                  popupStyles.base,
+                  popupStyles.transition,
                   "!scale-100 min-w-32 p-(--padding) text-base transition-none [--padding:3px]",
                   className,
                )}
@@ -104,7 +102,7 @@ export function SelectSeparator({
 }: React.ComponentProps<typeof SelectPrimitive.Separator>) {
    return (
       <SelectPrimitive.Separator
-         className={cn(popupSeparatorStyles, className)}
+         className={cn(popupStyles.separator, className)}
          {...props}
       />
    )

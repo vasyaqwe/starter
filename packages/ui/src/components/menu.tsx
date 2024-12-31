@@ -2,9 +2,7 @@ import { Menu as MenuPrimitive } from "@base-ui-components/react/menu"
 import {
    menuItemDestructiveStyles,
    menuItemStyles,
-   popupSeparatorStyles,
    popupStyles,
-   popupTransitionStyles,
 } from "../constants"
 import { cn } from "../utils"
 import { buttonVariants } from "./button"
@@ -58,8 +56,8 @@ export function MenuPopup({
          >
             <MenuPrimitive.Popup
                className={cn(
-                  popupStyles,
-                  popupTransitionStyles,
+                  popupStyles.base,
+                  popupStyles.transition,
                   "min-w-32 p-(--padding) text-base [--padding:3px]",
                   className,
                )}
@@ -77,7 +75,7 @@ export function MenuSeparator({
 }: React.ComponentProps<typeof MenuPrimitive.Separator>) {
    return (
       <MenuPrimitive.Separator
-         className={cn(popupSeparatorStyles, className)}
+         className={cn(popupStyles.separator, className)}
          {...props}
       />
    )

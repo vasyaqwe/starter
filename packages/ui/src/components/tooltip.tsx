@@ -1,5 +1,5 @@
 import { Tooltip as TooltipPrimitive } from "@base-ui-components/react/tooltip"
-import { popupStyles, popupTransitionStyles } from "../constants"
+import { popupStyles } from "../constants"
 import { cn } from "../utils"
 
 export function Tooltip({
@@ -34,8 +34,8 @@ export function TooltipPopup({
          >
             <TooltipPrimitive.Popup
                className={cn(
-                  popupStyles,
-                  popupTransitionStyles,
+                  popupStyles.base,
+                  popupStyles.transition,
                   "rounded-[9px] px-2 py-[3px] text-sm",
                   className,
                )}

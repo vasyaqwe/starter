@@ -1,5 +1,5 @@
 import { Popover as PopoverPrimitive } from "@base-ui-components/react/popover"
-import { popupStyles, popupTransitionStyles } from "../constants"
+import { popupStyles } from "../constants"
 import { cn } from "../utils"
 
 export const Popover = PopoverPrimitive.Root
@@ -22,8 +22,8 @@ export function PopoverPopup({
          >
             <PopoverPrimitive.Popup
                className={cn(
-                  popupStyles,
-                  popupTransitionStyles,
+                  popupStyles.base,
+                  popupStyles.transition,
                   "px-3 py-2.5",
                   className,
                )}

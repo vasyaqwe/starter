@@ -1,6 +1,24 @@
 import { hc, honoMutationFn, honoQueryFn } from "@/lib/hono"
-import { Button } from "@project/ui/components/button"
+import {
+   AlertDialog,
+   AlertDialogClose,
+   AlertDialogDescription,
+   AlertDialogFooter,
+   AlertDialogPopup,
+   AlertDialogTitle,
+   AlertDialogTrigger,
+} from "@project/ui/components/alert-dialog"
+import { Button, buttonVariants } from "@project/ui/components/button"
 import { Card } from "@project/ui/components/card"
+import {
+   Dialog,
+   DialogClose,
+   DialogDescription,
+   DialogFooter,
+   DialogPopup,
+   DialogTitle,
+   DialogTrigger,
+} from "@project/ui/components/dialog"
 import { Loading } from "@project/ui/components/loading"
 import { ScrollArea } from "@project/ui/components/scroll-area"
 import {
@@ -74,8 +92,51 @@ function RouteComponent() {
                   "primary button"
                )}
             </Button>
-            <Button variant="secondary">secondary button</Button>
-            <Button variant="destructive">destructive button</Button>
+            <Dialog>
+               <DialogTrigger
+                  className={buttonVariants({ variant: "secondary" })}
+               >
+                  secondary button
+               </DialogTrigger>
+               <DialogPopup>
+                  <DialogTitle>Notifications</DialogTitle>
+                  <DialogDescription>
+                     You are all caught up. Good job!
+                  </DialogDescription>
+                  <DialogFooter>
+                     <DialogClose
+                        className={buttonVariants({ variant: "secondary" })}
+                     >
+                        close
+                     </DialogClose>
+                  </DialogFooter>
+               </DialogPopup>
+            </Dialog>
+            <AlertDialog>
+               <AlertDialogTrigger
+                  className={buttonVariants({ variant: "destructive" })}
+               >
+                  destructive button
+               </AlertDialogTrigger>
+               <AlertDialogPopup>
+                  <AlertDialogTitle>Delete something?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                     You can’t undo this action.
+                  </AlertDialogDescription>
+                  <AlertDialogFooter>
+                     <AlertDialogClose
+                        className={buttonVariants({ variant: "secondary" })}
+                     >
+                        cancel
+                     </AlertDialogClose>
+                     <AlertDialogClose
+                        className={buttonVariants({ variant: "destructive" })}
+                     >
+                        delete
+                     </AlertDialogClose>
+                  </AlertDialogFooter>
+               </AlertDialogPopup>
+            </AlertDialog>
             <Button variant="ghost">ghost button</Button>
             <Select defaultValue="sans">
                <SelectTrigger className={"min-w-[150px]"}>
