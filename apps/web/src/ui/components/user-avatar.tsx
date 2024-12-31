@@ -1,8 +1,7 @@
 import type { User } from "@project/db/schema/user"
 import { cn } from "@project/ui/utils"
-import type { ComponentProps } from "react"
 
-type UserAvatarProps = ComponentProps<"div"> & {
+type UserAvatarProps = React.ComponentProps<"div"> & {
    user: Partial<User>
 }
 

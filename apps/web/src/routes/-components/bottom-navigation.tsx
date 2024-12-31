@@ -1,5 +1,6 @@
 import { Route as chatRoute } from "@/routes/_layout/chat"
 import { Route as indexRoute } from "@/routes/_layout/index"
+import { Route as settingsRoute } from "@/routes/_layout/settings"
 import { Icons } from "@project/ui/components/icons"
 import { Link } from "@tanstack/react-router"
 
@@ -25,6 +26,16 @@ export function BottomNavigation() {
                   <Icons.chat className="size-6 shrink-0 group-aria-[current=page]:hidden" />
                   <Icons.chatSolid className="hidden size-6 shrink-0 group-aria-[current=page]:block" />
                   Chat
+               </Link>
+            </li>
+            <li className="flex flex-1">
+               <Link
+                  to={settingsRoute.to}
+                  className="group inline-flex h-10 flex-1 flex-col items-center justify-center rounded-md font-bold text-foreground/60 text-xs aria-[current=page]:text-foreground"
+               >
+                  <Icons.gear className="size-6 shrink-0 group-aria-[current=page]:hidden" />
+                  <Icons.gearSolid className="hidden size-6 shrink-0 group-aria-[current=page]:block" />
+                  Settings
                </Link>
             </li>
          </ul>

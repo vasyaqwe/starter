@@ -1,5 +1,6 @@
 import { Route as chatRoute } from "@/routes/_layout/chat"
 import { Route as indexRoute } from "@/routes/_layout/index"
+import { Route as settingsRoute } from "@/routes/_layout/settings"
 import { Route as loginRoute } from "@/routes/login"
 import {
    Accordion,
@@ -43,6 +44,18 @@ export function Sidebar() {
                      >
                         <Icons.chat className="size-5" />
                         Chat
+                     </Link>
+                  </li>
+                  <li>
+                     <Link
+                        to={settingsRoute.to}
+                        className={cn(
+                           buttonVariants({ variant: "ghost" }),
+                           "group flex justify-start gap-2 px-2 font-semibold text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
+                        )}
+                     >
+                        <Icons.gear className="size-5" />
+                        Settings
                      </Link>
                   </li>
                </ul>
