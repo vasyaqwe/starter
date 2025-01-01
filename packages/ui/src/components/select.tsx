@@ -1,9 +1,5 @@
 import { Select as SelectPrimitive } from "@base-ui-components/react/select"
-import {
-   menuItemDestructiveStyles,
-   menuItemStyles,
-   popupStyles,
-} from "../constants"
+import { menuItemStyles, popupStyles } from "../constants"
 import { cn } from "../utils"
 import { buttonVariants } from "./button"
 import { Icons } from "./icons"
@@ -28,7 +24,7 @@ export function SelectTrigger({
       <SelectPrimitive.Trigger
          className={cn(
             buttonVariants({ variant: "secondary" }),
-            "justify-start font-normal",
+            "justify-start",
             className,
          )}
          {...props}
@@ -53,9 +49,9 @@ export function SelectItem({
       <SelectPrimitive.Item
          className={cn(
             buttonVariants({ variant: "popover" }),
-            menuItemStyles,
-            destructive ? menuItemDestructiveStyles : "",
-            "grid min-w-[calc(var(--anchor-width)+1.25rem)] grid-cols-[1.25rem_1fr] items-center gap-2 pr-4 pl-2 text-sm",
+            menuItemStyles.base,
+            destructive ? menuItemStyles.destructive : "",
+            "grid min-w-[calc(var(--anchor-width)+1.25rem)] grid-cols-[1.15rem_1fr] items-center gap-2 pr-4 pl-2 text-sm",
             className,
          )}
          {...props}

@@ -3,7 +3,7 @@ import { focusStyles } from "../constants"
 import { cn } from "../utils"
 
 const buttonVariants = cva(
-   `inline-flex cursor-(--cursor) items-center font-semibold justify-center gap-1.5 whitespace-nowrap 
+   `inline-flex cursor-(--cursor) items-center justify-center gap-1.5 whitespace-nowrap 
     disabled:opacity-70 disabled:cursor-not-allowed border`,
    {
       variants: {
@@ -17,7 +17,7 @@ const buttonVariants = cva(
             destructive: `shadow-xs bg-red-9 border-red-11 text-white hover:bg-red-10 dark:shadow-md dark:border-red-11/65`,
             ghost: `border-transparent [--hover:var(--color-primary-3)] hover:bg-(--hover) aria-[current=page]:bg-(--hover) data-[popup-open]:bg-(--hover) 
                     dark:[--hover:var(--color-primary-4)]`,
-            popover: `justify-start gap-2 border-transparent font-normal hover:bg-primary-11 hover:shadow-lg
+            popover: `justify-start gap-2 border-transparent hover:bg-primary-11 hover:shadow-lg
                       focus-visible:outline-none focus-visible:outline-hidden focus-visible:bg-primary-11 focus-visible:shadow-lg
                       dark:hover:bg-primary-6 dark:focus-visible:bg-primary-6`,
          },

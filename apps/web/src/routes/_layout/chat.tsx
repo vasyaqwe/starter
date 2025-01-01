@@ -1,3 +1,4 @@
+import { Message } from "@/ui/components/message"
 import { OnlineIndicator, UserAvatar } from "@/ui/components/user-avatar"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { Icons } from "@project/ui/components/icons"
@@ -267,37 +268,17 @@ function RouteComponent() {
                                        const isLast =
                                           index === group.messages.length - 1
                                        const isFirst = index === 0
-                                       const isTheOnlyOne =
+                                       const isOnlyOneInGroup =
                                           messages.length === 1
-                                       const isMessageMine =
+                                       const isMine =
                                           currentUserId === group.sender?.id
-
-                                       const conditionalClassNames = cn(
-                                          "w-fit max-w-xl px-3 py-2 dark:shadow-md",
-                                          isMessageMine
-                                             ? "rounded-r-md rounded-l-3xl bg-accent text-white"
-                                             : "rounded-r-3xl rounded-l-md bg-primary-3 dark:bg-primary-5",
-                                          isTheOnlyOne ? "!rounded-3xl" : "",
-                                          isFirst && !isMessageMine
-                                             ? "rounded-tl-3xl"
-                                             : "",
-                                          isLast && !isMessageMine
-                                             ? "rounded-bl-3xl"
-                                             : "",
-                                          isFirst && isMessageMine
-                                             ? "rounded-tr-3xl"
-                                             : "",
-                                          isLast && isMessageMine
-                                             ? "rounded-br-3xl"
-                                             : "",
-                                       )
 
                                        return (
                                           <div
                                              key={message.id}
                                              className={cn(
                                                 "group mt-0.5 flex items-center justify-end gap-2",
-                                                isMessageMine
+                                                isMine
                                                    ? ""
                                                    : "flex-row-reverse",
                                              )}
@@ -316,7 +297,7 @@ function RouteComponent() {
                                                    </MenuTrigger>
                                                    <MenuPopup
                                                       align={
-                                                         isMessageMine
+                                                         isMine
                                                             ? "end"
                                                             : "start"
                                                       }
@@ -328,14 +309,16 @@ function RouteComponent() {
                                                    </MenuPopup>
                                                 </Menu>
                                              </div>
-                                             <div
-                                                className={cn(
-                                                   "w-fit max-w-xl shrink-0 px-3 py-2 dark:shadow-md",
-                                                   conditionalClassNames,
-                                                )}
+                                             <Message
+                                                isFirst={isFirst}
+                                                isLast={isLast}
+                                                isMine={isMine}
+                                                isOnlyOneInGroup={
+                                                   isOnlyOneInGroup
+                                                }
                                              >
                                                 {message.content}
-                                             </div>
+                                             </Message>
                                           </div>
                                        )
                                     },
