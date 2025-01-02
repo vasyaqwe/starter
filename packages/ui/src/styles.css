@@ -30,14 +30,15 @@
    --color-primary-a12: var(--color-gray-a12);
    --color-foreground: var(--color-primary-12);
    --color-background: #fff;
-   --color-accent: #4186f6;
+   --color-accent: #3c83f6;
 
+   --radius-xl: 0.825rem;
    --radius-3xl: 1.25rem;
 
    --font-weight-normal: 450;
    --font-weight-medium: 525;
 
-   --text-sm: 0.85rem;
+   --text-sm: 0.86rem;
    --text-base: 0.9rem;
    --font-primary: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
       "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
@@ -80,6 +81,7 @@
 
 .dark {
    --color-background: #171717;
+   --color-accent: #3780f6;
 }
 
 @variant dark (&:where(.dark, .dark *));

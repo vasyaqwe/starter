@@ -1,6 +1,7 @@
 import { Message } from "@/ui/components/message"
 import { OnlineIndicator, UserAvatar } from "@/ui/components/user-avatar"
 import { Button, buttonVariants } from "@project/ui/components/button"
+import { Input } from "@project/ui/components/field"
 import { Icons } from "@project/ui/components/icons"
 import { Kbd } from "@project/ui/components/kbd"
 import {
@@ -32,7 +33,37 @@ const scroll = (node: HTMLElement | null) => node?.scrollIntoView()
 function RouteComponent() {
    const messages = [
       {
-         content: "Hey you!",
+         content:
+            "I've just pushed the UI changes for review. Main nav is completely refactored now.",
+         sender: {
+            id: "1",
+            name: "John",
+            avatarUrl: "https://i.pravatar.cc/150?img=1",
+         },
+         createdAt: new Date("2024-12-27T15:30:00"),
+      },
+      {
+         content:
+            "Great, I'll take a look. Did you address the mobile menu issues?",
+         sender: {
+            id: "2",
+            name: "Jane",
+            avatarUrl: "https://i.pravatar.cc/150?img=2",
+         },
+         createdAt: new Date("2024-12-27T15:35:00"),
+      },
+      {
+         content: "Yes, should be fixed now. The animation is smoother too.",
+         sender: {
+            id: "1",
+            name: "John",
+            avatarUrl: "https://i.pravatar.cc/150?img=1",
+         },
+         createdAt: new Date("2024-12-27T15:36:00"),
+      },
+      {
+         content:
+            "Hey, how's the project coming along? I noticed some design inconsistencies in the latest build.",
          sender: {
             id: "1",
             name: "John",
@@ -41,7 +72,8 @@ function RouteComponent() {
          createdAt: new Date("2024-12-28T09:00:00"),
       },
       {
-         content: "Yes you!",
+         content:
+            "Yeah, I've been meaning to discuss that. The spacing issues, right?",
          sender: {
             id: "2",
             name: "Jane",
@@ -50,26 +82,8 @@ function RouteComponent() {
          createdAt: new Date("2024-12-28T09:01:00"),
       },
       {
-         content: "Yes you!",
-         sender: {
-            id: "2",
-            name: "Jane",
-            avatarUrl: "https://i.pravatar.cc/150?img=2",
-         },
-         createdAt: new Date("2024-12-28T09:01:00"),
-      },
-      {
-         content: "What me?!",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-28T09:02:00"),
-      },
-      {
          content:
-            "What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!",
+            "Exactly. Especially in the dashboard components. Want to hop on a quick call to review? I've just pushed the UI changes for review. Main nav is completely refactored now. I've just pushed the UI changes for review. Main nav is completely refactored now.",
          sender: {
             id: "1",
             name: "John",
@@ -78,132 +92,22 @@ function RouteComponent() {
          createdAt: new Date("2024-12-28T09:02:00"),
       },
       {
-         content: "What me?!",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-28T09:02:00"),
-      },
-      {
-         content: "No way.",
+         content: "Sure, give me 10 minutes to wrap up what I'm working on.",
          sender: {
             id: "2",
             name: "Jane",
             avatarUrl: "https://i.pravatar.cc/150?img=2",
          },
-         createdAt: new Date("2024-12-27T15:00:00"),
+         createdAt: new Date("2024-12-28T09:03:00"),
       },
       {
-         content: "Hello there",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-27T15:30:00"),
-      },
-      {
-         content:
-            "What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-28T09:02:00"),
-      },
-      {
-         content: "What me?!",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-28T09:02:00"),
-      },
-      {
-         content: "No way.",
+         content: "Sure, give me 10 minutes to wrap up what I'm working on.",
          sender: {
             id: "2",
             name: "Jane",
             avatarUrl: "https://i.pravatar.cc/150?img=2",
          },
-         createdAt: new Date("2024-12-27T15:00:00"),
-      },
-      {
-         content: "Hello there",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-27T15:30:00"),
-      },
-      {
-         content: "Hey you!",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-28T09:00:00"),
-      },
-      {
-         content: "Yes you!",
-         sender: {
-            id: "2",
-            name: "Jane",
-            avatarUrl: "https://i.pravatar.cc/150?img=2",
-         },
-         createdAt: new Date("2024-12-28T09:01:00"),
-      },
-      {
-         content: "What me?!",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-28T09:02:00"),
-      },
-      {
-         content:
-            "What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!What me?!",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-28T09:02:00"),
-      },
-      {
-         content: "What me?!",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-28T09:02:00"),
-      },
-      {
-         content: "No way.",
-         sender: {
-            id: "2",
-            name: "Jane",
-            avatarUrl: "https://i.pravatar.cc/150?img=2",
-         },
-         createdAt: new Date("2024-12-27T15:00:00"),
-      },
-      {
-         content: "Hello there",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
-         },
-         createdAt: new Date("2024-12-27T15:30:00"),
+         createdAt: new Date("2024-12-28T09:03:00"),
       },
    ].map((m) => ({ ...m, id: crypto.randomUUID() }))
 
@@ -211,27 +115,27 @@ function RouteComponent() {
       messages.reduce(
          (acc, msg) => {
             const date = msg.createdAt.toDateString()
-            const prevGroup = acc[date]?.at(-1)
-            const prevMsg = prevGroup?.at(-1)
+            if (!acc[date]) acc[date] = []
+            const lastGroup = acc[date]?.at(-1)
 
-            if (!acc[date]) {
-               acc[date] = [[msg]]
-            } else if (!prevMsg || prevMsg.sender.name !== msg.sender.name) {
-               acc[date]?.push([msg])
+            if (lastGroup?.sender.name === msg.sender.name) {
+               lastGroup.messages.push(msg)
             } else {
-               prevGroup?.push(msg)
+               acc[date]?.push({ sender: msg.sender, messages: [msg] })
             }
-
             return acc
          },
-         {} as Record<string, (typeof messages)[]>,
+         {} as Record<
+            string,
+            {
+               sender: (typeof messages)[0]["sender"]
+               messages: typeof messages
+            }[]
+         >,
       ),
    ).map(([date, groups]) => ({
       date,
-      groups: groups.map((msgs) => ({
-         sender: msgs[0]?.sender,
-         messages: msgs,
-      })),
+      groups,
    }))
 
    const currentUserId = "1"
@@ -262,14 +166,13 @@ function RouteComponent() {
                               >
                                  <OnlineIndicator />
                               </UserAvatar>
-                              <div className="mt-1 w-full">
+                              <div className="mt-4 w-full">
                                  {group.messages.map(
                                     (message, index, messages) => {
                                        const isLast =
                                           index === group.messages.length - 1
                                        const isFirst = index === 0
-                                       const isOnlyOneInGroup =
-                                          messages.length === 1
+                                       const isOnlyOne = messages.length === 1
                                        const isMine =
                                           currentUserId === group.sender?.id
 
@@ -302,6 +205,10 @@ function RouteComponent() {
                                                             : "start"
                                                       }
                                                    >
+                                                      <MenuItem>
+                                                         <Icons.trash />
+                                                         Copy text
+                                                      </MenuItem>
                                                       <MenuItem destructive>
                                                          <Icons.trash />
                                                          Delete
@@ -313,9 +220,7 @@ function RouteComponent() {
                                                 isFirst={isFirst}
                                                 isLast={isLast}
                                                 isMine={isMine}
-                                                isOnlyOneInGroup={
-                                                   isOnlyOneInGroup
-                                                }
+                                                isOnlyOne={isOnlyOne}
                                              >
                                                 {message.content}
                                              </Message>
@@ -393,9 +298,9 @@ function RouteComponent() {
                   </Popover>
                </div>
                <div className="relative flex-1">
-                  <input
+                  <Input
                      autoFocus
-                     className="min-h-[41px] w-full rounded-full border border-primary-4 bg-primary-2 px-4 py-2 outline-hidden dark:border-primary-5 dark:bg-primary-3"
+                     variant="chat"
                      placeholder="Chat.."
                   />
                   <Tooltip>

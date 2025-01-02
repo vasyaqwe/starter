@@ -23,10 +23,7 @@ export const popupStyles = {
 }
 
 export const menuItemStyles = {
-   base: "cursor-(--cursor) h-8 flex select-none gap-2 rounded-[calc(12px-var(--padding))] px-2 py-[5px] text-base focus-visible:border-transparent [&>svg]:size-5 [&>svg]:text-primary-8 hover:[&>svg]:text-white focus:[&>svg]:text-white dark:[&>svg]:text-primary-11 hover:bg-primary-11 hover:shadow-sm focus-visible:outline-none focus-visible:outline-hidden focus-visible:bg-primary-11 shadow-black/20 focus-visible:shadow-sm dark:hover:bg-primary-6 dark:focus-visible:bg-primary-6",
+   base: "cursor-(--cursor) text-sm h-8 flex items-center select-none gap-2 rounded-[calc(var(--radius-xl)-var(--padding))] px-2 py-[5px] focus-visible:border-transparent [&>svg]:size-5 [&>svg]:text-primary-8 hover:[&>svg]:text-white focus:[&>svg]:text-white dark:[&>svg]:text-primary-11 hover:bg-primary-11 hover:shadow-sm focus-visible:outline-none focus-visible:outline-hidden focus-visible:bg-primary-11 shadow-black/20 focus-visible:shadow-sm dark:hover:bg-primary-6 dark:focus-visible:bg-primary-6",
    destructive:
       "hover:bg-red-9 focus-visible:bg-red-9 dark:focus-visible:bg-red-9 dark:hover:bg-red-9",
 }
-
-export const inputStyles =
-   "h-9 w-full rounded-[10px] border border-primary-6 bg-white px-3 text-base outline-hidden placeholder:text-foreground/40 focus:border-primary-11 dark:bg-primary-2"
