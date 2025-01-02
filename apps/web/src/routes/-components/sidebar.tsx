@@ -28,7 +28,7 @@ export function Sidebar() {
                         to={indexRoute.to}
                         className={cn(
                            buttonVariants({ variant: "ghost" }),
-                           "group flex justify-start gap-2 px-2 font-semibold text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
+                           "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
                         )}
                      >
                         <Icons.home className="size-5" />
@@ -40,7 +40,7 @@ export function Sidebar() {
                         to={chatRoute.to}
                         className={cn(
                            buttonVariants({ variant: "ghost" }),
-                           "group flex justify-start gap-2 px-2 font-semibold text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
+                           "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
                         )}
                      >
                         <Icons.chat className="size-5" />
@@ -52,7 +52,7 @@ export function Sidebar() {
                         to={settingsRoute.to}
                         className={cn(
                            buttonVariants({ variant: "ghost" }),
-                           "group flex justify-start gap-2 px-2 font-semibold text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
+                           "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
                         )}
                      >
                         <Icons.gear className="size-5" />
@@ -65,7 +65,7 @@ export function Sidebar() {
                      <AccordionTrigger
                         className={cn(
                            buttonVariants({ variant: "ghost", size: "sm" }),
-                           "mb-1 justify-start font-semibold",
+                           "mb-1 justify-start font-medium",
                         )}
                      >
                         Favorites

@@ -382,7 +382,7 @@ function RouteComponent() {
                         ].map((emoji, index) => (
                            <Button
                               key={index}
-                              variant={"popover"}
+                              variant={"menu-item"}
                               size={"icon-sm"}
                               className="justify-center"
                            >

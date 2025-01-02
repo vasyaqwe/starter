@@ -34,11 +34,14 @@
 
    --radius-3xl: 1.25rem;
 
+   --font-weight-normal: 450;
+   --font-weight-medium: 525;
+
    --text-sm: 0.85rem;
    --text-base: 0.9rem;
-   --font-primary: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-      "Segoe UI Symbol";
+   --font-primary: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol";
 
    --ease-vaul: cubic-bezier(0.32, 0.72, 0, 1);
 

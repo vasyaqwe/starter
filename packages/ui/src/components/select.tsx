@@ -48,10 +48,9 @@ export function SelectItem({
    return (
       <SelectPrimitive.Item
          className={cn(
-            buttonVariants({ variant: "popover" }),
             menuItemStyles.base,
             destructive ? menuItemStyles.destructive : "",
-            "grid min-w-[calc(var(--anchor-width)+1.25rem)] grid-cols-[1.15rem_1fr] items-center gap-2 pr-4 pl-2 text-sm",
+            "grid min-w-[calc(var(--anchor-width)+1.25rem)] grid-cols-[1.2rem_1fr] items-center gap-2 pr-4 pl-2 text-sm",
             className,
          )}
          {...props}

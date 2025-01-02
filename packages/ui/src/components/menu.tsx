@@ -1,7 +1,6 @@
 import { Menu as MenuPrimitive } from "@base-ui-components/react/menu"
 import { menuItemStyles, popupStyles } from "../constants"
 import { cn } from "../utils"
-import { buttonVariants } from "./button"
 
 export const Menu = MenuPrimitive.Root
 export const MenuTrigger = MenuPrimitive.Trigger
@@ -25,7 +24,6 @@ export function MenuItem({
    return (
       <MenuPrimitive.Item
          className={cn(
-            buttonVariants({ variant: "popover" }),
             menuItemStyles.base,
             destructive ? menuItemStyles.destructive : "",
             className,

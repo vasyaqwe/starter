@@ -20,7 +20,7 @@ export function FieldLabel({
 }: React.ComponentProps<typeof FieldPrimitive.Label>) {
    return (
       <FieldPrimitive.Label
-         className={cn("font-semibold text-sm", className)}
+         className={cn("font-medium text-sm", className)}
          {...props}
       />
    )
