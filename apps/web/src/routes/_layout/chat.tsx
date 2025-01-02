@@ -263,7 +263,7 @@ function RouteComponent() {
             </div>
             <div ref={scroll} />
          </ScrollArea>
-         <div className="border-primary-4 border-t bg-background">
+         <div className="border-neutral border-t bg-background">
             <div className="mx-auto flex max-w-4xl items-center gap-2 p-2 md:p-4">
                <div className="flex items-center gap-0.5">
                   <Tooltip>

@@ -20,7 +20,7 @@ export function Sidebar() {
 
    return (
       <aside className="z-[10] h-svh w-[15rem] max-md:hidden">
-         <div className="fixed flex h-full w-[15rem] flex-col border-primary-4 border-r shadow-xs">
+         <div className="fixed flex h-full w-[15rem] flex-col border-neutral border-r shadow-xs">
             <ScrollArea render={<nav className="p-4" />}>
                <ul className="space-y-1">
                   <li>
@@ -69,7 +69,7 @@ export function Sidebar() {
                         )}
                      >
                         Favorites
-                        <Icons.chevronDown className="-rotate-90 mt-[3px] size-2 shrink-0 transition-transform duration-200 group-data-[panel-open]:rotate-0" />
+                        <Icons.chevronDown className="-rotate-90 mt-[2px] size-2 shrink-0 transition-transform duration-200 group-data-[panel-open]:rotate-0" />
                      </AccordionTrigger>
                      <AccordionPanel>
                         <ul className="space-y-1">

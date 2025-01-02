@@ -31,6 +31,7 @@
    --color-foreground: var(--color-primary-12);
    --color-background: #fff;
    --color-accent: #3c83f6;
+   --color-neutral: var(--color-primary-4);
 
    --radius-xl: 0.825rem;
    --radius-3xl: 1.25rem;

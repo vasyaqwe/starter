@@ -16,7 +16,8 @@
          ".turbo",
          ".astro",
          "routeTree.gen.ts",
-         "migrations/meta"
+         "migrations/meta",
+         "package.json"
       ]
    },
    "css": {

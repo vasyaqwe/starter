@@ -13,7 +13,7 @@ export function Kbd({
    return (
       <kbd
          className={cn(
-            `ml-0.5 inline-flex h-[24px] shrink-0 items-center gap-[3px] rounded-[6px] border border-primary-3 bg-primary-1 px-1 text-xs dark:bg-primary-6 dark:shadow-xs`,
+            `ml-0.5 inline-flex h-[24px] shrink-0 items-center gap-[3px] rounded-[6px] bg-primary-11/75 px-1 text-xs shadow-black/35 shadow-sm dark:bg-primary-6`,
             className,
          )}
          {...props}

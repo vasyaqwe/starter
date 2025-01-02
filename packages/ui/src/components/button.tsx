@@ -8,13 +8,13 @@ const buttonVariants = cva(
    {
       variants: {
          variant: {
-            default: `shadow-sm bg-primary-12 text-primary-1 border-primary-12 hover:bg-black-a10 data-[popup-open]:bg-black-a10
+            default: `shadow-sm transition-colors duration-50 bg-primary-12 text-primary-1 border-primary-12 hover:bg-black-a10 data-[popup-open]:bg-black-a10
                       dark:shadow-md dark:bg-primary-7 dark:text-primary-12 dark:border-primary-8 dark:hover:bg-primary-8/80
                       dark:hover:border-primary-9 dark:data-[popup-open]:border-primary-9 dark:data-[popup-open]:bg-primary-8/80`,
             // default (white in dark mode): `shadow-sm dark:shadow-md bg-primary-12 text-primary-1 border-primary-12 hover:bg-black-a10 dark:hover:bg-white dark:data-[popup-open]:bg-white data-[popup-open]:bg-black-a10`,
-            secondary: `shadow-xs bg-primary-3 border-primary-a3 data-[popup-open]:bg-primary-3 hover:bg-primary-a4
+            secondary: `transition-colors duration-50 shadow-xs bg-primary-3 border-primary-a3 data-[popup-open]:bg-primary-3 hover:bg-primary-a4
                         dark:shadow-md dark:bg-primary-4 dark:data-[popup-open]:bg-primary-4`,
-            destructive: `shadow-xs bg-red-9 border-red-11 text-white hover:bg-red-10 dark:shadow-md dark:border-red-11/65`,
+            destructive: `transition-colors duration-50 shadow-xs bg-red-9 border-red-11 text-white hover:bg-red-10 dark:shadow-md dark:border-red-11/65`,
             ghost: `border-transparent [--hover:var(--color-primary-3)] hover:bg-(--hover) aria-[current=page]:bg-(--hover) data-[popup-open]:bg-(--hover) 
                     dark:[--hover:var(--color-primary-4)]`,
             "menu-item": cn(
