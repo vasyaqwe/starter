@@ -58,7 +58,7 @@ const inputVariants = cva(
       variants: {
          variant: {
             default: `border-primary-6 bg-white focus:border-primary-11 dark:bg-primary-2`,
-            chat: "min-h-[41px] rounded-full border-primary-5 bg-primary-2 px-4 py-2 dark:border-primary-5 dark:bg-primary-3",
+            chat: "min-h-[41px] rounded-full border-primary-5 bg-primary-2 px-4 py-2 dark:border-primary-6 dark:bg-primary-3",
          },
          size: {
             default: "h-9 px-3 text-base",

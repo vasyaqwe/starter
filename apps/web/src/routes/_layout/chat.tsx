@@ -23,6 +23,7 @@ import {
 } from "@project/ui/components/tooltip"
 import { cn } from "@project/ui/utils"
 import { createFileRoute } from "@tanstack/react-router"
+import * as React from "react"
 
 export const Route = createFileRoute("/_layout/chat")({
    component: RouteComponent,
@@ -31,85 +32,87 @@ export const Route = createFileRoute("/_layout/chat")({
 const scroll = (node: HTMLElement | null) => node?.scrollIntoView()
 
 function RouteComponent() {
-   const messages = [
-      {
-         content:
-            "I've just pushed the UI changes for review. Main nav is completely refactored now.",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
+   const [messages, setMessages] = React.useState(
+      [
+         {
+            content:
+               "I've just pushed the UI changes for review. Main nav is completely refactored now.",
+            sender: {
+               id: "1",
+               name: "John",
+               avatarUrl: "https://i.pravatar.cc/150?img=1",
+            },
+            createdAt: new Date("2024-12-27T15:30:00"),
          },
-         createdAt: new Date("2024-12-27T15:30:00"),
-      },
-      {
-         content:
-            "Great, I'll take a look. Did you address the mobile menu issues?",
-         sender: {
-            id: "2",
-            name: "Jane",
-            avatarUrl: "https://i.pravatar.cc/150?img=2",
+         {
+            content:
+               "Great, I'll take a look. Did you address the mobile menu issues?",
+            sender: {
+               id: "2",
+               name: "Jane",
+               avatarUrl: "https://i.pravatar.cc/150?img=2",
+            },
+            createdAt: new Date("2024-12-27T15:35:00"),
          },
-         createdAt: new Date("2024-12-27T15:35:00"),
-      },
-      {
-         content: "Yes, should be fixed now. The animation is smoother too.",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
+         {
+            content: "Yes, should be fixed now. The animation is smoother too.",
+            sender: {
+               id: "1",
+               name: "John",
+               avatarUrl: "https://i.pravatar.cc/150?img=1",
+            },
+            createdAt: new Date("2024-12-27T15:36:00"),
          },
-         createdAt: new Date("2024-12-27T15:36:00"),
-      },
-      {
-         content:
-            "Hey, how's the project coming along? I noticed some design inconsistencies in the latest build.",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
+         {
+            content:
+               "Hey, how's the project coming along? I noticed some design inconsistencies in the latest build.",
+            sender: {
+               id: "1",
+               name: "John",
+               avatarUrl: "https://i.pravatar.cc/150?img=1",
+            },
+            createdAt: new Date("2024-12-28T09:00:00"),
          },
-         createdAt: new Date("2024-12-28T09:00:00"),
-      },
-      {
-         content:
-            "Yeah, I've been meaning to discuss that. The spacing issues, right?",
-         sender: {
-            id: "2",
-            name: "Jane",
-            avatarUrl: "https://i.pravatar.cc/150?img=2",
+         {
+            content:
+               "Yeah, I've been meaning to discuss that. The spacing issues, right?",
+            sender: {
+               id: "2",
+               name: "Jane",
+               avatarUrl: "https://i.pravatar.cc/150?img=2",
+            },
+            createdAt: new Date("2024-12-28T09:01:00"),
          },
-         createdAt: new Date("2024-12-28T09:01:00"),
-      },
-      {
-         content:
-            "Exactly. Especially in the dashboard components. Want to hop on a quick call to review? I've just pushed the UI changes for review. Main nav is completely refactored now. I've just pushed the UI changes for review. Main nav is completely refactored now.",
-         sender: {
-            id: "1",
-            name: "John",
-            avatarUrl: "https://i.pravatar.cc/150?img=1",
+         {
+            content:
+               "Exactly. Especially in the dashboard components. Want to hop on a quick call to review? I've just pushed the UI changes for review. Main nav is completely refactored now. I've just pushed the UI changes for review. Main nav is completely refactored now.",
+            sender: {
+               id: "1",
+               name: "John",
+               avatarUrl: "https://i.pravatar.cc/150?img=1",
+            },
+            createdAt: new Date("2024-12-28T09:02:00"),
          },
-         createdAt: new Date("2024-12-28T09:02:00"),
-      },
-      {
-         content: "Sure, give me 10 minutes to wrap up what I'm working on.",
-         sender: {
-            id: "2",
-            name: "Jane",
-            avatarUrl: "https://i.pravatar.cc/150?img=2",
+         {
+            content: "Sure, give me 10 minutes to wrap up what I'm working on.",
+            sender: {
+               id: "2",
+               name: "Jane",
+               avatarUrl: "https://i.pravatar.cc/150?img=2",
+            },
+            createdAt: new Date("2024-12-28T09:03:00"),
          },
-         createdAt: new Date("2024-12-28T09:03:00"),
-      },
-      {
-         content: "Sure, give me 10 minutes to wrap up what I'm working on.",
-         sender: {
-            id: "2",
-            name: "Jane",
-            avatarUrl: "https://i.pravatar.cc/150?img=2",
+         {
+            content: "Sure, give me 10 minutes to wrap up what I'm working on.",
+            sender: {
+               id: "2",
+               name: "Jane",
+               avatarUrl: "https://i.pravatar.cc/150?img=2",
+            },
+            createdAt: new Date("2024-12-28T09:03:00"),
          },
-         createdAt: new Date("2024-12-28T09:03:00"),
-      },
-   ].map((m) => ({ ...m, id: crypto.randomUUID() }))
+      ].map((m) => ({ ...m, id: crypto.randomUUID() })),
+   )
 
    const groupedMessages = Object.entries(
       messages.reduce(
@@ -139,10 +142,24 @@ function RouteComponent() {
    }))
 
    const currentUserId = "1"
+   const scrollAreaRef = React.useRef<HTMLDivElement>(null)
+
+   const scrollToBottom = () => {
+      setTimeout(() => {
+         scrollAreaRef.current?.firstElementChild?.lastElementChild?.scrollIntoView(
+            {
+               behavior: "smooth",
+            },
+         )
+      }, 0)
+   }
 
    return (
       <>
-         <ScrollArea className="pb-8">
+         <ScrollArea
+            ref={scrollAreaRef}
+            className="pb-8"
+         >
             <div className="mx-auto w-full max-w-4xl px-4">
                {groupedMessages.map((dateGroup) => (
                   <div key={dateGroup.date}>
@@ -169,10 +186,6 @@ function RouteComponent() {
                               <div className="mt-4 w-full">
                                  {group.messages.map(
                                     (message, index, messages) => {
-                                       const isLast =
-                                          index === group.messages.length - 1
-                                       const isFirst = index === 0
-                                       const isOnlyOne = messages.length === 1
                                        const isMine =
                                           currentUserId === group.sender?.id
 
@@ -205,11 +218,19 @@ function RouteComponent() {
                                                             : "start"
                                                       }
                                                    >
-                                                      <MenuItem>
-                                                         <Icons.trash />
-                                                         Copy text
-                                                      </MenuItem>
-                                                      <MenuItem destructive>
+                                                      <MenuItem
+                                                         destructive
+                                                         onClick={() =>
+                                                            setMessages(
+                                                               (prev) =>
+                                                                  prev.filter(
+                                                                     (m) =>
+                                                                        m.id !==
+                                                                        message.id,
+                                                                  ),
+                                                            )
+                                                         }
+                                                      >
                                                          <Icons.trash />
                                                          Delete
                                                       </MenuItem>
@@ -217,10 +238,15 @@ function RouteComponent() {
                                                 </Menu>
                                              </div>
                                              <Message
-                                                isFirst={isFirst}
-                                                isLast={isLast}
                                                 isMine={isMine}
-                                                isOnlyOne={isOnlyOne}
+                                                isFirst={index === 0}
+                                                isLast={
+                                                   index ===
+                                                   group.messages.length - 1
+                                                }
+                                                isOnlyOne={
+                                                   messages.length === 1
+                                                }
                                              >
                                                 {message.content}
                                              </Message>
@@ -297,9 +323,39 @@ function RouteComponent() {
                      </PopoverPopup>
                   </Popover>
                </div>
-               <div className="relative flex-1">
+               <form
+                  onSubmit={(e) => {
+                     e.preventDefault()
+                     const rand = Math.random()
+                     setMessages([
+                        ...messages,
+                        {
+                           id: crypto.randomUUID(),
+                           content:
+                              Object.fromEntries(
+                                 new FormData(e.target as HTMLFormElement),
+                              ).content?.toString() ?? "",
+                           sender: {
+                              id: rand > 0.5 ? "1" : "2",
+                              name: rand > 0.5 ? "John" : "Jane",
+                              avatarUrl:
+                                 rand > 0.5
+                                    ? "https://i.pravatar.cc/150?img=1"
+                                    : "https://i.pravatar.cc/150?img=2",
+                           },
+                           createdAt: new Date(),
+                        },
+                     ])
+                     ;(e.target as HTMLFormElement).reset()
+                     scrollToBottom()
+                  }}
+                  className="relative flex-1"
+               >
                   <Input
+                     required
                      autoFocus
+                     autoComplete="off"
+                     name="content"
                      variant="chat"
                      placeholder="Chat.."
                   />
@@ -331,7 +387,7 @@ function RouteComponent() {
                         Send <Kbd>Enter</Kbd>
                      </TooltipPopup>
                   </Tooltip>
-               </div>
+               </form>
             </div>
          </div>
       </>
