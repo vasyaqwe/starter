@@ -18,11 +18,8 @@ export function UserAvatar({
 
    return (
       <div
+         className={cn("relative size-8", className)}
          {...props}
-         className={cn(
-            "relative size-8 [--online-indicator-size:0.875rem]",
-            className,
-         )}
       >
          {user.avatarUrl ? (
             <img
@@ -48,7 +45,10 @@ export function UserAvatar({
    )
 }
 
-export function OnlineIndicator() {
+export function OnlineIndicator({
+   className,
+   ...props
+}: React.ComponentProps<"span">) {
    // const { user: currentUser } = useAuth()
 
    // const isUserOnline = usePresenceStore.use.isUserOnline()
@@ -59,13 +59,14 @@ export function OnlineIndicator() {
    return (
       <span
          title={"Online"}
-         data-online-indicator
          className={cn(
-            "-right-0.5 -bottom-0.5 absolute block size-(--online-indicator-size) rounded-full border-[3px] border-[canvas] bg-green-400 transition-all duration-300",
+            "-right-0.5 -bottom-0.5 absolute block size-3.5 rounded-full border-[3px] border-[canvas] bg-green-400 transition-all duration-300",
             isOnline
                ? "visible scale-100 opacity-100"
                : "invisible scale-0 opacity-0",
+            className,
          )}
+         {...props}
       />
    )
 }

@@ -1,8 +1,8 @@
 import { Field as FieldPrimitive } from "@base-ui-components/react/field"
 import { Fieldset as FieldsetPrimitive } from "@base-ui-components/react/fieldset"
-import { Input as InputPrimitive } from "@base-ui-components/react/input"
-import { type VariantProps, cva } from "class-variance-authority"
+import type { VariantProps } from "class-variance-authority"
 import { cn } from "../utils"
+import { inputVariants } from "./input"
 
 export function Fieldset({
    className,
@@ -47,46 +47,6 @@ export function FieldLabel({
    return (
       <FieldPrimitive.Label
          className={cn("font-medium text-sm", className)}
-         {...props}
-      />
-   )
-}
-
-const inputVariants = cva(
-   `w-full border outline-hidden rounded-[10px] placeholder:text-foreground/40`,
-   {
-      variants: {
-         variant: {
-            default: `border-primary-6 bg-white focus:border-primary-11 dark:bg-primary-2`,
-            chat: "min-h-[41px] rounded-full border-primary-5 bg-primary-2 px-4 py-2 dark:border-primary-6 dark:bg-primary-3",
-         },
-         size: {
-            default: "h-9 px-3 text-base",
-         },
-      },
-      compoundVariants: [
-         {
-            variant: "chat",
-            className: "h-auto px-4",
-         },
-      ],
-      defaultVariants: {
-         variant: "default",
-         size: "default",
-      },
-   },
-)
-
-export function Input({
-   className,
-   variant,
-   size,
-   ...props
-}: React.ComponentProps<typeof InputPrimitive> &
-   VariantProps<typeof inputVariants>) {
-   return (
-      <InputPrimitive
-         className={cn(inputVariants({ variant, size, className }))}
          {...props}
       />
    )

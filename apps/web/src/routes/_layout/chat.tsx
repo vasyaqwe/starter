@@ -1,8 +1,14 @@
-import { Message } from "@/ui/components/message"
+import {
+   Message,
+   MessageActions,
+   MessageContent,
+   MessageGroup,
+   MessageGroupDate,
+} from "@/ui/components/message"
 import { OnlineIndicator, UserAvatar } from "@/ui/components/user-avatar"
 import { Button, buttonVariants } from "@project/ui/components/button"
-import { Input } from "@project/ui/components/field"
 import { Icons } from "@project/ui/components/icons"
+import { Input } from "@project/ui/components/input"
 import { Kbd } from "@project/ui/components/kbd"
 import {
    Menu,
@@ -21,7 +27,6 @@ import {
    TooltipPopup,
    TooltipTrigger,
 } from "@project/ui/components/tooltip"
-import { cn } from "@project/ui/utils"
 import { createFileRoute } from "@tanstack/react-router"
 import * as React from "react"
 
@@ -163,19 +168,12 @@ function RouteComponent() {
             <div className="mx-auto w-full max-w-4xl px-4">
                {groupedMessages.map((dateGroup) => (
                   <div key={dateGroup.date}>
-                     <p className="mt-7 text-center font-semibold text-foreground/60 text-sm uppercase">
-                        {dateGroup.date}
-                     </p>
+                     <MessageGroupDate>{dateGroup.date}</MessageGroupDate>
                      {dateGroup.groups.map((group, index) =>
                         !group.sender ? null : (
-                           <div
+                           <MessageGroup
                               key={index}
-                              className={cn(
-                                 "flex gap-2",
-                                 currentUserId === group.sender.id
-                                    ? "flex-row-reverse"
-                                    : "",
-                              )}
+                              isMine={currentUserId === group.sender.id}
                            >
                               <UserAvatar
                                  className="mt-auto mb-[3px]"
@@ -190,16 +188,11 @@ function RouteComponent() {
                                           currentUserId === group.sender?.id
 
                                        return (
-                                          <div
+                                          <Message
                                              key={message.id}
-                                             className={cn(
-                                                "group mt-0.5 flex items-center justify-end gap-2",
-                                                isMine
-                                                   ? ""
-                                                   : "flex-row-reverse",
-                                             )}
+                                             isMine={isMine}
                                           >
-                                             <div className="opacity-0 group-hover:opacity-100 has-[[data-popup-open]]:opacity-100">
+                                             <MessageActions>
                                                 <Menu>
                                                    <MenuTrigger
                                                       className={buttonVariants(
@@ -236,8 +229,8 @@ function RouteComponent() {
                                                       </MenuItem>
                                                    </MenuPopup>
                                                 </Menu>
-                                             </div>
-                                             <Message
+                                             </MessageActions>
+                                             <MessageContent
                                                 isMine={isMine}
                                                 isFirst={index === 0}
                                                 isLast={
@@ -249,13 +242,13 @@ function RouteComponent() {
                                                 }
                                              >
                                                 {message.content}
-                                             </Message>
-                                          </div>
+                                             </MessageContent>
+                                          </Message>
                                        )
                                     },
                                  )}
                               </div>
-                           </div>
+                           </MessageGroup>
                         ),
                      )}
                   </div>
