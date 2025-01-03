@@ -27,6 +27,16 @@ function RouteComponent() {
 
    return (
       <>
+         <Link
+            to="/"
+            className={cn(
+               buttonVariants({ variant: "ghost", size: "icon" }),
+               "absolute top-3 left-3 cursor-pointer",
+            )}
+            aria-label="Go back"
+         >
+            <Icons.arrowLeft className="size-5" />
+         </Link>
          <main className="grid h-svh w-full place-items-center">
             <div className="-mt-16 relative w-full max-w-[22rem]">
                <AnimatedStack activeIndex={search.otp ? 1 : 0}>
@@ -78,7 +88,7 @@ function RouteComponent() {
                         }}
                      >
                         <>
-                           <p className="mt-6 font-medium text-sm">
+                           <p className="mt-7 mb-5 text-center font-medium text-lg">
                               Enter the code sent to your email
                            </p>
                            <InputOTP
@@ -98,6 +108,12 @@ function RouteComponent() {
                                  <InputOTPSlot index={5} />
                               </>
                            </InputOTP>
+                           <p className="mt-7 text-center text-foreground/70">
+                              Didn't receive the code?{" "}
+                              <button className="ml-0.5 cursor-pointer underline hover:text-foreground/90">
+                                 Resend it
+                              </button>
+                           </p>
                         </>
                      </form>
                   </Card>
