@@ -1,4 +1,5 @@
 import { useLocalStorage } from "@/interactions/use-local-storage"
+import { Toaster } from "@project/ui/components/toast/index"
 import type { QueryClient } from "@tanstack/react-query"
 import {
    Outlet,
@@ -44,6 +45,7 @@ function RootComponent() {
    return (
       <Meta>
          {/* <ModalProvider /> */}
+         <Toaster />
          <Outlet />
       </Meta>
    )

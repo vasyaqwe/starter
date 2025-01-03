@@ -275,7 +275,6 @@ p {
 /* sonner */
 :where([data-sonner-toast]) :where([data-title]) {
    line-height: 1.2 !important;
-   margin-top: -1px;
 }
 [data-sonner-toaster] {
    --mobile-offset: 0 !important;

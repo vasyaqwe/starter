@@ -77,7 +77,7 @@ function RouteComponent() {
                               size: "icon",
                               variant: "ghost",
                            }),
-                           "absolute top-2 left-2 z-[2]",
+                           "absolute top-2 left-2 z-[2] text-foreground/90",
                         )}
                      >
                         <Icons.arrowLeft className="size-5" />
