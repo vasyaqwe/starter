@@ -1,11 +1,7 @@
 import { useCountdownTimer } from "@/interactions/use-timer"
 import { hc, honoMutationFn } from "@/lib/hono"
 import { AnimatedStack } from "@project/ui/components/animated-stack"
-import {
-   Button,
-   TransitionLoading,
-   buttonVariants,
-} from "@project/ui/components/button"
+import { Button, buttonVariants } from "@project/ui/components/button"
 import { Card } from "@project/ui/components/card"
 import {
    Field,
@@ -150,18 +146,14 @@ function RouteComponent() {
                         </Field>
                         <Button
                            className="mt-5 w-full"
+                           isLoading={
+                              sendLoginCode.isPending || sendLoginCode.isSuccess
+                           }
                            disabled={
                               sendLoginCode.isPending || sendLoginCode.isSuccess
                            }
                         >
-                           <TransitionLoading
-                              isLoading={
-                                 sendLoginCode.isPending ||
-                                 sendLoginCode.isSuccess
-                              }
-                           >
-                              Continue
-                           </TransitionLoading>
+                           Continue
                         </Button>
                      </form>
                   </Card>

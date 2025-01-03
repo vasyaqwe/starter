@@ -5,7 +5,7 @@ import { Loading } from "./loading"
 
 const buttonVariants = cva(
    `inline-flex cursor-(--cursor) items-center justify-center gap-1.5 whitespace-nowrap 
-    disabled:opacity-70 disabled:cursor-not-allowed border overflow-hidden`,
+    disabled:opacity-70 disabled:cursor-not-allowed border overflow-hidden relative`,
    {
       variants: {
          variant: {
@@ -49,38 +49,42 @@ function Button({
    variant,
    size,
    ref,
+   children,
+   isLoading,
    ...props
-}: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants>) {
+}: React.ComponentProps<"button"> &
+   VariantProps<typeof buttonVariants> & { isLoading?: boolean | undefined }) {
    return (
       <button
          className={cn(buttonVariants({ variant, size, className }))}
          ref={ref}
          {...props}
-      />
+      >
+         {isLoading === undefined ? (
+            children
+         ) : (
+            <>
+               <span
+                  className={cn(
+                     "data-[inactive]:-translate-y-4 invisible block transition-all duration-200 ease-vaul data-[active]:visible data-[active]:translate-y-0 data-[inactive]:scale-90 data-[active]:opacity-100 data-[inactive]:opacity-0",
+                  )}
+                  data-active={!isLoading ? "" : undefined}
+                  data-inactive={isLoading ? "" : undefined}
+               >
+                  {children}
+               </span>
+               <span
+                  data-active={isLoading ? "" : undefined}
+                  className={cn(
+                     "invisible absolute inset-0 m-auto block h-fit translate-y-4 opacity-0 transition-all duration-200 ease-vaul data-[active]:visible data-[active]:translate-y-0 data-[active]:opacity-100",
+                  )}
+               >
+                  <Loading className="mx-auto" />
+               </span>
+            </>
+         )}
+      </button>
    )
 }
 
-function TransitionLoading({
-   isLoading,
-   children,
-}: { isLoading: boolean; children: React.ReactNode }) {
-   return (
-      <span className={cn("relative")}>
-         <span
-            data-active={isLoading ? "" : undefined}
-            className="absolute inset-0 m-auto block h-fit translate-y-4 opacity-0 transition-all duration-200 ease-vaul data-[active]:translate-y-0 data-[active]:opacity-100"
-         >
-            <Loading className="mx-auto" />
-         </span>
-         <span
-            className="data-[inactive]:-translate-y-4 block transition-all duration-200 ease-vaul data-[active]:translate-y-0 data-[inactive]:scale-90 data-[active]:opacity-100 data-[inactive]:opacity-0"
-            data-active={!isLoading ? "" : undefined}
-            data-inactive={isLoading ? "" : undefined}
-         >
-            {children}
-         </span>
-      </span>
-   )
-}
-
-export { Button, TransitionLoading, buttonVariants }
+export { Button, buttonVariants }

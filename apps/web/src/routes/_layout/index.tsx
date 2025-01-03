@@ -8,11 +8,7 @@ import {
    AlertDialogTitle,
    AlertDialogTrigger,
 } from "@project/ui/components/alert-dialog"
-import {
-   Button,
-   TransitionLoading,
-   buttonVariants,
-} from "@project/ui/components/button"
+import { Button, buttonVariants } from "@project/ui/components/button"
 import { Card } from "@project/ui/components/card"
 import {
    Dialog,
@@ -32,6 +28,7 @@ import {
    SelectTrigger,
    SelectValue,
 } from "@project/ui/components/select"
+import { toast } from "@project/ui/components/toast"
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import type { InferRequestType } from "hono"
@@ -59,10 +56,10 @@ function RouteComponent() {
          data: InferRequestType<typeof hc.post.$post>["json"],
       ) => honoMutationFn(await hc.post.$post({ json: data })),
       onSuccess: (data) => {
-         window.alert(data.message.someData)
+         toast(data.message.someData)
       },
       onError: (error) => {
-         window.alert(`${error.code} ${error.message}`)
+         toast.error(`${error.code} ${error.message}`)
       },
    })
 
@@ -85,10 +82,11 @@ function RouteComponent() {
                     : query2.data?.message.id}
             </p> */}
 
-            <Button onClick={() => mutation.mutate({ someData: "some data" })}>
-               <TransitionLoading isLoading={mutation.isPending}>
-                  primary button
-               </TransitionLoading>
+            <Button
+               isLoading={mutation.isPending}
+               onClick={() => mutation.mutate({ someData: "some data" })}
+            >
+               primary button
             </Button>
             <Dialog>
                <DialogTrigger
