@@ -8,7 +8,11 @@ import {
    AlertDialogTitle,
    AlertDialogTrigger,
 } from "@project/ui/components/alert-dialog"
-import { Button, buttonVariants } from "@project/ui/components/button"
+import {
+   Button,
+   TransitionLoading,
+   buttonVariants,
+} from "@project/ui/components/button"
 import { Card } from "@project/ui/components/card"
 import {
    Dialog,
@@ -19,7 +23,6 @@ import {
    DialogTitle,
    DialogTrigger,
 } from "@project/ui/components/dialog"
-import { Loading } from "@project/ui/components/loading"
 import { ScrollArea } from "@project/ui/components/scroll-area"
 import {
    Select,
@@ -83,14 +86,9 @@ function RouteComponent() {
             </p> */}
 
             <Button onClick={() => mutation.mutate({ someData: "some data" })}>
-               {mutation.isPending ? (
-                  <>
-                     <Loading />
-                     loading..
-                  </>
-               ) : (
-                  "primary button"
-               )}
+               <TransitionLoading isLoading={mutation.isPending}>
+                  primary button
+               </TransitionLoading>
             </Button>
             <Dialog>
                <DialogTrigger

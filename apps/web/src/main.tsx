@@ -1,6 +1,5 @@
 import "@project/ui/styles.css"
 import type { HonoError } from "@/lib/hono"
-import { logger } from "@project/shared/logger"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { TooltipProvider } from "@project/ui/components/tooltip"
 import * as Portal from "@radix-ui/react-portal"
@@ -20,6 +19,7 @@ import { routerWithQueryClient } from "@tanstack/react-router-with-query"
 import { ThemeProvider } from "next-themes"
 import * as React from "react"
 import ReactDOM from "react-dom/client"
+import { toast } from "sonner"
 import { routeTree } from "./routeTree.gen"
 
 function createRouter() {
@@ -35,9 +35,7 @@ function createRouter() {
          },
          mutations: {
             onError: (error) => {
-               logger.error(error)
-               window.alert(error.message)
-               // return toast.error("An unknown error occurred")
+               return toast.error(error.message)
             },
          },
       },

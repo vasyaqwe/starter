@@ -25,7 +25,6 @@ export const createSession = async (c: HonoContext, userId: string) => {
          userId: userId,
          expiresAt: new Date(Date.now() + 1000 * SESSION_EXPIRATION_SECONDS),
       })
-      .returning()
 
    setSessionTokenCookie(c, token)
 }

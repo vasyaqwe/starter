@@ -1,7 +1,7 @@
 import { type VariantProps, cva } from "class-variance-authority"
 import { cn } from "../utils"
 
-const loadingVariants = cva("relative block opacity-80", {
+const loadingVariants = cva("relative block opacity-85", {
    variants: {
       size: {
          sm: "size-[17px]",

@@ -21,7 +21,7 @@ export function AnimatedStack({
                      index === 0
                         ? "-translate-y-8 opacity-70"
                         : "absolute inset-0 translate-y-9 opacity-0",
-                     "transition-all duration-[250ms] ease-(--vaul)",
+                     "transition-all duration-[400ms] ease-vaul",
                      "data-[active=true]:pointer-events-auto data-[active=true]:z-10 data-[active=true]:translate-y-0 data-[active=true]:scale-100 data-[active=true]:opacity-100",
                   )}
                >

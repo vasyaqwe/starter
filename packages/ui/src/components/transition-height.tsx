@@ -39,7 +39,7 @@ export function TransitionHeight({
    return (
       <Component
          className={cn(
-            "overflow-hidden transition-[height] duration-500 ease-(--ease-vaul)",
+            "overflow-hidden transition-[height] duration-500 ease-vaul",
             className,
          )}
          style={{ height }}

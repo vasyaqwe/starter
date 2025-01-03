@@ -1,7 +1,11 @@
 import { useCountdownTimer } from "@/interactions/use-timer"
 import { hc, honoMutationFn } from "@/lib/hono"
 import { AnimatedStack } from "@project/ui/components/animated-stack"
-import { Button, buttonVariants } from "@project/ui/components/button"
+import {
+   Button,
+   TransitionLoading,
+   buttonVariants,
+} from "@project/ui/components/button"
 import { Card } from "@project/ui/components/card"
 import {
    Field,
@@ -12,7 +16,6 @@ import {
 } from "@project/ui/components/field"
 import { Icons } from "@project/ui/components/icons"
 import { InputOTP, InputOTPSlot } from "@project/ui/components/input-otp"
-import { Loading } from "@project/ui/components/loading"
 import { toast } from "@project/ui/components/toast"
 import { MOBILE_BREAKPOINT } from "@project/ui/constants"
 import { cn } from "@project/ui/utils"
@@ -151,12 +154,14 @@ function RouteComponent() {
                               sendLoginCode.isPending || sendLoginCode.isSuccess
                            }
                         >
-                           {sendLoginCode.isPending ||
-                           sendLoginCode.isSuccess ? (
-                              <Loading />
-                           ) : (
-                              "Continue"
-                           )}
+                           <TransitionLoading
+                              isLoading={
+                                 sendLoginCode.isPending ||
+                                 sendLoginCode.isSuccess
+                              }
+                           >
+                              Continue
+                           </TransitionLoading>
                         </Button>
                      </form>
                   </Card>

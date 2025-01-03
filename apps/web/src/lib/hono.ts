@@ -3,7 +3,11 @@ import type { ErrorCode } from "@project/api/error/schema"
 import { type ClientResponse, hc as honoClient } from "hono/client"
 import type { StatusCode } from "hono/utils/http-status"
 
-export const hc = honoClient<AppRoutes>("http://localhost:8080")
+export const hc = honoClient<AppRoutes>("http://localhost:8080", {
+   init: {
+      credentials: "include",
+   },
+})
 
 type HonoResponse<T> = Promise<ClientResponse<T, StatusCode, "json">>
 

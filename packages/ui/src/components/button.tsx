@@ -1,10 +1,11 @@
 import { type VariantProps, cva } from "class-variance-authority"
 import { focusStyles, menuItemStyles } from "../constants"
 import { cn } from "../utils"
+import { Loading } from "./loading"
 
 const buttonVariants = cva(
    `inline-flex cursor-(--cursor) items-center justify-center gap-1.5 whitespace-nowrap 
-    disabled:opacity-70 disabled:cursor-not-allowed border`,
+    disabled:opacity-70 disabled:cursor-not-allowed border overflow-hidden`,
    {
       variants: {
          variant: {
@@ -59,4 +60,27 @@ function Button({
    )
 }
 
-export { Button, buttonVariants }
+function TransitionLoading({
+   isLoading,
+   children,
+}: { isLoading: boolean; children: React.ReactNode }) {
+   return (
+      <span className={cn("relative")}>
+         <span
+            data-active={isLoading ? "" : undefined}
+            className="absolute inset-0 m-auto block h-fit translate-y-4 opacity-0 transition-all duration-200 ease-vaul data-[active]:translate-y-0 data-[active]:opacity-100"
+         >
+            <Loading className="mx-auto" />
+         </span>
+         <span
+            className="data-[inactive]:-translate-y-4 block transition-all duration-200 ease-vaul data-[active]:translate-y-0 data-[inactive]:scale-90 data-[active]:opacity-100 data-[inactive]:opacity-0"
+            data-active={!isLoading ? "" : undefined}
+            data-inactive={isLoading ? "" : undefined}
+         >
+            {children}
+         </span>
+      </span>
+   )
+}
+
+export { Button, TransitionLoading, buttonVariants }

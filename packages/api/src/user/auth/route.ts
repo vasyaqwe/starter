@@ -29,7 +29,7 @@ export const authRoute = createRouter()
       ),
       async (c) => {
          const { email } = c.req.valid("json")
-
+         // const wait = (ms: number) =>  new Promise((resolve) => setTimeout(resolve, ms))
          await c.get("db").transaction(async (tx) => {
             let user: { id: string } | null = null
 
@@ -88,7 +88,7 @@ export const authRoute = createRouter()
       async (c) => {
          const { code, email } = c.req.valid("json")
          const { userId } = await verifyEmailOTP(c.get("db"), email, code)
-         logger.info(userId)
+
          if (!userId)
             throw new HTTPException(400, {
                message: "Code is invalid or expired",
