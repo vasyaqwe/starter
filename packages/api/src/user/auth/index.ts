@@ -84,11 +84,13 @@ export const generateEmailOTP = async ({
       code,
       expiresAt: createDate(new TimeSpan(5, "m")),
    })
+
+   return code
 }
 
 export const verifyEmailOTP = async (
    db: Database,
-   userId: string,
+   email: string,
    code: string,
 ) => {
    let isValid = true
@@ -97,7 +99,7 @@ export const verifyEmailOTP = async (
       const [databaseCode] = await tx
          .select()
          .from(emailVerificationCode)
-         .where(eq(emailVerificationCode.userId, userId))
+         .where(eq(emailVerificationCode.email, email))
 
       if (!databaseCode || databaseCode.code !== code) {
          isValid = false
@@ -110,7 +112,7 @@ export const verifyEmailOTP = async (
          isValid = false
       }
 
-      if (databaseCode?.userId !== userId) {
+      if (databaseCode?.email !== email) {
          isValid = false
       }
 
@@ -123,5 +125,5 @@ export const verifyEmailOTP = async (
          .where(eq(emailVerificationCode.id, databaseCode.id))
    }
 
-   return isValid
+   return { userId: isValid ? databaseCode?.userId : null }
 }

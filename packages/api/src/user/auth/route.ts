@@ -7,6 +7,8 @@ import {
    user as userSchema,
    verifyLoginOTPInput,
 } from "@project/db/schema/user"
+import { EMAIL_FROM } from "@project/email"
+import { loginOtpEmail } from "@project/email/emails/login-otp"
 import { env } from "@project/env"
 import { logger } from "@project/shared/logger"
 import { generateCodeVerifier, generateState } from "arctic"
@@ -22,12 +24,13 @@ export const authRoute = createRouter()
       zValidator(
          "json",
          z.object({
-            email: z.string().email(),
+            email: z.string(),
          }),
       ),
       async (c) => {
+         const { email } = c.req.valid("json")
+
          await c.get("db").transaction(async (tx) => {
-            const { email } = c.req.valid("json")
             let user: { id: string } | null = null
 
             const [createdUser] = await tx
@@ -42,7 +45,7 @@ export const authRoute = createRouter()
                user = createdUser
             } else {
                const [existingUser] = await tx
-                  .select()
+                  .select({ id: userSchema.id })
                   .from(userSchema)
                   .where(eq(userSchema.email, email))
 
@@ -63,32 +66,30 @@ export const authRoute = createRouter()
             if (env.server.NODE_ENV === "development") {
                logger.info(`OTP CODE: ${verificationCode}`)
             } else {
-               throw new HTTPException(400, {
-                  message: "Not implemented",
+               const res = await c.get("emails").emails.send({
+                  from: EMAIL_FROM,
+                  to: email,
+                  subject: `Project one-time password`,
+                  html: loginOtpEmail(verificationCode),
                })
-               // const res = await c.get("emails").send({
-               //    from: EMAIL_FROM,
-               //    to: email,
-               //    subject: `Project one-time password`,
-               //    html: loginOtpEmail(verificationCode),
-               // })
-               // if (res.error)
-               //    throw new HTTPException(500, {
-               //       message: "Couldn't send email",
-               //    })
+               if (res.error)
+                  throw new HTTPException(500, {
+                     message: "Couldn't send email",
+                  })
             }
-
-            return { userId: user.id }
          })
+
+         return c.json({ email })
       },
    )
    .post(
       "/verify-login-otp",
       zValidator("json", verifyLoginOTPInput),
       async (c) => {
-         const { code, userId } = c.req.valid("json")
-         const validCode = await verifyEmailOTP(c.get("db"), userId, code)
-         if (!validCode)
+         const { code, email } = c.req.valid("json")
+         const { userId } = await verifyEmailOTP(c.get("db"), email, code)
+         logger.info(userId)
+         if (!userId)
             throw new HTTPException(400, {
                message: "Code is invalid or expired",
             })
@@ -97,9 +98,11 @@ export const authRoute = createRouter()
             .get("db")
             .update(userSchema)
             .set({ emailVerified: true })
-            .where(eq(userSchema.id, userId))
+            .where(eq(userSchema.email, email))
 
          await createSession(c, userId)
+
+         return c.json({ status: "ok" })
       },
    )
    .get(
@@ -188,7 +191,7 @@ export const authRoute = createRouter()
       if (!redirect) return handleError(error, c)
 
       // c.get("sentry").captureException(error)
-      logger.error(error)
+      logger.error("auth error:", error)
 
       const session = c.get("session")
 

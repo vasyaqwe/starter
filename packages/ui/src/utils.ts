@@ -21,8 +21,6 @@ export const isPWA = () => {
    return false
 }
 
-export const MOBILE_BREAKPOINT = 768
-
 export const cn = (...inputs: Parameters<typeof cx>) => twMerge(cx(inputs))
 
 type WithSelectors<S> = S extends { getState: () => infer T }

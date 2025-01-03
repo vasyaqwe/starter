@@ -1,5 +1,5 @@
 import { useLocalStorage } from "@/interactions/use-local-storage"
-import { Toaster } from "@project/ui/components/toast/index"
+import { Toaster } from "@project/ui/components/toast"
 import type { QueryClient } from "@tanstack/react-query"
 import {
    Outlet,

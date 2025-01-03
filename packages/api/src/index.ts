@@ -4,6 +4,7 @@ import { authRoute } from "@project/api/user/auth/route"
 import { userRoute } from "@project/api/user/route"
 import { createRouter, zValidator } from "@project/api/utils"
 import { db } from "@project/db/client"
+import { emails } from "@project/email"
 import { env } from "@project/env"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
@@ -16,6 +17,8 @@ const app = createRouter()
 
 app.use(logger())
    .use((c, next) => {
+      c.set("db", db)
+      c.set("emails", emails)
       const handler = cors({
          origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
          credentials: true,
@@ -39,10 +42,6 @@ const protectedRoutes = createRouter()
          origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
       })
       return handler(c, next)
-   })
-   .use((c, next) => {
-      c.set("db", db)
-      return next()
    })
    .use(authMiddleware)
    // .use("*", async (c, next) => {

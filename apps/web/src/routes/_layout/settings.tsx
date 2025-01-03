@@ -3,13 +3,16 @@ import { ScrollArea } from "@project/ui/components/scroll-area"
 import { Switch } from "@project/ui/components/switch"
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@project/ui/components/tabs"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { zodValidator } from "@tanstack/zod-adapter"
+import { z } from "zod"
 
 export const Route = createFileRoute("/_layout/settings")({
    component: RouteComponent,
-   validateSearch: (search: Record<string, unknown>) =>
-      ({
-         tab: (search.tab as "general" | "preferences") ?? "general",
-      }) as { tab?: "general" | "preferences" },
+   validateSearch: zodValidator(
+      z.object({
+         tab: z.enum(["general", "preferences"]).catch("general"),
+      }),
+   ),
 })
 
 function RouteComponent() {

@@ -1,0 +1,29 @@
+{
+   "name": "@project/email",
+   "private": true,
+   "version": "0.1.0",
+   "type": "module",
+   "exports": {
+      ".": {
+         "types": "./dist/index.d.ts",
+         "default": "./src/index.ts"
+      },
+      "./emails/*": {
+         "types": "./dist/emails/*.ts",
+         "default": "./src/emails/*.ts"
+      }
+   },
+   "license": "MIT",
+   "scripts": {
+      "build": "tsc",
+      "clean": "rm -rf .turbo node_modules",
+      "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+   },
+   "dependencies": {
+      "@project/env": "workspace:*",
+      "resend": "^3.2.0"
+   },
+   "devDependencies": {
+      "@project/tsconfig": "workspace:*"
+   }
+}

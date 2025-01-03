@@ -1,12 +1,14 @@
 import type * as React from "react"
 import { Toaster as Sonner, toast } from "sonner"
-import { cn } from "../../utils"
-import { buttonVariants } from "../button"
+import { cn } from "../utils"
+import { buttonVariants } from "./button"
+import { Loading } from "./loading"
 
 function Toaster(props: React.ComponentProps<typeof Sonner>) {
    return (
       <Sonner
          icons={{
+            loading: <Loading />,
             success: (
                <svg
                   viewBox="0 0 14 14"

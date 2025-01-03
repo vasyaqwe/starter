@@ -78,7 +78,7 @@ export const verifyLoginOTPInput = createSelectSchema(
    emailVerificationCode,
 ).pick({
    code: true,
-   userId: true,
+   email: true,
 })
 
 export type Session = InferSelectModel<typeof session>

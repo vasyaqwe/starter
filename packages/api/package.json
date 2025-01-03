@@ -29,6 +29,7 @@
    },
    "dependencies": {
       "@project/db": "workspace:*",
+      "@project/email": "workspace:*",
       "@project/env": "workspace:*",
       "@project/shared": "workspace:*",
       "@oslojs/crypto": "^1.0.1",

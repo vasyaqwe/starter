@@ -1,5 +1,6 @@
 import type { AppContext } from "@project/api/context"
 import { parseZodErrorIssues } from "@project/api/error/utils"
+import { logger } from "@project/shared/logger"
 import { Hono, type ValidationTargets } from "hono"
 import { validator } from "hono/validator"
 import { ZodError, type ZodSchema, type z } from "zod"
@@ -29,6 +30,8 @@ export const zValidator = <
       try {
          return (await schema.parseAsync(value)) as z.infer<T>
       } catch (error) {
+         logger.error(error)
+
          if (error instanceof ZodError) {
             return c.json(
                {
