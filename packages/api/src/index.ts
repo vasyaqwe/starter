@@ -1,11 +1,13 @@
+import { billingRoute } from "@project/api/billing/route"
 import { handleError } from "@project/api/error/utils"
 import { authMiddleware } from "@project/api/user/auth/middleware"
 import { authRoute } from "@project/api/user/auth/route"
 import { userRoute } from "@project/api/user/route"
 import { createRouter, zValidator } from "@project/api/utils"
 import { db } from "@project/db/client"
-import { emails } from "@project/email"
+import { email } from "@project/email"
 import { env } from "@project/env"
+import { payment } from "@project/payment"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
 import { logger } from "hono/logger"
@@ -18,7 +20,9 @@ const app = createRouter()
 app.use(logger())
    .use((c, next) => {
       c.set("db", db)
-      c.set("emails", emails)
+      c.set("email", email)
+      c.set("payment", payment)
+
       const handler = cors({
          origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
          credentials: true,
@@ -62,6 +66,7 @@ const protectedRoutes = createRouter()
    //    })
    // })
    .route("/user", userRoute)
+   .route("/billing", billingRoute)
    .get(
       "/post/:id",
       zValidator(

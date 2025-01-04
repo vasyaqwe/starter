@@ -79,10 +79,9 @@ export const handleError = (error: Error, c: HonoContext) => {
       )
    }
    if (error instanceof HTTPException) {
-      const code = statusToCode(error.status)
       return c.json(
          {
-            code: code,
+            code: statusToCode(error.status),
             message: error.message,
          },
          error.status,

@@ -66,7 +66,7 @@ export const authRoute = createRouter()
             if (env.server.NODE_ENV === "development") {
                logger.info(`OTP CODE: ${verificationCode}`)
             } else {
-               const res = await c.get("emails").emails.send({
+               const res = await c.get("email").emails.send({
                   from: EMAIL_FROM,
                   to: email,
                   subject: `Project one-time password`,

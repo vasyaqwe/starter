@@ -6,6 +6,7 @@ const prefixes = {
    user: "user",
    verification_code: "vc",
    oauth_account: "oa",
+   subscription: "sub",
 } as const
 
 const generateId = (prefix: keyof typeof prefixes) => {
