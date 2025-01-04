@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority"
 import { cn } from "../utils"
 
 const cardVariants = cva(
-   `rounded-2xl border border-neutral bg-primary-1 dark:bg-[#1f1f1f] p-6 shadow-xs dark:shadow-md has-[[data-card-header]]:p-0`,
+   `rounded-2xl border border-neutral bg-primary-1 dark:bg-[#1f1f1f] p-6 shadow-xs dark:shadow-lg has-[[data-card-header]]:p-0`,
 )
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {

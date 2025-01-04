@@ -1,31 +1,34 @@
 {
-   "name": "starter",
-   "private": true,
-   "packageManager": "bun@1.1.15",
-   "scripts": {
-      "build": "turbo build",
-      "build:web": "turbo build --filter=@project/web",
-      "build:www": "turbo build --filter=@project/www",
-      "start": "turbo start",
-      "clean": "git clean -xdf node_modules",
-      "clean:workspaces": "turbo clean",
-      "db:generate": "bun --filter @project/db generate",
-      "db:migrate": "bun --filter @project/db migrate",
-      "db:push": "bun --filter @project/db push",
-      "db:studio": "bun --filter @project/db studio",
-      "dev": "turbo dev --parallel",
-      "dev:server": "turbo dev --filter=@project/server",
-      "dev:web": "turbo dev --filter=@project/web --filter=@project/ui --filter=@project/server",
-      "dev:www": "turbo dev --filter=@project/www --filter=@project/server",
-      "format-lint": "biome check",
-      "format-lint:fix": "biome check --write",
-      "typecheck": "turbo typecheck"
-   },
-   "workspaces": ["apps/*", "packages/*", "tooling/*"],
-   "trustedDependencies": ["@biomejs/biome", "core-js", "esbuild", "workerd"],
-   "devDependencies": {
-      "@biomejs/biome": "^1.9.4",
-      "turbo": "^2.3.3",
-      "typescript": "^5.7.2"
-   }
+  "name": "starter",
+  "private": true,
+  "packageManager": "bun@1.1.15",
+  "scripts": {
+    "build": "turbo build",
+    "build:desktop": "turbo build --filter=@project/web && bun --cwd apps/web tauri build",
+    "build:web": "turbo build --filter=@project/web",
+    "build:www": "turbo build --filter=@project/www",
+    "start": "turbo start",
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo clean",
+    "db:generate": "bun --filter @project/db generate",
+    "db:migrate": "bun --filter @project/db migrate",
+    "db:push": "bun --filter @project/db push",
+    "db:studio": "bun --filter @project/db studio",
+    "dev": "turbo dev --parallel",
+    "dev:server": "turbo dev --filter=@project/server",
+    "dev:desktop": "concurrently \"turbo dev --filter=@project/ui --filter=@project/server\" \"bun --cwd apps/web tauri dev\"",
+    "dev:web": "turbo dev --filter=@project/web --filter=@project/ui --filter=@project/server",
+    "dev:www": "turbo dev --filter=@project/www --filter=@project/server",
+    "format-lint": "biome check",
+    "format-lint:fix": "biome check --write",
+    "typecheck": "turbo typecheck"
+  },
+  "workspaces": ["apps/*", "packages/*", "tooling/*"],
+  "trustedDependencies": ["@biomejs/biome", "core-js", "esbuild", "workerd"],
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "concurrently": "^9.1.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
 }

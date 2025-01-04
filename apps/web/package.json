@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "bun vite",
     "build": "vite build",
+    "dev:desktop": "bun tauri dev",
+    "build:desktop": "bun tauri build",
     "typecheck": "tsc -p tsconfig.prod.json --noEmit",
     "preview": "vite preview",
-    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/icon.svg"
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/icon.svg",
+    "tauri": "tauri"
   },
   "dependencies": {
     "@project/shared": "workspace:*",
@@ -31,6 +34,7 @@
   "devDependencies": {
     "@project/api": "workspace:*",
     "@project/tsconfig": "workspace:*",
+    "@tauri-apps/cli": "^2.2.2",
     "@types/node": "^20.12.9",
     "@vitejs/plugin-react": "^4.3.4",
     "vite": "^6.0.1",
