@@ -84,7 +84,7 @@ export function MessageContent({
    return (
       <div
          className={cn(
-            "w-fit max-w-[30rem] shrink-0 px-3 py-2 dark:shadow-md",
+            "w-fit max-w-[82%] shrink-0 px-3 py-2 sm:max-w-[30rem] md:max-w-[25rem] lg:max-w-[30rem] dark:shadow-md",
             isMine
                ? "rounded-r-md rounded-l-3xl bg-accent text-white"
                : "rounded-r-3xl rounded-l-md bg-primary-3 dark:bg-primary-5",

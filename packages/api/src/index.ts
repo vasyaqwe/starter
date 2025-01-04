@@ -20,7 +20,7 @@ app.use(logger())
       c.set("db", db)
       c.set("emails", emails)
       const handler = cors({
-         origin: ["http://localhost:3000", ...ALLOWED_ORIGINS],
+         origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
          credentials: true,
          maxAge: 600,
       })

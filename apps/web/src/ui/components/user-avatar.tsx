@@ -18,7 +18,7 @@ export function UserAvatar({
 
    return (
       <div
-         className={cn("relative size-8", className)}
+         className={cn("relative size-8 shrink-0", className)}
          {...props}
       >
          {user.avatarUrl ? (

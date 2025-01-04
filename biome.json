@@ -17,7 +17,8 @@
          ".astro",
          "routeTree.gen.ts",
          "migrations/meta",
-         "package.json"
+         "package.json",
+         "src-tauri"
       ]
    },
    "css": {

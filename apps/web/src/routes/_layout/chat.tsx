@@ -27,6 +27,7 @@ import {
    TooltipPopup,
    TooltipTrigger,
 } from "@project/ui/components/tooltip"
+import { cn } from "@project/ui/utils"
 import { createFileRoute } from "@tanstack/react-router"
 import * as React from "react"
 
@@ -165,7 +166,7 @@ function RouteComponent() {
             ref={scrollAreaRef}
             className="pb-8"
          >
-            <div className="mx-auto w-full max-w-4xl px-4">
+            <div className="mx-auto w-full max-w-4xl px-3 sm:px-4">
                {groupedMessages.map((dateGroup) => (
                   <div key={dateGroup.date}>
                      <MessageGroupDate>{dateGroup.date}</MessageGroupDate>
@@ -176,7 +177,12 @@ function RouteComponent() {
                               isMine={currentUserId === group.sender.id}
                            >
                               <UserAvatar
-                                 className="mt-auto mb-[3px]"
+                                 className={cn(
+                                    "mt-auto mb-[3px]",
+                                    currentUserId === group.sender.id
+                                       ? "hidden"
+                                       : "",
+                                 )}
                                  user={group.sender}
                               >
                                  <OnlineIndicator />

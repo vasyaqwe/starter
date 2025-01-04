@@ -1,6 +1,3 @@
-import { Route as chatRoute } from "@/routes/_layout/chat"
-import { Route as indexRoute } from "@/routes/_layout/index"
-import { Route as settingsRoute } from "@/routes/_layout/settings"
 import { Icons } from "@project/ui/components/icons"
 import { Link } from "@tanstack/react-router"
 
@@ -10,7 +7,7 @@ export function BottomNavigation() {
          <ul className="flex flex-1 items-center justify-around gap-2">
             <li className="flex flex-1">
                <Link
-                  to={indexRoute.to}
+                  to={"/"}
                   className="group inline-flex h-10 flex-1 flex-col items-center justify-center rounded-md font-bold text-foreground/60 text-xs aria-[current=page]:text-foreground"
                >
                   <Icons.home className="size-6 shrink-0 group-aria-[current=page]:hidden" />
@@ -20,7 +17,7 @@ export function BottomNavigation() {
             </li>
             <li className="flex flex-1">
                <Link
-                  to={chatRoute.to}
+                  to={"/chat"}
                   className="group inline-flex h-10 flex-1 flex-col items-center justify-center rounded-md font-bold text-foreground/60 text-xs aria-[current=page]:text-foreground"
                >
                   <Icons.chat className="size-6 shrink-0 group-aria-[current=page]:hidden" />
@@ -30,7 +27,7 @@ export function BottomNavigation() {
             </li>
             <li className="flex flex-1">
                <Link
-                  to={settingsRoute.to}
+                  to={"/settings"}
                   className="group inline-flex h-10 flex-1 flex-col items-center justify-center rounded-md font-bold text-foreground/60 text-xs aria-[current=page]:text-foreground"
                >
                   <Icons.gear className="size-6 shrink-0 group-aria-[current=page]:hidden" />

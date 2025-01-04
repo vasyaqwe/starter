@@ -1,7 +1,3 @@
-import { Route as chatRoute } from "@/routes/_layout/chat"
-import { Route as indexRoute } from "@/routes/_layout/index"
-import { Route as settingsRoute } from "@/routes/_layout/settings"
-import { Route as loginRoute } from "@/routes/login"
 import {
    Accordion,
    AccordionItem,
@@ -25,7 +21,7 @@ export function Sidebar() {
                <ul className="space-y-1">
                   <li>
                      <Link
-                        to={indexRoute.to}
+                        to={"/"}
                         className={cn(
                            buttonVariants({ variant: "ghost" }),
                            "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
@@ -37,7 +33,7 @@ export function Sidebar() {
                   </li>
                   <li>
                      <Link
-                        to={chatRoute.to}
+                        to={"/chat"}
                         className={cn(
                            buttonVariants({ variant: "ghost" }),
                            "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
@@ -49,7 +45,7 @@ export function Sidebar() {
                   </li>
                   <li>
                      <Link
-                        to={settingsRoute.to}
+                        to={"/settings"}
                         className={cn(
                            buttonVariants({ variant: "ghost" }),
                            "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
@@ -75,7 +71,7 @@ export function Sidebar() {
                         <ul className="space-y-1">
                            <li>
                               <Link
-                                 to={loginRoute.to}
+                                 to={"/login"}
                                  className={cn(
                                     buttonVariants({ variant: "ghost" }),
                                     "group flex justify-start gap-2 px-2.5 text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:bg-transparent",
@@ -86,7 +82,7 @@ export function Sidebar() {
                            </li>
                            <li>
                               <Link
-                                 to={loginRoute.to}
+                                 to={"/login"}
                                  className={cn(
                                     buttonVariants({ variant: "ghost" }),
                                     "group flex justify-start gap-2 px-2.5 text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:bg-transparent",
