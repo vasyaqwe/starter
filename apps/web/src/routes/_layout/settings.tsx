@@ -115,9 +115,16 @@ function RouteComponent() {
                      <h2 className="font-semibold text-lg">Subscription</h2>
                      <p className="mt-2 mb-6 text-foreground/70">
                         Subscription is: {subscription?.status ?? "null"} <br />
-                        {subscription?.cancelAtPeriodEnd ? (
+                        {subscription?.status === "canceled" ? (
                            <>
-                              Will be cancled on{" "}
+                              Was canceled on{" "}
+                              {new Date(
+                                 subscription.currentPeriodEnd ?? "",
+                              ).toLocaleDateString()}
+                           </>
+                        ) : subscription?.cancelAtPeriodEnd ? (
+                           <>
+                              Will be canceled on{" "}
                               {new Date(
                                  subscription.currentPeriodEnd ?? "",
                               ).toLocaleDateString()}
@@ -131,12 +138,8 @@ function RouteComponent() {
                            </>
                         ) : null}
                      </p>
-                     {subscription?.status === "canceled" ||
-                     subscription?.cancelAtPeriodEnd ? (
-                        <Button onClick={() => subscribeMutation.mutate()}>
-                           Renew
-                        </Button>
-                     ) : subscription?.status === "active" ? (
+                     {subscription?.cancelAtPeriodEnd ? null : subscription?.status ===
+                       "active" ? (
                         <Button
                            isPending={cancelMutation.isPending}
                            disabled={cancelMutation.isPending}
