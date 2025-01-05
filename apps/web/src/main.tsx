@@ -2,9 +2,7 @@ import "@project/ui/styles.css"
 import type { HonoError } from "@/lib/hono"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { TooltipProvider } from "@project/ui/components/tooltip"
-import * as Portal from "@radix-ui/react-portal"
 import { QueryClient } from "@tanstack/react-query"
-// import { Toaster, toast } from "@project/ui/components/toast"
 import {
    ErrorComponent,
    type ErrorComponentProps,
@@ -16,6 +14,7 @@ import {
    useRouter,
 } from "@tanstack/react-router"
 import { routerWithQueryClient } from "@tanstack/react-router-with-query"
+import type * as TauriAPI from "@tauri-apps/api"
 import { ThemeProvider } from "next-themes"
 import * as React from "react"
 import ReactDOM from "react-dom/client"
@@ -109,6 +108,10 @@ function CatchBoundary({ error }: ErrorComponentProps) {
    )
 }
 
+declare global {
+   var __TAURI__: typeof TauriAPI
+}
+
 declare module "@tanstack/react-router" {
    interface Register {
       router: ReturnType<typeof createRouter>
@@ -132,7 +135,6 @@ ReactDOM.createRoot(document.getElementById("app")!).render(
       >
          <TooltipProvider>
             <RouterProvider router={createRouter()} />
-            <Portal.Root>{/* <Toaster /> */}</Portal.Root>
          </TooltipProvider>
       </ThemeProvider>
    </React.StrictMode>,

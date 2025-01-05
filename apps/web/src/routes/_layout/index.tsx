@@ -1,4 +1,5 @@
 import { hc, honoMutationFn, honoQueryFn } from "@/lib/hono"
+import { sendNotification } from "@/notification/utils"
 import {
    AlertDialog,
    AlertDialogClose,
@@ -65,7 +66,7 @@ function RouteComponent() {
 
    return (
       <ScrollArea className={"p-4 md:p-6"}>
-         <Card className="flex w-full max-w-xl flex-wrap gap-4">
+         <Card className="flex w-full max-w-xl flex-wrap gap-4 p-6">
             <p className="text-primary-11">
                {query.isPending
                   ? "Loading..."
@@ -133,7 +134,17 @@ function RouteComponent() {
                   </AlertDialogFooter>
                </AlertDialogPopup>
             </AlertDialog>
-            <Button variant="ghost">ghost button</Button>
+            <Button
+               onClick={() =>
+                  sendNotification({
+                     title: "Notification title",
+                     body: "This is a test notification",
+                  })
+               }
+               variant="ghost"
+            >
+               ghost button
+            </Button>
             <Select defaultValue="sans">
                <SelectTrigger className={"min-w-[150px]"}>
                   <SelectValue placeholder="Sans-serif" />

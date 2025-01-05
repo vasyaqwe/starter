@@ -122,7 +122,7 @@ function RouteComponent() {
          <main className="grid h-svh w-full place-items-center">
             <div className="-mt-16 relative w-full max-w-[22rem]">
                <AnimatedStack activeIndex={otp ? 1 : 0}>
-                  <Card className="relative">
+                  <Card className="relative p-6">
                      <h1 className="-mt-1.5 mb-4 font-semibold text-xl">
                         Sign in to your account
                      </h1>
@@ -209,7 +209,7 @@ function RouteComponent() {
                         Continue with Google
                      </Button>
                   </Card>
-                  <Card>
+                  <Card className="p-6">
                      <Link
                         aria-label="Go back"
                         to="."

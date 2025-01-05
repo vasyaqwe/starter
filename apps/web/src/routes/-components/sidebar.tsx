@@ -1,3 +1,5 @@
+import { useLocalStorage } from "@/interactions/use-local-storage"
+import { logger } from "@project/shared/logger"
 import {
    Accordion,
    AccordionItem,
@@ -5,11 +7,14 @@ import {
    AccordionTrigger,
 } from "@project/ui/components/accordion"
 import { Button, buttonVariants } from "@project/ui/components/button"
+import { Card } from "@project/ui/components/card"
 import { Icons } from "@project/ui/components/icons"
 import { ScrollArea } from "@project/ui/components/scroll-area"
 import { cn } from "@project/ui/utils"
 import { Link } from "@tanstack/react-router"
+import { useEffect } from "hono/jsx"
 import { useTheme } from "next-themes"
+import { toast } from "sonner"
 
 export function Sidebar() {
    const { setTheme, resolvedTheme: theme } = useTheme()
@@ -97,6 +102,7 @@ export function Sidebar() {
                </Accordion>
             </ScrollArea>
             <div className="mt-auto p-4 pt-1">
+               <NotificationPermissionCard />
                <Button
                   className="text-foreground/90"
                   onClick={() => setTheme(theme === "light" ? "dark" : "light")}
@@ -164,5 +170,88 @@ export function Sidebar() {
             </div>
          </div>
       </aside>
+   )
+}
+
+function NotificationPermissionCard() {
+   const [permissionStatus, setPermissionStatus] =
+      useLocalStorage<NotificationPermission>(
+         "notification_permission_status",
+         "default",
+      )
+
+   useEffect(() => {
+      async function checkPermission() {
+         if (window.__TAURI__) {
+            const { isPermissionGranted } = await import(
+               "@tauri-apps/plugin-notification"
+            )
+            const granted = await isPermissionGranted()
+            setPermissionStatus(granted ? "granted" : "default")
+            logger.info("TAURI ran:", granted)
+         } else if ("Notification" in window) {
+            setPermissionStatus(Notification.permission)
+            logger.info("WEB ran:", Notification.permission)
+         }
+      }
+      checkPermission()
+   }, [])
+
+   if (permissionStatus !== "default") return null
+
+   return (
+      <Card className="mb-3 animate-fade-in opacity-0 [--animation-delay:250ms]">
+         <p className="-mt-1 text-muted-foreground text-sm">
+            Need your permission to enable notifications.
+         </p>
+         <Button
+            size="sm"
+            className="mt-2.5 w-full"
+            onClick={async () => {
+               try {
+                  let permission: NotificationPermission
+
+                  const title = "Subscribed to notifications"
+                  const body = "Push notifications are now enabled"
+
+                  if (window.__TAURI__) {
+                     const { requestPermission, sendNotification } =
+                        await import("@tauri-apps/plugin-notification")
+
+                     permission = await requestPermission()
+
+                     if (permission === "granted") {
+                        sendNotification({
+                           title,
+                           body,
+                        })
+                     }
+                     return setPermissionStatus(permission)
+                  }
+
+                  if ("Notification" in window) {
+                     permission = await Notification.requestPermission()
+                     if (permission === "granted") {
+                        new Notification(title, {
+                           body,
+                        })
+                     }
+                     return setPermissionStatus(permission)
+                  }
+
+                  return toast.error(
+                     "Your browser doesn't support notifications",
+                  )
+               } catch (error) {
+                  logger.error(
+                     "Error requesting notification permission:",
+                     error,
+                  )
+               }
+            }}
+         >
+            Allow notifications
+         </Button>
+      </Card>
    )
 }
