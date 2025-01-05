@@ -74,7 +74,7 @@ export const authRoute = createRouter()
                })
                if (res.error)
                   throw new HTTPException(500, {
-                     message: "Couldn't send email",
+                     message: `Couldn't send email: ${res.error.message}`,
                   })
             }
          })

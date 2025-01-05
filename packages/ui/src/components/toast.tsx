@@ -102,7 +102,7 @@ function Toaster(props: React.ComponentProps<typeof Sonner>) {
                ),
             },
             className:
-               "font-primary px-4 py-3 shadow-lg justify-center flex select-none border border-transparent dark:border-primary-6 !w-max !max-w-(--width) !left-1/2 max-md:mb-[calc(env(safe-area-inset-bottom)+1.25rem)] dark:bg-primary-5 bg-primary-12 text-base text-white !right-auto justify-center pointer-events-auto rounded-full",
+               "font-primary px-4 py-3 items-center shadow-lg justify-center flex select-none border border-transparent dark:border-primary-6 !w-max !max-w-(--width) !left-1/2 max-md:mb-[calc(env(safe-area-inset-bottom)+1.25rem)] dark:bg-primary-5 bg-primary-12 text-base text-white !right-auto justify-center pointer-events-auto rounded-full",
          }}
          expand
          offset={26}

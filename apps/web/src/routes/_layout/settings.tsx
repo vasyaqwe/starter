@@ -33,12 +33,12 @@ function RouteComponent() {
       subscriptionByUserIdQuery({ enabled: search.tab === "billing" }),
    )
    const subscription = query.data
-   const subscribeMutation = useMutation({
+   const subscribe = useMutation({
       mutationFn: async () => {
          window.location.href = hc.billing.checkout.$url().toString()
       },
    })
-   const cancelMutation = useMutation({
+   const cancel = useMutation({
       mutationFn: async () => honoMutationFn(await hc.billing.cancel.$post()),
       onSuccess: () => {
          toast("Canceled subscription")
@@ -141,14 +141,14 @@ function RouteComponent() {
                      {subscription?.cancelAtPeriodEnd ? null : subscription?.status ===
                        "active" ? (
                         <Button
-                           isPending={cancelMutation.isPending}
-                           disabled={cancelMutation.isPending}
-                           onClick={() => cancelMutation.mutate()}
+                           isPending={cancel.isPending}
+                           disabled={cancel.isPending}
+                           onClick={() => cancel.mutate()}
                         >
                            Cancel
                         </Button>
                      ) : (
-                        <Button onClick={() => subscribeMutation.mutate()}>
+                        <Button onClick={() => subscribe.mutate()}>
                            Subscribe
                         </Button>
                      )}

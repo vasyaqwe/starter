@@ -12,7 +12,7 @@ export const googleClient = () =>
    new Google(
       env.server.GOOGLE_CLIENT_ID,
       env.server.GOOGLE_CLIENT_SECRET,
-      `${env.client.SERVER_DOMAIN}/auth/google/callback`,
+      `${env.client.SERVER_DOMAIN}/api/auth/google/callback`,
    )
 
 export const createGoogleSession = async ({
@@ -46,7 +46,7 @@ export const createGoogleSession = async ({
       "https://www.googleapis.com/oauth2/v2/userinfo",
       {
          headers: {
-            Authorization: `Bearer ${tokens.accessToken}`,
+            Authorization: `Bearer ${tokens.accessToken()}`,
          },
          hooks: {
             afterResponse: [

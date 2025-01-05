@@ -4,7 +4,7 @@ import { cn } from "../utils"
 import { Loading } from "./loading"
 
 const buttonVariants = cva(
-   `inline-flex cursor-(--cursor) items-center justify-center gap-1.5 whitespace-nowrap 
+   `inline-flex cursor-(--cursor) items-center justify-center gap-2 whitespace-nowrap 
     disabled:opacity-70 disabled:cursor-not-allowed border overflow-hidden relative`,
    {
       variants: {
@@ -66,7 +66,7 @@ function Button({
             <>
                <span
                   className={cn(
-                     "data-[inactive]:-translate-y-4 invisible block transition-all duration-200 ease-vaul data-[active]:visible data-[active]:translate-y-0 data-[inactive]:scale-90 data-[active]:opacity-100 data-[inactive]:opacity-0",
+                     "data-[inactive]:-translate-y-4 invisible flex items-center justify-center gap-2 transition-all duration-200 ease-vaul data-[active]:visible data-[active]:translate-y-0 data-[inactive]:scale-90 data-[active]:opacity-100 data-[inactive]:opacity-0",
                   )}
                   data-active={!isPending ? "" : undefined}
                   data-inactive={isPending ? "" : undefined}
