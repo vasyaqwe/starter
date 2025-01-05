@@ -69,16 +69,16 @@ export const createGoogleSession = async ({
 
    const googleUserId = googleUserResponse.id.toString()
 
-   const existingOauthAccount = await c.get("db").query.oauthAccount.findFirst({
+   const existingOauthAccount = await c.var.db.query.oauthAccount.findFirst({
       where: (account) => eq(account.providerUserId, googleUserId),
    })
 
-   const existingUser = await c.get("db").query.user.findFirst({
+   const existingUser = await c.var.db.query.user.findFirst({
       where: (u) => eq(u.email, googleUserResponse.email),
    })
 
    if (existingUser?.id && !existingOauthAccount) {
-      await c.get("db").insert(oauthAccount).values({
+      await c.var.db.insert(oauthAccount).values({
          providerUserId: googleUserId,
          providerId: "google",
          userId: existingUser.id,
@@ -91,7 +91,7 @@ export const createGoogleSession = async ({
       return await createSession(c, existingOauthAccount.userId)
    }
 
-   const created = await c.get("db").transaction(async (tx) => {
+   const created = await c.var.db.transaction(async (tx) => {
       const [created] = await tx
          .insert(user)
          .values({

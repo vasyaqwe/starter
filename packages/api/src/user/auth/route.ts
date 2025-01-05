@@ -30,7 +30,7 @@ export const authRoute = createRouter()
       async (c) => {
          const { email } = c.req.valid("json")
          // const wait = (ms: number) =>  new Promise((resolve) => setTimeout(resolve, ms))
-         await c.get("db").transaction(async (tx) => {
+         await c.var.db.transaction(async (tx) => {
             let user: { id: string } | null = null
 
             const [createdUser] = await tx
@@ -66,7 +66,7 @@ export const authRoute = createRouter()
             if (env.server.NODE_ENV === "development") {
                logger.info(`OTP CODE: ${verificationCode}`)
             } else {
-               const res = await c.get("email").emails.send({
+               const res = await c.var.email.emails.send({
                   from: EMAIL_FROM,
                   to: email,
                   subject: `Project one-time password`,
@@ -87,7 +87,7 @@ export const authRoute = createRouter()
       zValidator("json", verifyLoginOTPInput),
       async (c) => {
          const { code, email } = c.req.valid("json")
-         const { userId } = await verifyEmailOTP(c.get("db"), email, code)
+         const { userId } = await verifyEmailOTP(c.var.db, email, code)
 
          if (!userId)
             throw new HTTPException(400, {
@@ -190,15 +190,11 @@ export const authRoute = createRouter()
       const redirect = getCookie(c, "redirect")
       if (!redirect) return handleError(error, c)
 
-      // c.get("sentry").captureException(error)
+      // c.var.sentry.captureException(error)
       logger.error("auth error:", error)
 
-      const session = c.get("session")
-
       // redirect back to login page if not logged in
-      const newRedirectUrl = new URL(
-         !session?.userId ? `${redirect}/login` : redirect,
-      )
+      const newRedirectUrl = new URL(`${redirect}/login`)
 
       newRedirectUrl.searchParams.append("error", "true")
 

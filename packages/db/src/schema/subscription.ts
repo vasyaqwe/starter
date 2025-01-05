@@ -1,7 +1,14 @@
 import type { SubscriptionStatus } from "@polar-sh/sdk/src/models/components"
-import { index, text, timestamp, varchar } from "drizzle-orm/pg-core"
+import {
+   boolean,
+   index,
+   text,
+   timestamp,
+   unique,
+   varchar,
+} from "drizzle-orm/pg-core"
 import { pgTable } from "drizzle-orm/pg-core"
-import { lifecycleDates, tableId } from "../utils"
+import { lifecycleDates } from "../utils"
 import { user } from "./user"
 
 export const subscriptionStatuses = [
@@ -17,7 +24,7 @@ export const subscriptionStatuses = [
 export const subscription = pgTable(
    "subscription",
    {
-      id: tableId("subscription"),
+      id: text().notNull().primaryKey(),
       userId: text()
          .notNull()
          .references(() => user.id, { onDelete: "cascade" }),
@@ -29,13 +36,18 @@ export const subscription = pgTable(
       }).notNull(),
       priceId: varchar({
          length: 255,
-      })
-         .notNull()
-         .unique(),
+      }).notNull(),
       productId: varchar({ length: 255 }).notNull(),
       currentPeriodStart: timestamp().notNull(),
       currentPeriodEnd: timestamp(),
+      cancelAtPeriodEnd: boolean().default(false),
       ...lifecycleDates,
    },
-   (table) => [index("subscription_user_id_idx").on(table.userId)],
+   (table) => [
+      index("subscription_user_id_idx").on(table.userId),
+      unique("subscription_user_id_product_id_idx").on(
+         table.userId,
+         table.productId,
+      ),
+   ],
 )

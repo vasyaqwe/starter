@@ -83,7 +83,7 @@ function RouteComponent() {
             </p> */}
 
             <Button
-               isLoading={mutation.isPending}
+               isPending={mutation.isPending}
                onClick={() => mutation.mutate({ someData: "some data" })}
             >
                primary button

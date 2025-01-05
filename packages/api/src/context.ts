@@ -7,16 +7,20 @@ import type { Context } from "hono"
 
 type Variables = {
    db: Database
-   user: User
    email: Email
    payment: Payment
-   session: Session
    env: Env
 }
 
+export type AuthVariables = { user: User; session: Session }
+
 export type AppContext = {
-   Bindings: Env
    Variables: Variables
 }
 
+export type AuthedAppContext = {
+   Variables: Variables & AuthVariables
+}
+
 export type HonoContext = Context<AppContext>
+export type AuthedHonoContext = Context<AuthedAppContext>

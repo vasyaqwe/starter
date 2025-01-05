@@ -1,0 +1,1 @@
+ALTER TABLE "subscription" ADD CONSTRAINT "subscription_user_id_product_id_idx" UNIQUE("user_id","product_id");

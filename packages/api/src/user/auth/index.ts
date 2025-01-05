@@ -4,12 +4,13 @@ import {
    encodeBase32LowerCaseNoPadding,
    encodeHexLowerCase,
 } from "@oslojs/encoding"
-import type { HonoContext } from "@project/api/context"
+import type { AuthedHonoContext, HonoContext } from "@project/api/context"
 import { COOKIE_OPTIONS } from "@project/api/cookie/constants"
 import { TimeSpan, createDate, isWithinExpirationDate } from "@project/api/date"
 import { eq } from "@project/db"
 import type { Database } from "@project/db/client"
 import { emailVerificationCode, session } from "@project/db/schema/user"
+import type { Context } from "hono"
 import { getCookie, setCookie } from "hono/cookie"
 import { SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS } from "./constants"
 
@@ -29,17 +30,17 @@ export const createSession = async (c: HonoContext, userId: string) => {
    setSessionTokenCookie(c, token)
 }
 
-export const getSessionTokenCookie = (c: HonoContext) =>
+export const getSessionTokenCookie = (c: Context) =>
    getCookie(c, SESSION_COOKIE_NAME)
 
-export const setSessionTokenCookie = (c: HonoContext, token: string) => {
+export const setSessionTokenCookie = (c: Context, token: string) => {
    setCookie(c, SESSION_COOKIE_NAME, token, {
       ...COOKIE_OPTIONS,
       maxAge: SESSION_EXPIRATION_SECONDS,
    })
 }
 
-export const deleteSessionTokenCookie = (c: HonoContext) => {
+export const deleteSessionTokenCookie = (c: Context) => {
    setCookie(c, SESSION_COOKIE_NAME, "", {
       ...COOKIE_OPTIONS,
       maxAge: 0,
@@ -53,8 +54,10 @@ export const generateSessionToken = () => {
    return token
 }
 
-export const invalidateSession = async (c: HonoContext, sessionId: string) =>
-   await c.get("db").delete(session).where(eq(session.id, sessionId))
+export const invalidateSession = async (
+   c: AuthedHonoContext,
+   sessionId: string,
+) => await c.var.db.delete(session).where(eq(session.id, sessionId))
 
 export const generateEmailOTP = async ({
    tx,

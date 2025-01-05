@@ -50,17 +50,17 @@ function Button({
    size,
    ref,
    children,
-   isLoading,
+   isPending,
    ...props
 }: React.ComponentProps<"button"> &
-   VariantProps<typeof buttonVariants> & { isLoading?: boolean | undefined }) {
+   VariantProps<typeof buttonVariants> & { isPending?: boolean | undefined }) {
    return (
       <button
          className={cn(buttonVariants({ variant, size, className }))}
          ref={ref}
          {...props}
       >
-         {isLoading === undefined ? (
+         {isPending === undefined ? (
             children
          ) : (
             <>
@@ -68,13 +68,13 @@ function Button({
                   className={cn(
                      "data-[inactive]:-translate-y-4 invisible block transition-all duration-200 ease-vaul data-[active]:visible data-[active]:translate-y-0 data-[inactive]:scale-90 data-[active]:opacity-100 data-[inactive]:opacity-0",
                   )}
-                  data-active={!isLoading ? "" : undefined}
-                  data-inactive={isLoading ? "" : undefined}
+                  data-active={!isPending ? "" : undefined}
+                  data-inactive={isPending ? "" : undefined}
                >
                   {children}
                </span>
                <span
-                  data-active={isLoading ? "" : undefined}
+                  data-active={isPending ? "" : undefined}
                   className={cn(
                      "invisible absolute inset-0 m-auto block h-fit translate-y-4 opacity-0 transition-all duration-200 ease-vaul data-[active]:visible data-[active]:translate-y-0 data-[active]:opacity-100",
                   )}

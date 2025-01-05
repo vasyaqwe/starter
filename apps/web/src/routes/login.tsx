@@ -146,7 +146,7 @@ function RouteComponent() {
                         </Field>
                         <Button
                            className="mt-5 w-full"
-                           isLoading={
+                           isPending={
                               sendLoginCode.isPending || sendLoginCode.isSuccess
                            }
                            disabled={

@@ -1,9 +1,9 @@
 import { billingRoute } from "@project/api/billing/route"
 import { handleError } from "@project/api/error/utils"
-import { authMiddleware } from "@project/api/user/auth/middleware"
+import { postRoute } from "@project/api/post/route"
 import { authRoute } from "@project/api/user/auth/route"
 import { userRoute } from "@project/api/user/route"
-import { createRouter, zValidator } from "@project/api/utils"
+import { createRouter } from "@project/api/utils"
 import { db } from "@project/db/client"
 import { email } from "@project/email"
 import { env } from "@project/env"
@@ -11,7 +11,6 @@ import { payment } from "@project/payment"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
 import { logger } from "hono/logger"
-import { z } from "zod"
 
 export const ALLOWED_ORIGINS = ["https://www.project.io", "https://project.io"]
 
@@ -30,9 +29,15 @@ app.use(logger())
       })
       return handler(c, next)
    })
+   // .use("*", async (c, next) => {
+   //    const sentryMiddleware = sentry({
+   //       enabled: env.server.NODE_ENV === "production",
+   //    })
+   //    return await sentryMiddleware(c, next)
+   // })
    .onError(handleError)
 
-const publicRoutes = createRouter()
+const apiRoutes = createRouter()
    .route("/auth", authRoute)
    .get("/hello", (c) => {
       return c.json({
@@ -40,20 +45,13 @@ const publicRoutes = createRouter()
       })
    })
 
-const protectedRoutes = createRouter()
+const baseRoutes = createRouter()
    .use((c, next) => {
       const handler = csrf({
          origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
       })
       return handler(c, next)
    })
-   .use(authMiddleware)
-   // .use("*", async (c, next) => {
-   //    const sentryMiddleware = sentry({
-   //       enabled: env.server.NODE_ENV === "production",
-   //    })
-   //    return await sentryMiddleware(c, next)
-   // })
    // for local R2 bucket
    // .get("/r2/*", async (c) => {
    //    const key = c.req.path.substring("/r2/".length)
@@ -65,40 +63,11 @@ const protectedRoutes = createRouter()
    //       headers,
    //    })
    // })
-   .route("/user", userRoute)
    .route("/billing", billingRoute)
-   .get(
-      "/post/:id",
-      zValidator(
-         "param",
-         z.object({
-            id: z.string(),
-         }),
-      ),
-      (c) => {
-         const data = c.req.valid("param")
-         return c.json({
-            message: data,
-         })
-      },
-   )
-   .post(
-      "/post",
-      zValidator(
-         "json",
-         z.object({
-            someData: z.string(),
-         }),
-      ),
-      (c) => {
-         const data = c.req.valid("json")
-         return c.json({
-            message: data,
-         })
-      },
-   )
+   .route("/user", userRoute)
+   .route("/post", postRoute)
 
-const routes = app.route("/api", publicRoutes).route("/", protectedRoutes)
+const routes = app.route("/api", apiRoutes).route("/", baseRoutes)
 
 export type AppRoutes = typeof routes
 

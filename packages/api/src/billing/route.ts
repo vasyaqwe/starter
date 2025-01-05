@@ -1,22 +1,59 @@
 import { WebhookVerificationError, validateEvent } from "@polar-sh/sdk/webhooks"
 import { statusToCode } from "@project/api/error/utils"
+import { authMiddleware } from "@project/api/user/auth/middleware"
 import { createRouter } from "@project/api/utils"
-import { eq } from "@project/db"
+import { and, eq } from "@project/db"
 import { subscription } from "@project/db/schema/subscription"
 import { env } from "@project/env"
 import { HTTPException } from "hono/http-exception"
 
 export const billingRoute = createRouter()
-   .get("/checkout", async (c) => {
-      const checkout = await c.get("payment").checkouts.custom.create({
-         productPriceId: "27c4d41f-107d-451b-835b-3bcff660c630",
-         customerEmail: c.get("user").email,
-         customerName: c.get("user").name,
+   .get("/subscription", authMiddleware, async (c) => {
+      const foundSubscription = await c.var.db.query.subscription.findFirst({
+         where: eq(subscription.userId, c.var.user.id),
+      })
+
+      return c.json(foundSubscription ?? null)
+   })
+   .get("/checkout", authMiddleware, async (c) => {
+      const checkout = await c.var.payment.checkouts.custom.create({
+         productPriceId: "c07ab064-b153-4f04-83f5-185ed4e5a43b",
+         customerEmail: c.var.user.email,
+         customerName: c.var.user.name,
          metadata: {
-            userId: c.get("user").id,
+            userId: c.var.user.id,
          },
       })
       return c.redirect(checkout.url)
+   })
+   .post("/cancel", authMiddleware, async (c) => {
+      const foundSubscription = await c.var.db.query.subscription.findFirst({
+         where: and(
+            eq(subscription.userId, c.var.user.id),
+            eq(subscription.status, "active"),
+            eq(subscription.cancelAtPeriodEnd, false),
+         ),
+      })
+
+      if (!foundSubscription)
+         throw new HTTPException(400, {
+            message: "No active subscription found",
+         })
+
+      await c.var.db.transaction(async (tx) => {
+         await c.var.payment.customerPortal.subscriptions.cancel({
+            id: foundSubscription.id,
+         })
+         await tx
+            .update(subscription)
+            .set({ cancelAtPeriodEnd: true })
+            .where(eq(subscription.id, foundSubscription.id))
+      })
+
+      return c.json({
+         status: "ok",
+         message: "subscription scheduled for cancellation",
+      })
    })
    .post("/webhook", async (c) => {
       try {
@@ -28,11 +65,17 @@ export const billingRoute = createRouter()
          )
 
          if (event.type === "subscription.created") {
-            await c
-               .get("db")
+            const userId = event.data.metadata.userId
+            if (!userId || typeof userId !== "string")
+               throw new HTTPException(400, {
+                  message: "userId missing in metadata",
+               })
+
+            await c.var.db
                .insert(subscription)
                .values({
-                  userId: c.get("user").id,
+                  id: event.data.id,
+                  userId,
                   status: event.data.status,
                   customerId: event.data.customerId,
                   priceId: event.data.priceId,
@@ -40,25 +83,24 @@ export const billingRoute = createRouter()
                   currentPeriodStart: event.data.currentPeriodStart,
                   currentPeriodEnd: event.data.currentPeriodEnd,
                })
+               .onConflictDoUpdate({
+                  set: {
+                     id: event.data.id,
+                     status: event.data.status,
+                     priceId: event.data.priceId,
+                     productId: event.data.productId,
+                     currentPeriodStart: event.data.currentPeriodStart,
+                     currentPeriodEnd: event.data.currentPeriodEnd,
+                     cancelAtPeriodEnd: false,
+                  },
+                  target: [subscription.userId, subscription.productId],
+               })
 
             return c.json({ status: "ok", message: "subscription created" })
          }
 
-         if (event.type === "subscription.active") {
-            await c
-               .get("db")
-               .update(subscription)
-               .set({
-                  status: "active",
-               })
-               .where(eq(subscription.customerId, event.data.customerId))
-
-            return c.json({ status: "ok", message: "subscription made active" })
-         }
-
          if (event.type === "subscription.updated") {
-            await c
-               .get("db")
+            await c.var.db
                .update(subscription)
                .set({
                   status: event.data.status,
@@ -70,14 +112,18 @@ export const billingRoute = createRouter()
             return c.json({ status: "ok", message: "subscription updated" })
          }
 
-         if (event.type === "subscription.canceled") {
-            await c
-               .get("db")
-               .update(subscription)
-               .set({ status: "canceled" })
-               .where(eq(subscription.customerId, event.data.customerId))
-            return c.json({ status: "ok", message: "subscription canceled" })
-         }
+         // if (event.type === "subscription.canceled") {
+         //    await c
+         //       .get("db")
+         //       .update(subscription)
+         //       .set({ cancelAtPeriodEnd: true })
+         //       .where(eq(subscription.customerId, event.data.customerId))
+
+         //    return c.json({
+         //       status: "ok",
+         //       message: "subscription scheduled for cancellation",
+         //    })
+         // }
 
          return c.json({ status: "ok", message: "no event match" })
       } catch (error) {
@@ -92,7 +138,8 @@ export const billingRoute = createRouter()
          }
 
          throw new HTTPException(500, {
-            message: "Internal server error",
+            message:
+               error instanceof Error ? error.message : "Internal server error",
          })
       }
    })

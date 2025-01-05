@@ -66,7 +66,7 @@ export const parseZodErrorIssues = (issues: ZodIssue[]): string => {
 }
 
 export const handleError = (error: Error, c: HonoContext) => {
-   // c.get("sentry")?.captureException(error)
+   // c.var.sentry.captureException(error)
    logger.error(error)
 
    if (error instanceof ZodError) {
