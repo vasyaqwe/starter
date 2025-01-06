@@ -1,3 +1,4 @@
+import { useCanGoForward } from "@/interactions/use-can-go-forward"
 import { useLocalStorage } from "@/interactions/use-local-storage"
 import { isNative } from "@/ui/constants"
 import { logger } from "@project/shared/logger"
@@ -10,20 +11,86 @@ import {
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { Card } from "@project/ui/components/card"
 import { Icons } from "@project/ui/components/icons"
+import { Kbd } from "@project/ui/components/kbd"
 import { ScrollArea } from "@project/ui/components/scroll-area"
+import {
+   Tooltip,
+   TooltipPopup,
+   TooltipTrigger,
+} from "@project/ui/components/tooltip"
 import { cn } from "@project/ui/utils"
-import { Link } from "@tanstack/react-router"
+import { Link, useCanGoBack, useRouter } from "@tanstack/react-router"
 import { useEffect } from "hono/jsx"
 import { useTheme } from "next-themes"
+import { useHotkeys } from "react-hotkeys-hook"
 import { toast } from "sonner"
 
 export function Sidebar() {
    const { setTheme, resolvedTheme: theme } = useTheme()
+   const router = useRouter()
+   const canGoBack = useCanGoBack()
+   const canGoForward = useCanGoForward()
+
+   useHotkeys("ctrl+[", () => router.history.back(), {
+      enabled: canGoBack,
+      enableOnFormTags: true,
+      enableOnContentEditable: true,
+   })
+
+   useHotkeys("ctrl+]", () => router.history.forward(), {
+      enabled: canGoForward,
+      enableOnFormTags: true,
+      enableOnContentEditable: true,
+   })
 
    return (
       <aside className="z-[10] h-svh w-[15rem] max-md:hidden">
          <div className="fixed flex h-full w-[15rem] flex-col border-neutral border-r shadow-xs">
             <ScrollArea render={<nav className="p-4" />}>
+               {isNative ? (
+                  <div className="mb-3 flex items-center">
+                     <Tooltip>
+                        <TooltipTrigger
+                           render={
+                              <Button
+                                 disabled={!canGoBack}
+                                 onClick={() => router.history.back()}
+                                 variant={"ghost"}
+                                 size={"icon-sm"}
+                                 aria-label="Go back"
+                              />
+                           }
+                        >
+                           <Icons.chevronLeft className="size-[18px]" />
+                        </TooltipTrigger>
+                        <TooltipPopup className={"pr-1"}>
+                           Go back
+                           <Kbd>ctrl</Kbd>
+                           <Kbd>[</Kbd>
+                        </TooltipPopup>
+                     </Tooltip>
+                     <Tooltip>
+                        <TooltipTrigger
+                           render={
+                              <Button
+                                 disabled={!canGoForward}
+                                 onClick={() => router.history.forward()}
+                                 variant={"ghost"}
+                                 size={"icon-sm"}
+                                 aria-label="Go forward"
+                              />
+                           }
+                        >
+                           <Icons.chevronRight className="size-[18px]" />
+                        </TooltipTrigger>
+                        <TooltipPopup className={"pr-1"}>
+                           Go forward
+                           <Kbd>ctrl</Kbd>
+                           <Kbd>]</Kbd>
+                        </TooltipPopup>
+                     </Tooltip>
+                  </div>
+               ) : null}
                <ul className="space-y-1">
                   <li>
                      <Link
@@ -205,6 +272,7 @@ function NotificationPermissionCard() {
          <p className="-mt-1 text-muted-foreground text-sm">
             Need your permission to enable notifications.
          </p>
+
          <Button
             size="sm"
             className="mt-2.5 w-full"

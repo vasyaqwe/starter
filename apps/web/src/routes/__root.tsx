@@ -1,10 +1,12 @@
 import { useLocalStorage } from "@/interactions/use-local-storage"
 import { Toaster } from "@project/ui/components/toast"
+import { useUIStore } from "@project/ui/store"
 import type { QueryClient } from "@tanstack/react-query"
 import {
    Outlet,
    createRootRouteWithContext,
    useMatches,
+   useRouter,
 } from "@tanstack/react-router"
 import { useTheme } from "next-themes"
 import * as React from "react"
@@ -25,6 +27,20 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
    const { resolvedTheme } = useTheme()
+
+   const router = useRouter()
+
+   const historyLength = useUIStore().historyLength
+
+   React.useEffect(() => {
+      return router.subscribe("onBeforeNavigate", () => {
+         const currentIndex = router.state.location.state.__TSR_index
+         if (currentIndex >= historyLength) {
+            useUIStore.setState({ historyLength: currentIndex + 1 })
+         }
+      })
+   }, [historyLength])
+
    React.useEffect(() => {
       if (resolvedTheme === "dark") {
          document

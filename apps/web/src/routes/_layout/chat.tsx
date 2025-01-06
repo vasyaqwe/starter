@@ -201,11 +201,12 @@ function RouteComponent() {
                                              <MessageActions>
                                                 <Menu>
                                                    <MenuTrigger
-                                                      className={buttonVariants(
-                                                         {
+                                                      className={cn(
+                                                         buttonVariants({
                                                             variant: "ghost",
                                                             size: "icon-sm",
-                                                         },
+                                                         }),
+                                                         "rounded-full",
                                                       )}
                                                    >
                                                       <Icons.ellipsisHorizontal className="size-[22px]" />
@@ -271,6 +272,7 @@ function RouteComponent() {
                            <Button
                               size={"icon"}
                               variant={"ghost"}
+                              className="rounded-full"
                            />
                         }
                      >
@@ -285,6 +287,7 @@ function RouteComponent() {
                               <PopoverTrigger
                                  render={
                                     <Button
+                                       className="rounded-full"
                                        size={"icon"}
                                        variant={"ghost"}
                                     />
@@ -314,7 +317,7 @@ function RouteComponent() {
                               key={index}
                               variant={"menu-item"}
                               size={"icon-sm"}
-                              className="justify-center"
+                              className="justify-center rounded-full"
                            >
                               <span className="-mt-px block">{emoji}</span>
                            </Button>
@@ -362,7 +365,7 @@ function RouteComponent() {
                      <TooltipTrigger
                         render={
                            <Button
-                              className="absolute right-1 bottom-1 size-[33px]"
+                              className="absolute right-1 bottom-1 size-[33px] rounded-full"
                               size={"icon-sm"}
                               aria-label="Send message"
                            />

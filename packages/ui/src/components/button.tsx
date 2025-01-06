@@ -17,7 +17,7 @@ const buttonVariants = cva(
                         dark:shadow-md dark:bg-primary-4 dark:data-[popup-open]:bg-primary-4`,
             destructive: `transition-colors duration-50 shadow-xs bg-red-9 border-red-11 text-white hover:bg-red-10 dark:shadow-md dark:border-red-11/65`,
             ghost: `border-transparent [--hover:var(--color-primary-3)] hover:bg-(--hover) aria-[current=page]:bg-(--hover) data-[popup-open]:bg-(--hover) 
-                    dark:[--hover:var(--color-primary-4)]`,
+                    dark:[--hover:var(--color-primary-4)] disabled:hover:bg-transparent`,
             "menu-item": cn(
                `justify-start border-transparent`,
                menuItemStyles.base,
@@ -28,8 +28,8 @@ const buttonVariants = cva(
             sm: "h-7 rounded-lg px-2.5 text-sm",
             lg: "h-10 gap-2 rounded-xl px-4 text-base",
             xl: "h-11 gap-3 rounded-xl px-4 text-base",
-            icon: "size-9 gap-0 rounded-full",
-            "icon-sm": "size-8 gap-0 rounded-full",
+            icon: "size-9 gap-0 rounded-[10px]",
+            "icon-sm": "size-8 gap-0 rounded-[9px]",
          },
       },
       compoundVariants: [

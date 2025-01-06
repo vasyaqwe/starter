@@ -3,7 +3,7 @@ import { popupStyles } from "../constants"
 import { cn } from "../utils"
 
 export function Tooltip({
-   delay = 450,
+   delay = 500,
    ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
    return (
