@@ -11,16 +11,26 @@ import {
 } from "@project/ui/components/menu"
 import { popupStyles } from "@project/ui/constants"
 import { cn } from "@project/ui/utils"
+import * as React from "react"
+import { useHotkeys } from "react-hotkeys-hook"
 
 export function Toolbar() {
    const flags = useDevStore().flags
    const toggleFlag = useDevStore().toggleFlag
+   const [visible, setVisible] = React.useState(true)
+
+   useHotkeys("t", (e) => {
+      e.preventDefault()
+      setVisible((prev) => !prev)
+   })
 
    return (
       <div
+         data-visible={visible ? "" : undefined}
          className={cn(
             popupStyles.base,
             "-translate-x-1/2 fixed bottom-5 left-1/2 z-[2] flex animate-slide-up items-center rounded-full p-1",
+            "translate-y-20 scale-75 blur-[0.4rem] transition-all duration-500 ease-vaul data-[visible]:translate-y-0 data-[visible]:scale-100 data-[visible]:blur-none",
          )}
       >
          <Menu>

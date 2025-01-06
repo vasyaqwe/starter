@@ -2,7 +2,7 @@ import type { User } from "@project/db/schema/user"
 import { cn } from "@project/ui/utils"
 
 type UserAvatarProps = React.ComponentProps<"div"> & {
-   user: Partial<User>
+   user: Partial<Omit<User, "createdAt" | "updatedAt">>
 }
 
 export function UserAvatar({
@@ -33,7 +33,7 @@ export function UserAvatar({
          ) : (
             <span
                className={cn(
-                  "border bg-background text-foreground/75 shadow-inner",
+                  "grid size-full place-items-center rounded-full border border-primary-6 bg-primary-3 font-medium text-foreground/85 shadow-sm",
                   className,
                )}
             >
@@ -49,7 +49,7 @@ export function OnlineIndicator({
    className,
    ...props
 }: React.ComponentProps<"span">) {
-   // const { user: currentUser } = useAuth()
+   // const auth = useAuth()
 
    // const isUserOnline = usePresenceStore.use.isUserOnline()
    // const isOnline = user.id === currentUser.id || isUserOnline(user.id ?? "")

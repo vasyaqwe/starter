@@ -28,9 +28,7 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
    const { resolvedTheme } = useTheme()
-
    const router = useRouter()
-
    const historyLength = useUIStore().historyLength
 
    React.useEffect(() => {
