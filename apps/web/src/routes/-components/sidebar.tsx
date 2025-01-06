@@ -1,4 +1,5 @@
 import { useLocalStorage } from "@/interactions/use-local-storage"
+import { isNative } from "@/ui/constants"
 import { logger } from "@project/shared/logger"
 import {
    Accordion,
@@ -182,7 +183,7 @@ function NotificationPermissionCard() {
 
    useEffect(() => {
       async function checkPermission() {
-         if (window.__TAURI__) {
+         if (isNative) {
             const { isPermissionGranted } = await import(
                "@tauri-apps/plugin-notification"
             )
@@ -214,7 +215,7 @@ function NotificationPermissionCard() {
                   const title = "Subscribed to notifications"
                   const body = "Push notifications are now enabled"
 
-                  if (window.__TAURI__) {
+                  if (isNative) {
                      const { requestPermission, sendNotification } =
                         await import("@tauri-apps/plugin-notification")
 

@@ -2,11 +2,18 @@
    "$schema": "../../../node_modules/@tauri-apps/cli/config.schema.json",
    "productName": "Project",
    "version": "0.1.0",
-   "identifier": "com.project.dev",
+   "identifier": "com.project.app",
    "build": {
       "frontendDist": "../dist",
       "devUrl": "http://localhost:3000",
       "beforeDevCommand": "bun run dev"
+   },
+   "plugins": {
+      "deep-link": {
+         "desktop": {
+         "schemes": ["project"]
+         }
+      }
    },
    "app": {
       "windows": [

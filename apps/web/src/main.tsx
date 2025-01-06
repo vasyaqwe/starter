@@ -109,7 +109,7 @@ function CatchBoundary({ error }: ErrorComponentProps) {
 }
 
 declare global {
-   var __TAURI__: typeof TauriAPI
+   var __TAURI_INTERNALS__: typeof TauriAPI
 }
 
 declare module "@tanstack/react-router" {

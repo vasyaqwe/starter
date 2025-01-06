@@ -148,29 +148,52 @@ export const authRoute = createRouter()
          }
       },
    )
-   .all(
+   .get(
       "/:provider/callback",
       zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
-      zValidator("query", z.object({ code: z.string(), state: z.string() })),
+      zValidator(
+         "query",
+         z.object({
+            code: z.string(),
+            state: z.string(),
+            client: z.enum(["native", "web"]).default("web"),
+            code_verifier: z.string().optional(),
+         }),
+      ),
       async (c) => {
          const redirect = getCookie(c, "redirect") ?? env.client.WEB_DOMAIN
-         const redirectUrl = new URL(redirect)
+         const redirectUrl = new URL(redirect).toString()
 
          const provider = c.req.valid("param").provider
-         const { code, state } = c.req.valid("query")
+         const {
+            code,
+            state,
+            client,
+            code_verifier: queryCodeVerifier,
+         } = c.req.valid("query")
 
-         const stateCookie = getCookie(c, `${provider}_oauth_state`)
+         let codeVerifier: string
+         if (client === "native") {
+            // For native, use query
+            codeVerifier = queryCodeVerifier ?? ""
+         } else {
+            // For web, use cookies
+            codeVerifier = getCookie(c, `${provider}_oauth_code_verifier`) ?? ""
+         }
+
+         const storedState = getCookie(c, `${provider}_oauth_state`)
 
          if (
-            !state ||
-            !stateCookie ||
             !code ||
-            stateCookie !== state ||
-            !redirect
-         )
+            !state ||
+            !codeVerifier ||
+            // on web, compare state from query with state from cookies
+            (client === "web" && (!storedState || storedState !== state))
+         ) {
             throw new HTTPException(401, {
-               message: "Invalid cookie",
+               message: "Invalid state",
             })
+         }
 
          if (provider === "github")
             throw new HTTPException(400, {
@@ -178,11 +201,42 @@ export const authRoute = createRouter()
             })
 
          if (provider === "google") {
+            if (client === "native") {
+               await createGoogleSession({
+                  c,
+                  code,
+                  codeVerifier,
+               })
+               return c.json({ status: "ok" })
+            }
+
+            if (redirectUrl.startsWith("project")) {
+               const url = `project://finish-auth?code=${code}&state=${state}&code_verifier=${codeVerifier}`
+
+               return c.html(`
+                   <html>
+                     <head>
+                     <title>Opening app...</title>
+                     </head>
+                     <body>
+                     <p>If app isn't opening, <a href="${url}">click here</a>.</p>
+                     <script>
+                        setTimeout(() => {
+                           window.location.href = "${url}";
+                        }, 100);
+                     </script>
+                     </body>
+                  </html>
+                `)
+            }
+
             await createGoogleSession({
                c,
+               code,
+               codeVerifier,
             })
 
-            return c.redirect(redirectUrl.toString())
+            return c.redirect(redirectUrl)
          }
       },
    )

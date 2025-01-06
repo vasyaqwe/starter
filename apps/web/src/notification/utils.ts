@@ -1,3 +1,4 @@
+import { isNative } from "@/ui/constants"
 import { logger } from "@project/shared/logger"
 
 export async function sendNotification({
@@ -5,7 +6,7 @@ export async function sendNotification({
    body,
 }: { title: string; body: string }) {
    try {
-      if (window.__TAURI__) {
+      if (isNative) {
          const { sendNotification } = await import(
             "@tauri-apps/plugin-notification"
          )

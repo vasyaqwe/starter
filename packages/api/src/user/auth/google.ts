@@ -3,7 +3,6 @@ import { eq } from "@project/db"
 import { oauthAccount, user } from "@project/db/schema/user"
 import { env } from "@project/env"
 import { Google } from "arctic"
-import { getCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"
 import ky from "ky"
 import { createSession } from "."
@@ -17,26 +16,13 @@ export const googleClient = () =>
 
 export const createGoogleSession = async ({
    c,
+   code,
+   codeVerifier,
 }: {
    c: HonoContext
+   code: string
+   codeVerifier: string
 }) => {
-   const code = c.req.query("code")
-   const state = c.req.query("state")
-   const storedState = getCookie(c, "google_oauth_state")
-   const codeVerifier = getCookie(c, "google_oauth_code_verifier")
-
-   if (
-      !code ||
-      !state ||
-      !storedState ||
-      state !== storedState ||
-      !codeVerifier
-   ) {
-      throw new HTTPException(400, {
-         message: "Invalid state or code in Google OAuth callback",
-      })
-   }
-
    const tokens = await googleClient().validateAuthorizationCode(
       code,
       codeVerifier,

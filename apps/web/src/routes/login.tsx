@@ -1,6 +1,7 @@
 import { useMountError } from "@/interactions/use-mount-error"
 import { useCountdownTimer } from "@/interactions/use-timer"
 import { hc, honoMutationFn } from "@/lib/hono"
+import { isNative } from "@/ui/constants"
 import { AnimatedStack } from "@project/ui/components/animated-stack"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { Card } from "@project/ui/components/card"
@@ -19,6 +20,8 @@ import { cn } from "@project/ui/utils"
 import { useMutation } from "@tanstack/react-query"
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
+import { onOpenUrl } from "@tauri-apps/plugin-deep-link"
+import { open } from "@tauri-apps/plugin-shell"
 import type { InferRequestType } from "hono"
 import * as React from "react"
 import { z } from "zod"
@@ -32,6 +35,8 @@ export const Route = createFileRoute("/login")({
       }),
    ),
 })
+
+let isMounted = false
 
 function RouteComponent() {
    useMountError("Login failed, please try again")
@@ -78,10 +83,10 @@ function RouteComponent() {
          ),
       onError: () => undefined,
       onSuccess: () => {
+         navigate({ to: "/" })
          setTimeout(() => {
             toast.dismiss()
-            navigate({ to: "/" })
-         }, 500)
+         }, 1000)
       },
    })
 
@@ -101,11 +106,55 @@ function RouteComponent() {
 
    const loginWithGoogle = useMutation({
       mutationFn: async () => {
-         window.location.href = hc.api.auth[":provider"]
-            .$url({ param: { provider: "google" }, query: {} })
+         const url = hc.api.auth[":provider"]
+            .$url({
+               param: { provider: "google" },
+               query: {
+                  redirect: isNative ? "project://auth/callback" : undefined,
+               },
+            })
             .toString()
+
+         if (isNative) {
+            open(url)
+         } else {
+            window.location.href = url
+         }
       },
    })
+
+   React.useEffect(() => {
+      if (isMounted) return
+
+      const init = async () => {
+         try {
+            await onOpenUrl(async ([urlString]) => {
+               const url = new URL(urlString ?? "")
+               if (url.toString().includes("finish-auth")) {
+                  const state = url.searchParams.get("state") ?? ""
+                  const code = url.searchParams.get("code") ?? ""
+                  const code_verifier =
+                     url.searchParams.get("code_verifier") ?? ""
+
+                  const res = await hc.api.auth[":provider"].callback.$get({
+                     param: { provider: "google" },
+                     query: { client: "native", code, state, code_verifier },
+                  })
+                  if (!res.ok) {
+                     loginWithGoogle.reset()
+                     return toast.error("Login failed, please try again")
+                  }
+
+                  navigate({ to: "/" })
+               }
+            })
+         } catch (err) {
+            console.error(err)
+         }
+      }
+      init()
+      isMounted = true
+   }, [])
 
    return (
       <>
@@ -167,11 +216,11 @@ function RouteComponent() {
                            Continue
                         </Button>
                      </form>
-                     <p className="my-4 flex items-center justify-center gap-1.5 text-foreground/70">
+                     <span className="my-4 flex items-center justify-center gap-1.5 text-foreground/70">
                         <hr className="flex-1 border-primary-5 border-t" />
                         or
                         <hr className="flex-1 border-primary-5 border-t" />
-                     </p>
+                     </span>
                      <Button
                         isPending={
                            loginWithGoogle.isPending ||
@@ -231,7 +280,7 @@ function RouteComponent() {
                         }}
                      >
                         <>
-                           <p className="mt-7 mb-5 text-center font-medium text-lg">
+                           <p className="my-7 text-center font-medium text-lg">
                               Enter the code sent to your email
                            </p>
                            <InputOTP
