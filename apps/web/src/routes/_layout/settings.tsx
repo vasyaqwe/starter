@@ -21,6 +21,9 @@ export const Route = createFileRoute("/_layout/settings")({
       }),
    ),
    // loaderDeps: ({ search }) => ({ search }),
+   head: () => ({
+      meta: [{ title: "Settings" }],
+   }),
 })
 
 function RouteComponent() {

@@ -50,7 +50,7 @@ export function SelectItem({
          className={cn(
             menuItemStyles.base,
             destructive ? menuItemStyles.destructive : "",
-            "grid min-w-[calc(var(--anchor-width)+1.45rem)] grid-cols-[1.2rem_1fr] items-center gap-2 pr-4 pl-2",
+            "grid min-w-[calc(var(--anchor-width)+1.45rem)] grid-cols-[1.1rem_1fr] items-center gap-2 pr-4 pl-2",
             className,
          )}
          {...props}
@@ -80,7 +80,7 @@ export function SelectPopup({
                className={cn(
                   popupStyles.base,
                   popupStyles.transition,
-                  "!scale-100 min-w-32 p-(--padding) transition-none [--padding:3px]",
+                  "!scale-100 min-w-36 p-(--padding) transition-none [--padding:3px]",
                   className,
                )}
             >

@@ -1,3 +1,4 @@
+import { useDevStore } from "@/dev/store"
 import { useCanGoForward } from "@/interactions/use-can-go-forward"
 import { useLocalStorage } from "@/interactions/use-local-storage"
 import { isNative } from "@/ui/constants"
@@ -42,6 +43,8 @@ export function Sidebar() {
       enableOnFormTags: true,
       enableOnContentEditable: true,
    })
+
+   const flags = useDevStore().flags
 
    return (
       <aside className="z-[10] h-svh w-[15rem] max-md:hidden">
@@ -104,18 +107,20 @@ export function Sidebar() {
                         Home
                      </Link>
                   </li>
-                  <li>
-                     <Link
-                        to={"/chat"}
-                        className={cn(
-                           buttonVariants({ variant: "ghost" }),
-                           "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
-                        )}
-                     >
-                        <Icons.chat className="size-5" />
-                        Chat
-                     </Link>
-                  </li>
+                  {flags.CHAT ? (
+                     <li>
+                        <Link
+                           to={"/chat"}
+                           className={cn(
+                              buttonVariants({ variant: "ghost" }),
+                              "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
+                           )}
+                        >
+                           <Icons.chat className="size-5" />
+                           Chat
+                        </Link>
+                     </li>
+                  ) : null}
                   <li>
                      <Link
                         to={"/settings"}

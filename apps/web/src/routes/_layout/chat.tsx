@@ -33,6 +33,9 @@ import * as React from "react"
 
 export const Route = createFileRoute("/_layout/chat")({
    component: RouteComponent,
+   head: () => ({
+      meta: [{ title: "Chat" }],
+   }),
 })
 
 const scroll = (node: HTMLElement | null) => node?.scrollIntoView()

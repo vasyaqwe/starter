@@ -1,3 +1,4 @@
+import { Toolbar } from "@/dev/components/toolbar"
 import { useLocalStorage } from "@/interactions/use-local-storage"
 import { Toaster } from "@project/ui/components/toast"
 import { useUIStore } from "@project/ui/store"
@@ -61,6 +62,7 @@ function RootComponent() {
    return (
       <Meta>
          {/* <ModalProvider /> */}
+         <Toolbar />
          <Toaster />
          <Outlet />
       </Meta>
