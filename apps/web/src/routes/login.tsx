@@ -14,6 +14,7 @@ import {
 } from "@project/ui/components/field"
 import { Icons } from "@project/ui/components/icons"
 import { InputOTP, InputOTPSlot } from "@project/ui/components/input-otp"
+import { Separator } from "@project/ui/components/separator"
 import { toast } from "@project/ui/components/toast"
 import { MOBILE_BREAKPOINT } from "@project/ui/constants"
 import { cn } from "@project/ui/utils"
@@ -217,9 +218,9 @@ function RouteComponent() {
                         </Button>
                      </form>
                      <span className="my-4 flex items-center justify-center gap-1.5 text-foreground/70">
-                        <hr className="flex-1 border-primary-5 border-t" />
+                        <Separator className="flex-1 bg-primary-5" />
                         or
-                        <hr className="flex-1 border-primary-5 border-t" />
+                        <Separator className="flex-1 bg-primary-5" />
                      </span>
                      <Button
                         isPending={

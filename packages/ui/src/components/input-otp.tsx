@@ -1,6 +1,7 @@
 import { OTPInput, OTPInputContext } from "input-otp"
 import * as React from "react"
 import { cn } from "../utils"
+import { Separator } from "./separator"
 
 function InputOTP({
    className,
@@ -60,10 +61,10 @@ function InputOTPSlot({
 function InputOTPSeparator({
    className,
    ...props
-}: React.ComponentProps<"hr">) {
+}: React.ComponentProps<typeof Separator>) {
    return (
-      <hr
-         className={cn("", className)}
+      <Separator
+         className={cn("h-full w-px", className)}
          {...props}
       />
    )

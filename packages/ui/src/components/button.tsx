@@ -48,7 +48,6 @@ function Button({
    className,
    variant,
    size,
-   ref,
    children,
    isPending,
    ...props
@@ -57,7 +56,6 @@ function Button({
    return (
       <button
          className={cn(buttonVariants({ variant, size, className }))}
-         ref={ref}
          {...props}
       >
          {isPending === undefined ? (

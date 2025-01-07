@@ -33,7 +33,7 @@ export function UserAvatar({
          ) : (
             <span
                className={cn(
-                  "grid size-full place-items-center rounded-full border border-primary-6 bg-primary-3 font-medium text-foreground/85 shadow-sm",
+                  "grid size-full place-items-center rounded-full border border-primary-6 bg-primary-3 font-medium text-foreground/85 shadow-xs",
                   className,
                )}
             >

@@ -1,3 +1,5 @@
+import { Badge } from "@project/ui/components/badge"
+import { Separator } from "@project/ui/components/separator"
 import { cn } from "@project/ui/utils"
 
 export function MessageGroup({
@@ -21,16 +23,26 @@ export function MessageGroup({
 
 export function MessageGroupDate({
    className,
+   children,
    ...props
 }: React.ComponentProps<"div">) {
    return (
       <div
          className={cn(
-            "mt-7 text-center font-semibold text-foreground/60 text-sm uppercase",
+            "my-9 flex items-center justify-center text-center font-semibold text-foreground/60 text-sm uppercase",
             className,
          )}
          {...props}
-      />
+      >
+         <Separator className="flex-1" />
+         <Badge
+            size={"sm"}
+            className="rounded-full px-4"
+         >
+            {children}
+         </Badge>
+         <Separator className="flex-1" />
+      </div>
    )
 }
 
@@ -84,7 +96,7 @@ export function MessageContent({
    return (
       <div
          className={cn(
-            "w-fit max-w-[82%] shrink-0 px-3 py-2 sm:max-w-[30rem] md:max-w-[25rem] lg:max-w-[30rem] dark:shadow-md",
+            "w-fit max-w-[82%] shrink-0 px-3 py-2 sm:max-w-[30rem] md:max-w-[25rem] lg:max-w-[32rem] dark:shadow-md",
             isMine
                ? "rounded-r-md rounded-l-3xl bg-accent text-white"
                : "rounded-r-3xl rounded-l-md bg-primary-3 dark:bg-primary-5",

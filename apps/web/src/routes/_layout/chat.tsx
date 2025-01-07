@@ -1,3 +1,4 @@
+import { formatDate } from "@/misc/format"
 import {
    Message,
    MessageActions,
@@ -126,7 +127,7 @@ function RouteComponent() {
    const groupedMessages = Object.entries(
       messages.reduce(
          (acc, msg) => {
-            const date = msg.createdAt.toDateString()
+            const date = formatDate(msg.createdAt)
             if (!acc[date]) acc[date] = []
             const lastGroup = acc[date]?.at(-1)
 
@@ -173,94 +174,113 @@ function RouteComponent() {
                {groupedMessages.map((dateGroup) => (
                   <div key={dateGroup.date}>
                      <MessageGroupDate>{dateGroup.date}</MessageGroupDate>
-                     {dateGroup.groups.map((group, index) =>
-                        !group.sender ? null : (
-                           <MessageGroup
-                              key={index}
-                              isMine={currentUserId === group.sender.id}
+                     <span className="mx-auto mb-2 block w-fit text-foreground/70 text-xs">
+                        {formatDate(
+                           dateGroup.groups[0]?.messages[0]?.createdAt ??
+                              new Date(),
+                           {
+                              timeStyle: "short",
+                           },
+                        )}
+                     </span>
+                     {dateGroup.groups.map((group, index) => (
+                        <MessageGroup
+                           key={index}
+                           isMine={currentUserId === group.sender.id}
+                        >
+                           <UserAvatar
+                              className={cn(
+                                 "mt-auto mb-[3px]",
+                                 currentUserId === group.sender.id
+                                    ? "hidden"
+                                    : "",
+                              )}
+                              user={group.sender}
                            >
-                              <UserAvatar
-                                 className={cn(
-                                    "mt-auto mb-[3px]",
-                                    currentUserId === group.sender.id
-                                       ? "hidden"
-                                       : "",
-                                 )}
-                                 user={group.sender}
-                              >
-                                 <OnlineIndicator />
-                              </UserAvatar>
-                              <div className="mt-4 w-full">
-                                 {group.messages.map(
-                                    (message, index, messages) => {
-                                       const isMine =
-                                          currentUserId === group.sender?.id
+                              <OnlineIndicator />
+                           </UserAvatar>
+                           <div className="mt-4 w-full">
+                              {group.messages.map(
+                                 (message, index, messages) => {
+                                    const isMine =
+                                       currentUserId === group.sender?.id
 
-                                       return (
-                                          <Message
-                                             key={message.id}
-                                             isMine={isMine}
-                                          >
-                                             <MessageActions>
-                                                <Menu>
-                                                   <MenuTrigger
-                                                      className={cn(
-                                                         buttonVariants({
-                                                            variant: "ghost",
-                                                            size: "icon-sm",
-                                                         }),
-                                                         "rounded-full",
-                                                      )}
-                                                   >
-                                                      <Icons.ellipsisHorizontal className="size-[22px]" />
-                                                   </MenuTrigger>
-                                                   <MenuPopup
-                                                      align={
-                                                         isMine
-                                                            ? "end"
-                                                            : "start"
+                                    return (
+                                       <Message
+                                          key={message.id}
+                                          isMine={isMine}
+                                       >
+                                          <MessageActions>
+                                             <Menu>
+                                                <MenuTrigger
+                                                   className={cn(
+                                                      buttonVariants({
+                                                         variant: "ghost",
+                                                         size: "icon-sm",
+                                                      }),
+                                                      "rounded-full",
+                                                   )}
+                                                >
+                                                   <Icons.ellipsisHorizontal className="size-[22px]" />
+                                                </MenuTrigger>
+                                                <MenuPopup
+                                                   align={
+                                                      isMine ? "end" : "start"
+                                                   }
+                                                >
+                                                   <MenuItem
+                                                      destructive
+                                                      onClick={() =>
+                                                         setMessages((prev) =>
+                                                            prev.filter(
+                                                               (m) =>
+                                                                  m.id !==
+                                                                  message.id,
+                                                            ),
+                                                         )
                                                       }
                                                    >
-                                                      <MenuItem
-                                                         destructive
-                                                         onClick={() =>
-                                                            setMessages(
-                                                               (prev) =>
-                                                                  prev.filter(
-                                                                     (m) =>
-                                                                        m.id !==
-                                                                        message.id,
-                                                                  ),
-                                                            )
-                                                         }
-                                                      >
-                                                         <Icons.trash />
-                                                         Delete
-                                                      </MenuItem>
-                                                   </MenuPopup>
-                                                </Menu>
-                                             </MessageActions>
-                                             <MessageContent
-                                                isMine={isMine}
-                                                isFirst={index === 0}
-                                                isLast={
-                                                   index ===
-                                                   group.messages.length - 1
-                                                }
-                                                isOnlyOne={
-                                                   messages.length === 1
+                                                      <Icons.trash />
+                                                      Delete
+                                                   </MenuItem>
+                                                </MenuPopup>
+                                             </Menu>
+                                          </MessageActions>
+                                          <Tooltip>
+                                             <TooltipTrigger
+                                                render={
+                                                   <MessageContent
+                                                      isMine={isMine}
+                                                      isFirst={index === 0}
+                                                      isLast={
+                                                         index ===
+                                                         group.messages.length -
+                                                            1
+                                                      }
+                                                      isOnlyOne={
+                                                         messages.length === 1
+                                                      }
+                                                   />
                                                 }
                                              >
                                                 {message.content}
-                                             </MessageContent>
-                                          </Message>
-                                       )
-                                    },
-                                 )}
-                              </div>
-                           </MessageGroup>
-                        ),
-                     )}
+                                             </TooltipTrigger>
+                                             <TooltipPopup
+                                                align={isMine ? "end" : "start"}
+                                             >
+                                                {formatDate(message.createdAt, {
+                                                   dateStyle: "medium",
+                                                   timeStyle: "short",
+                                                })}
+                                             </TooltipPopup>
+                                          </Tooltip>
+                                       </Message>
+                                    )
+                                 },
+                              )}
+                           </div>
+                        </MessageGroup>
+                     ))}
                   </div>
                ))}
             </div>
