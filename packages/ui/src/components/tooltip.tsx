@@ -36,7 +36,7 @@ export function TooltipPopup({
                className={cn(
                   popupStyles.base,
                   popupStyles.transition,
-                  "flex items-center gap-1 rounded-[9px] px-2 py-[3px] text-sm",
+                  "flex items-center gap-px rounded-[9px] px-2 py-[3px] text-sm",
                   className,
                )}
             >

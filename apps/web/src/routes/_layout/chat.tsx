@@ -8,6 +8,11 @@ import {
 } from "@/ui/components/message"
 import { OnlineIndicator, UserAvatar } from "@/ui/components/user-avatar"
 import { Button, buttonVariants } from "@project/ui/components/button"
+import {
+   FILE_TRIGGER_HOTKEY,
+   FileTrigger,
+   FileTriggerTooltipContent,
+} from "@project/ui/components/file-trigger"
 import { Icons } from "@project/ui/components/icons"
 import { Input } from "@project/ui/components/input"
 import { Kbd } from "@project/ui/components/kbd"
@@ -31,6 +36,7 @@ import {
 import { cn } from "@project/ui/utils"
 import { createFileRoute } from "@tanstack/react-router"
 import * as React from "react"
+import { useHotkeys } from "react-hotkeys-hook"
 
 export const Route = createFileRoute("/_layout/chat")({
    component: RouteComponent,
@@ -164,6 +170,14 @@ function RouteComponent() {
       }, 0)
    }
 
+   const fileTriggerRef = React.useRef<HTMLButtonElement>(null)
+   useHotkeys(FILE_TRIGGER_HOTKEY, () => fileTriggerRef.current?.click(), {
+      enableOnContentEditable: true,
+      enableOnFormTags: true,
+   })
+
+   const [files, setFiles] = React.useState<File[]>([])
+
    return (
       <>
          <ScrollArea
@@ -287,21 +301,30 @@ function RouteComponent() {
             <div ref={scroll} />
          </ScrollArea>
          <div className="border-neutral border-t bg-background">
-            <div className="mx-auto flex max-w-4xl items-center gap-2 p-2 md:p-4">
-               <div className="flex items-center gap-0.5">
+            <div className="mx-auto flex max-w-4xl items-end gap-2 p-2 md:p-4">
+               <div className="mb-0.5 flex items-center gap-0.5">
                   <Tooltip>
                      <TooltipTrigger
                         render={
-                           <Button
+                           <FileTrigger
+                              onChange={(e) =>
+                                 setFiles((prev) => [
+                                    ...prev,
+                                    ...(e.target.files ?? []),
+                                 ])
+                              }
                               size={"icon"}
                               variant={"ghost"}
                               className="rounded-full"
+                              ref={fileTriggerRef}
                            />
                         }
                      >
                         <Icons.paperClip className="size-[22px]" />
                      </TooltipTrigger>
-                     <TooltipPopup>Attach files</TooltipPopup>
+                     <TooltipPopup className={"pr-[3px]"}>
+                        <FileTriggerTooltipContent />
+                     </TooltipPopup>
                   </Tooltip>
                   <Popover>
                      <Tooltip>
@@ -372,10 +395,75 @@ function RouteComponent() {
                         },
                      ])
                      ;(e.target as HTMLFormElement).reset()
+                     setFiles([])
                      scrollToBottom()
                   }}
                   className="relative flex-1"
                >
+                  {files.length === 0 ? null : (
+                     <div className="mb-4 flex flex-wrap gap-2">
+                        {files.map((file, idx) => (
+                           <Tooltip
+                              key={idx}
+                              delay={0}
+                           >
+                              <TooltipTrigger
+                                 render={
+                                    <div className="group relative grid size-20 place-items-center rounded-xl border border-neutral dark:bg-primary-3" />
+                                 }
+                              >
+                                 <Button
+                                    onClick={() => {
+                                       setFiles((prev) =>
+                                          prev.filter((f) => f !== file),
+                                       )
+                                    }}
+                                    type="button"
+                                    size={"icon-xs"}
+                                    aria-label={`Remove ${file.name}`}
+                                    className="-top-2 -left-2 invisible absolute rounded-full border-neutral bg-white p-1 text-foreground shadow-none hover:border-red-9 hover:bg-red-9 hover:text-white group-hover:visible dark:border-transparent dark:bg-primary-7 dark:shadow-xs dark:hover:border-red-9 dark:hover:bg-red-9"
+                                 >
+                                    <Icons.xMark className="size-4" />
+                                 </Button>
+                                 <svg
+                                    className="size-6"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                 >
+                                    <g fill="currentColor">
+                                       <path
+                                          d="m4,7h3c.552,0,1-.448,1-1v-3"
+                                          stroke="currentColor"
+                                          strokeLinejoin="round"
+                                          strokeWidth="1.5"
+                                          fill="currentColor"
+                                       />
+                                       <path
+                                          d="m16,8.943v-2.943c0-1.657-1.343-3-3-3h-4.586c-.265,0-.52.105-.707.293l-3.414,3.414c-.188.188-.293.442-.293.707v6.586c0,1.657,1.343,3,3,3h1.24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="1.5"
+                                       />
+                                       <path
+                                          d="m14,14v-1.5c0-.828-.672-1.5-1.5-1.5h0c-.828,0-1.5.672-1.5,1.5v1.5c0,1.657,1.343,3,3,3h0c1.657,0,3-1.343,3-3v-1"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                       />
+                                    </g>
+                                 </svg>
+                              </TooltipTrigger>
+                              <TooltipPopup sideOffset={13}>
+                                 {file.name}
+                              </TooltipPopup>
+                           </Tooltip>
+                        ))}
+                     </div>
+                  )}
                   <Input
                      required
                      autoFocus
@@ -409,7 +497,7 @@ function RouteComponent() {
                         </svg>
                      </TooltipTrigger>
                      <TooltipPopup className={"pr-[3px]"}>
-                        Send <Kbd>Enter</Kbd>
+                        Send <Kbd className="ml-1">Enter</Kbd>
                      </TooltipPopup>
                   </Tooltip>
                </form>

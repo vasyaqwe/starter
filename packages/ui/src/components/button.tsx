@@ -30,6 +30,7 @@ const buttonVariants = cva(
             xl: "h-11 gap-3 rounded-xl px-4 text-base",
             icon: "size-9 gap-0 rounded-[10px]",
             "icon-sm": "size-8 gap-0 rounded-[9px]",
+            "icon-xs": "size-7 gap-0 rounded-[8px]",
          },
       },
       compoundVariants: [

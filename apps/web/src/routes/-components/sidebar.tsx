@@ -69,9 +69,9 @@ export function Sidebar() {
                         >
                            <Icons.chevronLeft className="size-[18px]" />
                         </TooltipTrigger>
-                        <TooltipPopup className={"pr-1"}>
+                        <TooltipPopup className={"pr-[3px]"}>
                            Go back
-                           <Kbd>ctrl</Kbd>
+                           <Kbd className="ml-1">ctrl</Kbd>
                            <Kbd>[</Kbd>
                         </TooltipPopup>
                      </Tooltip>
@@ -89,9 +89,9 @@ export function Sidebar() {
                         >
                            <Icons.chevronRight className="size-[18px]" />
                         </TooltipTrigger>
-                        <TooltipPopup className={"pr-1"}>
+                        <TooltipPopup className={"pr-[3px]"}>
                            Go forward
-                           <Kbd>ctrl</Kbd>
+                           <Kbd className="ml-1">ctrl</Kbd>
                            <Kbd>]</Kbd>
                         </TooltipPopup>
                      </Tooltip>
@@ -121,6 +121,9 @@ export function Sidebar() {
                         >
                            <Icons.chat className="size-5" />
                            Chat
+                           <span className="ml-auto grid size-5 place-items-center rounded-full bg-primary-4 text-foreground text-xs">
+                              1
+                           </span>
                         </Link>
                      </li>
                   ) : null}
@@ -181,7 +184,7 @@ export function Sidebar() {
                <NotificationPermissionCard />
                <div className="flex items-center justify-between">
                   <Button
-                     className="text-foreground/90"
+                     className="rounded-full text-foreground/90"
                      onClick={() =>
                         theme.setTheme(
                            theme.resolvedTheme === "light" ? "dark" : "light",
