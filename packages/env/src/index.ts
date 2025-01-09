@@ -11,6 +11,8 @@ export const server = createEnv({
       POLAR_ACCESS_TOKEN: z.string().min(1),
       POLAR_ORGANIZATION_ID: z.string().min(1),
       POLAR_WEBHOOK_SECRET: z.string().min(1),
+      R2_ACCESS_KEY_ID: z.string().min(1),
+      R2_SECRET_ACCESS_KEY: z.string().min(1),
    },
    runtimeEnv: {
       NODE_ENV: process.env.NODE_ENV,
@@ -21,6 +23,8 @@ export const server = createEnv({
       POLAR_ACCESS_TOKEN: process.env.POLAR_ACCESS_TOKEN,
       POLAR_ORGANIZATION_ID: process.env.POLAR_ORGANIZATION_ID,
       POLAR_WEBHOOK_SECRET: process.env.POLAR_WEBHOOK_SECRET,
+      R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
+      R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
    },
 })
 

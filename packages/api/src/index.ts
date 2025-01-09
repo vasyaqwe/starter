@@ -1,6 +1,7 @@
 import { billingRoute } from "@project/api/billing/route"
 import { handleError } from "@project/api/error/utils"
 import { postRoute } from "@project/api/post/route"
+import { storageRoute } from "@project/api/storage/route"
 import { authRoute } from "@project/api/user/auth/route"
 import { userRoute } from "@project/api/user/route"
 import { createRouter } from "@project/api/utils"
@@ -11,7 +12,6 @@ import { payment } from "@project/payment"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
 import { logger } from "hono/logger"
-
 export const ALLOWED_ORIGINS = ["https://www.project.io", "https://project.io"]
 
 const app = createRouter()
@@ -53,6 +53,7 @@ const baseRoutes = createRouter()
       return handler(c, next)
    })
    .route("/billing", billingRoute)
+   .route("/storage", storageRoute)
    .route("/user", userRoute)
    .route("/post", postRoute)
 
