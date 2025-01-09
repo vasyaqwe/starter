@@ -52,17 +52,6 @@ const baseRoutes = createRouter()
       })
       return handler(c, next)
    })
-   // for local R2 bucket
-   // .get("/r2/*", async (c) => {
-   //    const key = c.req.path.substring("/r2/".length)
-   //    const file = await c.env.STORAGE_BUCKET.get(key)
-   //    if (!file) return c.json({ status: 404 })
-   //    const headers = new Headers()
-   //    headers.append("etag", file.httpEtag)
-   //    return new Response(file.body, {
-   //       headers,
-   //    })
-   // })
    .route("/billing", billingRoute)
    .route("/user", userRoute)
    .route("/post", postRoute)
