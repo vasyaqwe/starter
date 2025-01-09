@@ -1,6 +1,8 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { base64ToArrayBuffer } from "@project/api/storage/utils"
 import { createRouter, zValidator } from "@project/api/utils"
+import { generateId } from "@project/db/utils"
 import { env } from "@project/env"
 import { HTTPException } from "hono/http-exception"
 import ky from "ky"
@@ -18,32 +20,43 @@ const S3 = new S3Client({
 export const storageRoute = createRouter().post(
    "/upload",
    zValidator(
-      "form",
+      "json",
       z.object({
-         files: z.array(z.instanceof(File)),
+         files: z.array(
+            z.object({
+               name: z.string(),
+               type: z.string(),
+               content: z.string(),
+            }),
+         ),
       }),
    ),
    async (c) => {
-      const { files } = c.req.valid("form")
+      const { files } = c.req.valid("json")
 
       const uploded = await Promise.all(
          files.map(async (file) => {
             try {
+               const PATH = "files/"
+
                const url = await getSignedUrl(
                   S3,
                   new PutObjectCommand({
                      Bucket: "storage-bucket",
-                     Key: file.name,
+                     Key: `${PATH}${generateId("file")}`,
                      ContentType: file.type,
                   }),
                   { expiresIn: 30 },
                )
 
                await ky.put(url, {
-                  body: await file.arrayBuffer(),
+                  body: base64ToArrayBuffer(file.content),
                })
 
-               return { name: file.name }
+               return {
+                  name: file.name,
+                  url: `${env.client.STORAGE_DOMAIN}/${PATH}${file.name}`,
+               }
             } catch (err) {
                return {
                   name: file.name,

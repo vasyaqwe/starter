@@ -371,7 +371,7 @@ function RouteComponent() {
                </div>
 
                <form
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                      e.preventDefault()
                      const rand = Math.random()
                      setMessages([
@@ -394,6 +394,22 @@ function RouteComponent() {
                         },
                      ])
                      ;(e.target as HTMLFormElement).reset()
+
+                     // const filesData = await Promise.all(
+                     //    files.map(async (file) => {
+                     //       return {
+                     //          name: file.name,
+                     //          type: file.type,
+                     //          content: fileToBase64(file),
+                     //       }
+                     //    }),
+                     // )
+                     // await hc.storage.upload.$post({
+                     //    json: {
+                     //       files: filesData,
+                     //    },
+                     // })
+
                      setFiles([])
                      scrollToBottom()
                   }}

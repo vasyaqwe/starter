@@ -31,6 +31,7 @@ export const server = createEnv({
 export const env = {
    server,
    client: {
+      STORAGE_DOMAIN: "https://pub-adc2676146514653aefef032cae1fc9d.r2.dev",
       SERVER_DOMAIN:
          process.env.NODE_ENV === "production"
             ? "https://api.project.io"
