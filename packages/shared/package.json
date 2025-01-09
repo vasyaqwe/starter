@@ -11,6 +11,7 @@
    },
    "license": "MIT",
    "scripts": {
+      "build": "tsc",
       "clean": "rm -rf .turbo node_modules",
       "typecheck": "tsc --noEmit --emitDeclarationOnly false"
    },
