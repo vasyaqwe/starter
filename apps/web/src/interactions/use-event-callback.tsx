@@ -1,4 +1,3 @@
-import { useLayoutEffect } from "@tanstack/react-router"
 import * as React from "react"
 
 export function useEventCallback<Args extends unknown[], R>(
@@ -14,7 +13,7 @@ export function useEventCallback<Args extends unknown[], R>(
       throw new Error("Cannot call an event handler while rendering.")
    })
 
-   useLayoutEffect(() => {
+   React.useLayoutEffect(() => {
       ref.current = fn
    }, [fn])
 

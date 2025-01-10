@@ -14,14 +14,6 @@ export const Route = createRootRouteWithContext<{
    queryClient: QueryClient
 }>()({
    component: RootComponent,
-   // pendingComponent: () => (
-   //    <main className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 w-full">
-   //       <Logo className="mx-auto animate-fade-in opacity-0 [--animation-delay:100ms]" />
-   //       <h1 className="mt-4 animate-fade-in text-center font-medium text-foreground/80 opacity-0 duration-500 [--animation-delay:600ms]">
-   //          Workspace is loading...
-   //       </h1>
-   //    </main>
-   // ),
 })
 
 function RootComponent() {

@@ -1,3 +1,6 @@
+export const isNative =
+   "__TAURI_INTERNALS__" in window && window.__TAURI_INTERNALS__ !== undefined
+
 export const MOBILE_BREAKPOINT = 768
 
 export const focusStyles =

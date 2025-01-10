@@ -12,7 +12,10 @@ import {
    FILE_TRIGGER_HOTKEY,
    FileTriggerTooltipContent,
 } from "@project/ui/components/file-trigger"
-import { FileUploader } from "@project/ui/components/file-uploader/index"
+import {
+   FileCard,
+   FileUploader,
+} from "@project/ui/components/file-uploader/index"
 import { Icons } from "@project/ui/components/icons"
 import { Input } from "@project/ui/components/input"
 import { Kbd } from "@project/ui/components/kbd"
@@ -181,6 +184,12 @@ function RouteComponent() {
 
    return (
       <>
+         <FileUploader
+            value={files}
+            onValueChange={setFiles}
+            ref={fileUploaderRef}
+            className="absolute inset-0 z-[99] h-full"
+         />
          <ScrollArea
             ref={scrollAreaRef}
             className="pb-8"
@@ -369,7 +378,6 @@ function RouteComponent() {
                      </PopoverPopup>
                   </Popover>
                </div>
-
                <form
                   onSubmit={async (e) => {
                      e.preventDefault()
@@ -415,14 +423,21 @@ function RouteComponent() {
                   }}
                   className="relative flex-1"
                >
-                  <FileUploader
-                     onValueChange={(files) => {
-                        setFiles(files)
-                     }}
-                     value={files}
-                     className="hidden"
-                     ref={fileUploaderRef}
-                  />
+                  {files?.length ? (
+                     <div className="mb-4 flex flex-wrap gap-2">
+                        {files?.map((file, index) => (
+                           <FileCard
+                              key={index}
+                              file={file}
+                              onRemove={() =>
+                                 setFiles((prev) =>
+                                    prev.filter((_, i) => i !== index),
+                                 )
+                              }
+                           />
+                        ))}
+                     </div>
+                  ) : null}
                   <Input
                      required
                      autoFocus

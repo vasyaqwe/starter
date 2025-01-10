@@ -1,3 +1,5 @@
+import { getCurrentWebview } from "@tauri-apps/api/webview"
+import { exists, readFile } from "@tauri-apps/plugin-fs"
 //courtesy of https://github.com/sadmann7
 import * as React from "react"
 import Dropzone, {
@@ -5,12 +7,33 @@ import Dropzone, {
    type FileRejection,
 } from "react-dropzone"
 import { toast } from "sonner"
+import { isNative } from "../../constants"
 import { cn } from "../../utils"
 import { Button } from "../button"
 import { Icons } from "../icons"
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../tooltip"
 import { useControllableState } from "./hooks/use-controllable-state"
+import { useDragState } from "./hooks/use-drag-state"
 import { formatBytes } from "./utils"
+
+type NativeDropFile = {
+   path: string
+   contents: Uint8Array<ArrayBufferLike>
+}
+
+export type NativeDragDropEvent =
+   | {
+        type: "drag"
+        x: number
+        y: number
+     }
+   | {
+        type: "drop"
+        files: NativeDropFile[]
+     }
+   | {
+        type: "cancel"
+     }
 
 type FileUploaderProps = React.ComponentProps<"div"> & {
    /**
@@ -118,69 +141,58 @@ export function FileUploader(props: FileUploaderProps) {
       return `${str.slice(0, nameLength)}...${ext[0]}`
    }
 
-   const onDrop = React.useCallback(
-      (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-         if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
-            toast.error("Cannot upload more than 1 file at a time")
-            return
-         }
+   const onDrop = (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+      if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
+         toast.error("Cannot upload more than 1 file at a time")
+         return
+      }
 
-         if ((files?.length ?? 0) + acceptedFiles.length > maxFileCount) {
-            toast.error(`Cannot upload more than ${maxFileCount} files`)
-            return
-         }
+      if ((files?.length ?? 0) + acceptedFiles.length > maxFileCount) {
+         toast.error(`Cannot upload more than ${maxFileCount} files`)
+         return
+      }
 
-         const newFiles = acceptedFiles.map((file) =>
-            Object.assign(file, {
-               preview: URL.createObjectURL(file),
-            }),
-         )
+      const newFiles = acceptedFiles.map((file) =>
+         Object.assign(file, {
+            preview: URL.createObjectURL(file),
+         }),
+      )
 
-         const updatedFiles = files ? [...files, ...newFiles] : newFiles
+      const updatedFiles = files ? [...files, ...newFiles] : newFiles
 
-         setFiles(updatedFiles)
+      setFiles(updatedFiles)
 
-         if (rejectedFiles.length > 0) {
-            for (const [index, { file }] of rejectedFiles.entries()) {
-               if (
-                  rejectedFiles[index]?.errors.some(
-                     (e) => e.code === "file-too-large",
-                  )
-               ) {
-                  return toast.error(
-                     `File ${truncate(file.name, 23)} is too large`,
-                  )
-               }
-               toast.error(`Couldn't upload ${truncate(file.name, 23)}`)
+      if (rejectedFiles.length > 0) {
+         for (const [index, { file }] of rejectedFiles.entries()) {
+            if (
+               rejectedFiles[index]?.errors.some(
+                  (e) => e.code === "file-too-large",
+               )
+            ) {
+               return toast.error(
+                  `File ${truncate(file.name, 23)} is too large`,
+               )
             }
+            toast.error(`Couldn't upload ${truncate(file.name, 23)}`)
          }
+      }
 
-         if (
-            onUpload &&
-            updatedFiles.length > 0 &&
-            updatedFiles.length <= maxFileCount
-         ) {
-            // const target =
-            //    updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`
-            // toast.promise(onUpload(updatedFiles), {
-            //    loading: `Uploading ${target}...`,
-            //    success: () => {
-            //       setFiles([])
-            //       return `${target} uploaded`
-            //    },
-            //    error: `Failed to upload ${target}`,
-            // })
-         }
-      },
-
-      [files, maxFileCount, multiple, onUpload, setFiles],
-   )
-
-   function onRemove(index: number) {
-      if (!files) return
-      const newFiles = files.filter((_, i) => i !== index)
-      setFiles(newFiles)
-      onValueChange?.(newFiles)
+      if (
+         onUpload &&
+         updatedFiles.length > 0 &&
+         updatedFiles.length <= maxFileCount
+      ) {
+         // const target =
+         //    updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`
+         // toast.promise(onUpload(updatedFiles), {
+         //    loading: `Uploading ${target}...`,
+         //    success: () => {
+         //       setFiles([])
+         //       return `${target} uploaded`
+         //    },
+         //    error: `Failed to upload ${target}`,
+         // })
+      }
    }
 
    // Revoke preview url when component unmounts
@@ -198,57 +210,125 @@ export function FileUploader(props: FileUploaderProps) {
 
    const isDisabled = disabled || (files?.length ?? 0) >= maxFileCount
 
+   React.useEffect(() => {
+      if (!isNative) return
+
+      let unlisten: (() => void) | null = null
+
+      getCurrentWebview()
+         .onDragDropEvent(async (event) => {
+            if (event.payload.type === "drop") {
+               const paths = event.payload.paths
+
+               const files = await Promise.all(
+                  paths.flatMap(async (path) => {
+                     if (await exists(path)) {
+                        const contents = await readFile(path)
+                        return { path, contents } satisfies NativeDropFile
+                     }
+                     return null
+                  }),
+               )
+
+               const acceptedFiles = []
+               const rejectedFiles = []
+
+               for (const file of files.filter(Boolean)) {
+                  const path = file?.path
+                  const contents = file?.contents
+
+                  const fileName = path?.split("/").pop() || "unknown"
+
+                  // Example validation rules
+                  const fileTooLarge = (contents?.length ?? 0) > maxSize // replace with your limit
+
+                  if (fileTooLarge) {
+                     rejectedFiles.push({
+                        file: { path, name: fileName },
+                        errors: [
+                           ...(fileTooLarge
+                              ? [{ code: "file-too-large" }]
+                              : []),
+                        ],
+                     })
+                  } else {
+                     acceptedFiles.push({ path, contents, name: fileName })
+                  }
+               }
+
+               const newFiles = acceptedFiles
+                  .filter((file) => file.contents)
+                  .map((file) => {
+                     // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                     const blob = new Blob([file.contents!])
+                     return new File([blob], file.name || "unknown")
+                  })
+
+               setFiles((prev) => (prev ? [...prev, ...newFiles] : newFiles))
+
+               if (rejectedFiles.length > 0) {
+                  for (const { file, errors } of rejectedFiles) {
+                     if (errors.some((e) => e.code === "file-too-large")) {
+                        toast.error(
+                           `File ${truncate(file.name, 23)} is too large`,
+                        )
+                     } else {
+                        toast.error(
+                           `Couldn't upload ${truncate(file.name, 23)}`,
+                        )
+                     }
+                  }
+               }
+            }
+         })
+         .then((disposer) => {
+            unlisten = disposer
+         })
+
+      return () => {
+         unlisten?.()
+      }
+   }, [isNative, maxSize])
+
+   const { isDragging } = useDragState()
+
    return (
-      <>
-         <Dropzone
-            onDrop={onDrop}
-            maxSize={maxSize}
-            maxFiles={maxFileCount}
-            multiple={maxFileCount > 1 || multiple}
-            disabled={isDisabled}
-         >
-            {({ getRootProps, getInputProps, isDragActive }) => (
-               <div
-                  {...getRootProps()}
-                  className={cn(
-                     "group pattern relative grid h-52 w-full cursor-pointer place-items-center rounded-2xl border-2 border-muted border-dashed px-3 py-2.5 text-center transition hover:bg-border/10 sm:px-4",
-                     "ring-offset-background hover:border-foreground/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                     isDragActive && "border-muted",
-                     isDisabled && "pointer-events-none opacity-60",
-                     className,
-                  )}
-                  {...dropzoneProps}
-               >
-                  <input {...getInputProps()} />
-                  <div className="flex flex-col items-center justify-center gap-4 sm:px-5">
-                     <div className="flex flex-col gap-2">
-                        <p className="font-medium text-muted-foreground">
-                           Drag {`'n'`} drop files here
-                        </p>
-                        {/* <p className="text-muted-foreground/70 text-sm">
+      <Dropzone
+         onDrop={onDrop}
+         maxSize={maxSize}
+         maxFiles={maxFileCount}
+         multiple={maxFileCount > 1 || multiple}
+         disabled={isDisabled}
+      >
+         {({ getRootProps, getInputProps }) => (
+            <div
+               {...getRootProps()}
+               className={cn(
+                  "bg-black/10",
+                  isDragging ? "" : "invisible",
+                  isDisabled ? "pointer-events-none opacity-70" : "",
+                  className,
+               )}
+               {...dropzoneProps}
+            >
+               <input {...getInputProps()} />
+               {/* <div className="flex flex-col items-center justify-center gap-4 sm:px-5">
+                  <div className="flex flex-col gap-2">
+                     <p className="font-medium text-muted-foreground">
+                        Drag {`'n'`} drop files here
+                     </p>
+                     <p className="text-muted-foreground/70 text-sm">
                            You can upload
                            {maxFileCount > 1
                               ? ` ${maxFileCount === Infinity ? "multiple" : maxFileCount}
                       files (up to ${formatBytes(maxSize)} each)`
                               : ` a file with size up to ${formatBytes(maxSize)}`}
-                        </p> */}
-                     </div>
+                        </p>
                   </div>
-               </div>
-            )}
-         </Dropzone>
-         {files?.length ? (
-            <div className="mb-4 flex flex-wrap gap-2">
-               {files?.map((file, index) => (
-                  <FileCard
-                     key={index}
-                     file={file}
-                     onRemove={() => onRemove(index)}
-                  />
-               ))}
+               </div> */}
             </div>
-         ) : null}
-      </>
+         )}
+      </Dropzone>
    )
 }
 
