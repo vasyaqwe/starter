@@ -31,8 +31,8 @@
       "typecheck": "tsc --noEmit --emitDeclarationOnly false",
       "push": "drizzle-kit push",
       "drop": "drizzle-kit drop",
-      "generate": "drizzle-kit generate",
-      "migrate": "drizzle-kit migrate",
+      "generate": "bun run --env-file ../../.env drizzle-kit generate",
+      "migrate": "bun run --env-file ../../.env drizzle-kit migrate",
       "studio": "drizzle-kit studio"
    },
    "dependencies": {
