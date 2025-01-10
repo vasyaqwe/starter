@@ -1,8 +1,9 @@
-import type { HonoContext } from "@project/api/context"
+import type { HonoEnv } from "@project/api/context"
 import { eq } from "@project/db"
 import { oauthAccount, user } from "@project/db/schema/user"
 import { env } from "@project/env"
 import { Google } from "arctic"
+import type { Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import ky from "ky"
 import { createSession } from "."
@@ -19,7 +20,7 @@ export const createGoogleSession = async ({
    code,
    codeVerifier,
 }: {
-   c: HonoContext
+   c: Context<HonoEnv>
    code: string
    codeVerifier: string
 }) => {

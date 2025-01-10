@@ -3,7 +3,6 @@ import type { Session, User } from "@project/db/schema/user"
 import type { Email } from "@project/email"
 import type { Env } from "@project/env"
 import type { Payment } from "@project/payment"
-import type { Context } from "hono"
 
 type Variables = {
    db: Database
@@ -12,15 +11,12 @@ type Variables = {
    env: Env
 }
 
-export type AuthVariables = { user: User; session: Session }
+type AuthVariables = { user: User; session: Session }
 
-export type AppContext = {
+export type HonoEnv = {
    Variables: Variables
 }
 
-export type AuthedAppContext = {
+export type AuthedHonoEnv = {
    Variables: Variables & AuthVariables
 }
-
-export type HonoContext = Context<AppContext>
-export type AuthedHonoContext = Context<AuthedAppContext>

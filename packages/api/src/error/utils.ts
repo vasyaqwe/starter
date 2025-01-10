@@ -1,5 +1,6 @@
-import type { HonoContext } from "@project/api/context"
+import type { HonoEnv } from "@project/api/context"
 import { logger } from "@project/shared/logger"
+import type { Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import { ZodError, type ZodIssue } from "zod"
 import type { ErrorCode } from "./schema"
@@ -65,7 +66,7 @@ export const parseZodErrorIssues = (issues: ZodIssue[]): string => {
       .join("; ")
 }
 
-export const handleError = (error: Error, c: HonoContext) => {
+export const handleError = (error: Error, c: Context<HonoEnv>) => {
    // c.var.sentry.captureException(error)
    logger.error(error)
 

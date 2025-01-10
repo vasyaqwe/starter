@@ -1,8 +1,9 @@
 import { sha256 } from "@oslojs/crypto/sha2"
 import { encodeHexLowerCase } from "@oslojs/encoding"
-import type { AuthedAppContext, HonoContext } from "@project/api/context"
+import type { AuthedHonoEnv, HonoEnv } from "@project/api/context"
 import { eq } from "@project/db"
 import { session, user } from "@project/db/schema/user"
+import type { Context } from "hono"
 import { createMiddleware } from "hono/factory"
 import { HTTPException } from "hono/http-exception"
 import {
@@ -12,7 +13,7 @@ import {
 } from "."
 import { SESSION_EXPIRATION_SECONDS } from "./constants"
 
-const validateSessionToken = async (c: HonoContext, token: string) => {
+const validateSessionToken = async (c: Context<HonoEnv>, token: string) => {
    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 
    const [found] = await c.var.db
@@ -50,7 +51,7 @@ const validateSessionToken = async (c: HonoContext, token: string) => {
    return { session: foundSession, user: foundUser }
 }
 
-export const authMiddleware = createMiddleware<AuthedAppContext>(
+export const authMiddleware = createMiddleware<AuthedHonoEnv>(
    async (c, next) => {
       const sessionToken = getSessionTokenCookie(c)
       if (!sessionToken) {

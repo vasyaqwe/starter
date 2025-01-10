@@ -4,7 +4,7 @@ import {
    encodeBase32LowerCaseNoPadding,
    encodeHexLowerCase,
 } from "@oslojs/encoding"
-import type { AuthedHonoContext, HonoContext } from "@project/api/context"
+import type { AuthedHonoEnv, HonoEnv } from "@project/api/context"
 import { COOKIE_OPTIONS } from "@project/api/cookie/constants"
 import { TimeSpan, createDate, isWithinExpirationDate } from "@project/api/date"
 import { eq } from "@project/db"
@@ -14,7 +14,7 @@ import type { Context } from "hono"
 import { getCookie, setCookie } from "hono/cookie"
 import { SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS } from "./constants"
 
-export const createSession = async (c: HonoContext, userId: string) => {
+export const createSession = async (c: Context<HonoEnv>, userId: string) => {
    const token = generateSessionToken()
    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 
@@ -55,7 +55,7 @@ export const generateSessionToken = () => {
 }
 
 export const invalidateSession = async (
-   c: AuthedHonoContext,
+   c: Context<AuthedHonoEnv>,
    sessionId: string,
 ) => await c.var.db.delete(session).where(eq(session.id, sessionId))
 

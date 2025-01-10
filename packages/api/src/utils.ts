@@ -1,11 +1,11 @@
-import type { AppContext } from "@project/api/context"
+import type { HonoEnv } from "@project/api/context"
 import { parseZodErrorIssues } from "@project/api/error/utils"
 import { logger } from "@project/shared/logger"
 import { Hono, type ValidationTargets } from "hono"
 import { validator } from "hono/validator"
 import { ZodError, type ZodSchema, type z } from "zod"
 
-export const createRouter = () => new Hono<AppContext>()
+export const createRouter = () => new Hono<HonoEnv>()
 
 export const appendSearchParams = (
    url: string,
