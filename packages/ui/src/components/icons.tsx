@@ -369,6 +369,35 @@ export const Icons = {
          </g>
       </svg>
    ),
+   pencil: (props: IconProps) => (
+      <svg
+         xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 20 20"
+         {...props}
+      >
+         <g fill="currentColor">
+            <line
+               x1="17"
+               y1="17"
+               x2="12"
+               y2="17"
+               fill="none"
+               stroke="currentColor"
+               strokeLinecap="round"
+               strokeLinejoin="round"
+               strokeWidth="2"
+            />
+            <path
+               d="m3,17l1-5L12.414,3.586c.781-.781,2.047-.781,2.828,0l1.172,1.172c.781.781.781,2.047,0,2.828l-8.414,8.414-5,1Z"
+               fill="none"
+               stroke="currentColor"
+               strokeLinecap="round"
+               strokeLinejoin="round"
+               strokeWidth="2"
+            />
+         </g>
+      </svg>
+   ),
    trash: (props: IconProps) => (
       <svg
          xmlns="http://www.w3.org/2000/svg"

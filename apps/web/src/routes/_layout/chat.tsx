@@ -1,3 +1,4 @@
+import { useEventListener } from "@/interactions/use-event-listener"
 import { formatDate } from "@/misc/format"
 import {
    Message,
@@ -134,6 +135,10 @@ function RouteComponent() {
       ].map((m) => ({ ...m, id: crypto.randomUUID() })),
    )
 
+   const [editingMessageId, setEditingMessageId] = React.useState<
+      string | null
+   >(null)
+
    const groupedMessages = Object.entries(
       messages.reduce(
          (acc, msg) => {
@@ -182,19 +187,51 @@ function RouteComponent() {
 
    const [files, setFiles] = React.useState<File[]>([])
 
+   const contentRef = React.useRef<HTMLInputElement>(null)
+   const [content, setContent] = React.useState("")
+
+   useHotkeys(
+      "esc",
+      () => {
+         if (editingMessageId) {
+            setEditingMessageId(null)
+            setContent("")
+         }
+      },
+      {
+         enableOnFormTags: true,
+         enableOnContentEditable: true,
+      },
+   )
+
+   useEventListener("keydown", (e) => {
+      if (document.activeElement?.tagName === "INPUT") return
+
+      // Focus input if typing letter/number keys
+      if (e.key.length === 1) {
+         contentRef.current?.focus()
+      }
+   })
+
    return (
       <>
          <FileUploader
             value={files}
             onValueChange={setFiles}
             ref={fileUploaderRef}
-            className="absolute inset-0 z-[99] h-full"
+            className="absolute inset-0 z-[9] h-full"
          />
+
          <ScrollArea
             ref={scrollAreaRef}
             className="pb-8"
          >
-            <div className="mx-auto w-full max-w-4xl px-3 sm:px-4">
+            <div
+               data-editing={editingMessageId ? "" : undefined}
+               className={
+                  "group/container mx-auto w-full max-w-4xl px-3 sm:px-4"
+               }
+            >
                {groupedMessages.map((dateGroup) => (
                   <div key={dateGroup.date}>
                      <MessageGroupDate>{dateGroup.date}</MessageGroupDate>
@@ -214,6 +251,7 @@ function RouteComponent() {
                         >
                            <UserAvatar
                               className={cn(
+                                 "group-data-[editing]/container:opacity-30",
                                  "mt-auto mb-[3px]",
                                  currentUserId === group.sender.id
                                     ? "hidden"
@@ -233,6 +271,14 @@ function RouteComponent() {
                                        <Message
                                           key={message.id}
                                           isMine={isMine}
+                                          data-highlighted={
+                                             editingMessageId === message.id
+                                                ? ""
+                                                : undefined
+                                          }
+                                          className={cn(
+                                             "data-[highlighted]:opacity-100 group-data-[editing]/container:opacity-30",
+                                          )}
                                        >
                                           <MessageActions>
                                              <Menu>
@@ -252,6 +298,20 @@ function RouteComponent() {
                                                       isMine ? "end" : "start"
                                                    }
                                                 >
+                                                   <MenuItem
+                                                      onClick={() => {
+                                                         setEditingMessageId(
+                                                            message.id,
+                                                         )
+                                                         contentRef.current?.focus()
+                                                         setContent(
+                                                            message.content,
+                                                         )
+                                                      }}
+                                                   >
+                                                      <Icons.pencil />
+                                                      Edit
+                                                   </MenuItem>
                                                    <MenuItem
                                                       destructive
                                                       onClick={() =>
@@ -310,6 +370,7 @@ function RouteComponent() {
             </div>
             <div ref={scroll} />
          </ScrollArea>
+
          <div className="border-neutral border-t bg-background">
             <div className="mx-auto flex max-w-4xl items-end gap-2 p-2 md:p-4">
                <div className="mb-0.5 flex items-center gap-0.5">
@@ -381,6 +442,12 @@ function RouteComponent() {
                <form
                   onSubmit={async (e) => {
                      e.preventDefault()
+
+                     if (editingMessageId) {
+                        setContent("")
+                        return setEditingMessageId(null)
+                     }
+
                      const rand = Math.random()
                      setMessages([
                         ...messages,
@@ -401,7 +468,7 @@ function RouteComponent() {
                            createdAt: new Date(),
                         },
                      ])
-                     ;(e.target as HTMLFormElement).reset()
+                     setContent("")
 
                      // const filesData = await Promise.all(
                      //    files.map(async (file) => {
@@ -439,8 +506,11 @@ function RouteComponent() {
                      </div>
                   ) : null}
                   <Input
+                     ref={contentRef}
                      required
                      autoFocus
+                     value={content}
+                     onChange={(e) => setContent(e.target.value)}
                      autoComplete="off"
                      name="content"
                      variant="chat"
@@ -456,19 +526,23 @@ function RouteComponent() {
                            />
                         }
                      >
-                        <svg
-                           viewBox="0 0 24 24"
-                           fill="none"
-                           className="size-5"
-                        >
-                           <path
-                              d="M6 9.8304C7.55556 7.727 9.37278 5.83783 11.4057 4.20952C11.5801 4.06984 11.79 4 12 4M18 9.8304C16.4444 7.727 14.6272 5.83783 12.5943 4.20952C12.4199 4.06984 12.21 4 12 4M12 4V20"
-                              stroke="currentColor"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                           />
-                        </svg>
+                        {editingMessageId ? (
+                           <Icons.check className="size-5" />
+                        ) : (
+                           <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              className="size-5"
+                           >
+                              <path
+                                 d="M6 9.8304C7.55556 7.727 9.37278 5.83783 11.4057 4.20952C11.5801 4.06984 11.79 4 12 4M18 9.8304C16.4444 7.727 14.6272 5.83783 12.5943 4.20952C12.4199 4.06984 12.21 4 12 4M12 4V20"
+                                 stroke="currentColor"
+                                 strokeWidth="2.5"
+                                 strokeLinecap="round"
+                                 strokeLinejoin="round"
+                              />
+                           </svg>
+                        )}
                      </TooltipTrigger>
                      <TooltipPopup className={"pr-[3px]"}>
                         Send <Kbd className="ml-1">Enter</Kbd>
