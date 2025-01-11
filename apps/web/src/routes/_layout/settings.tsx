@@ -121,7 +121,7 @@ function RouteComponent() {
 
    const [createPasskeyOpen, setCreatePasskeyOpen] = React.useState(false)
    const [attestation, setAttestation] = React.useState("")
-   const [clientDataJSON, setClientDataJSON] = React.useState("")
+   const [clientData, setClientData] = React.useState("")
 
    const requestChallenge = useMutation({
       mutationFn: async () =>
@@ -177,14 +177,14 @@ function RouteComponent() {
          setAttestation(
             encodeBase64(new Uint8Array(credential.response.attestationObject)),
          )
-         setClientDataJSON(
+         setClientData(
             encodeBase64(new Uint8Array(credential.response.clientDataJSON)),
          )
          setCreatePasskeyOpen(true)
       },
       onError: (error) => {
          if (error instanceof DOMException)
-            return toast.error("Request was cancelled")
+            return toast("Request was cancelled")
          toast.error(error.message)
       },
    })
@@ -240,27 +240,33 @@ function RouteComponent() {
                         Manage your authentication passkeys here.
                      </p>
                      <Separator className={"mb-4"} />
-                     <ul>
-                        {passkeys.length === 0 ? (
-                           <li className="text-foreground/75">
-                              No passkeys added yet.
-                           </li>
-                        ) : (
-                           passkeys.map((passkey) => {
-                              const id = encodeBase64urlNoPadding(
-                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                 new Uint8Array((passkey.id as any).data),
-                              )
-                              return (
-                                 <PasskeyItem
-                                    name={passkey.name}
-                                    id={id}
-                                    key={id}
-                                 />
-                              )
-                           })
-                        )}
-                     </ul>
+                     {query.isPending ? null : query.isError ? (
+                        <p className="text-destructive">
+                           There was an error loading your passkeys.
+                        </p>
+                     ) : (
+                        <ul>
+                           {passkeys.length === 0 ? (
+                              <li className="text-foreground/75">
+                                 No passkeys added yet.
+                              </li>
+                           ) : (
+                              passkeys.map((passkey) => {
+                                 const id = encodeBase64urlNoPadding(
+                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                    new Uint8Array((passkey.id as any).data),
+                                 )
+                                 return (
+                                    <PasskeyItem
+                                       name={passkey.name}
+                                       id={id}
+                                       key={id}
+                                    />
+                                 )
+                              })
+                           )}
+                        </ul>
+                     )}
                      <Button
                         className="mt-6"
                         disabled={requestChallenge.isPending}
@@ -293,7 +299,7 @@ function RouteComponent() {
                                     insertPasskey.mutate({
                                        name,
                                        attestation,
-                                       clientDataJSON,
+                                       clientData,
                                     })
                                  }}
                               />

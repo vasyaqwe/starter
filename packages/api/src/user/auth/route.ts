@@ -1,3 +1,24 @@
+import {
+   decodePKIXECDSASignature,
+   decodeSEC1PublicKey,
+   p256,
+   verifyECDSASignature,
+} from "@oslojs/crypto/ecdsa"
+import {
+   decodePKCS1RSAPublicKey,
+   sha256ObjectIdentifier,
+   verifyRSASSAPKCS1v15Signature,
+} from "@oslojs/crypto/rsa"
+import { sha256 } from "@oslojs/crypto/sha2"
+import { decodeBase64, encodeBase64 } from "@oslojs/encoding"
+import {
+   ClientDataType,
+   coseAlgorithmES256,
+   coseAlgorithmRS256,
+   createAssertionSignatureMessage,
+   parseAuthenticatorData,
+   parseClientDataJSON,
+} from "@oslojs/webauthn"
 import { COOKIE_OPTIONS } from "@project/api/cookie/constants"
 import { handleError } from "@project/api/error/utils"
 import { createRouter, zValidator } from "@project/api/misc/utils"
@@ -5,9 +26,15 @@ import {
    ExpiringTokenBucket,
    RefillingTokenBucket,
 } from "@project/api/rate-limit"
+import {
+   createPasskeyChallenge,
+   passkeyChallengeRateLimitBucket,
+   verifyPasskeyChallenge,
+} from "@project/api/user/auth/passkey/utils"
 import { eq } from "@project/db"
 import {
    oauthProviders,
+   passkeyCredential,
    user as userSchema,
    verifyLoginOTPInput,
 } from "@project/db/schema/user"
@@ -26,6 +53,113 @@ const sendOtpBucket = new ExpiringTokenBucket<string>(3, 60)
 const verifyOtpBucket = new RefillingTokenBucket<string>(5, 60)
 
 export const authRoute = createRouter()
+   .post("/passkey/challenge", async (c) => {
+      const ip = c.req.header("x-forwarded-for")
+      if (ip && !passkeyChallengeRateLimitBucket.consume(ip, 1))
+         throw new HTTPException(429, { message: "Too many requests" })
+
+      return c.json(encodeBase64(createPasskeyChallenge()))
+   })
+   .post(
+      "/passkey/login",
+      zValidator(
+         "json",
+         z.object({
+            authenticatorData: z.string(),
+            clientData: z.string(),
+            credentialId: z.string(),
+            signature: z.string(),
+         }),
+      ),
+      async (c) => {
+         const { authenticatorData, clientData, credentialId, signature } =
+            c.req.valid("json")
+         const decodedAuthenticatorData = decodeBase64(authenticatorData)
+         const decodedClientData = decodeBase64(clientData)
+         const decodedCredentialId = decodeBase64(credentialId)
+         const decodedSignature = decodeBase64(signature)
+
+         const parsedAuthenticatorData = parseAuthenticatorData(
+            decodedAuthenticatorData,
+         )
+
+         const host = c.req.header("host")?.split(":")[0] ?? ""
+
+         if (
+            !parsedAuthenticatorData.verifyRelyingPartyIdHash(host) ||
+            !parsedAuthenticatorData.userPresent ||
+            !parsedAuthenticatorData.userVerified
+         )
+            throw new HTTPException(400, { message: "Invalid data" })
+
+         const parsedClientData = parseClientDataJSON(decodedClientData)
+
+         if (
+            parsedClientData.type !== ClientDataType.Get ||
+            !verifyPasskeyChallenge(parsedClientData.challenge) ||
+            parsedClientData.origin !== env.client.WEB_DOMAIN ||
+            (parsedClientData.crossOrigin !== null &&
+               parsedClientData.crossOrigin)
+         )
+            throw new HTTPException(400, { message: "Invalid data" })
+
+         const credential = await c.var.db.query.passkeyCredential.findFirst({
+            where: eq(passkeyCredential.id, decodedCredentialId),
+            columns: {
+               id: true,
+               userId: true,
+               name: true,
+               algorithm: true,
+               publicKey: true,
+            },
+         })
+
+         if (!credential)
+            throw new HTTPException(400, { message: "Invalid credentials" })
+
+         let validSignature: boolean
+         if (credential.algorithm === coseAlgorithmES256) {
+            const ecdsaSignature = decodePKIXECDSASignature(decodedSignature)
+            const ecdsaPublicKey = decodeSEC1PublicKey(
+               p256,
+               credential.publicKey,
+            )
+            const hash = sha256(
+               createAssertionSignatureMessage(
+                  decodedAuthenticatorData,
+                  decodedClientData,
+               ),
+            )
+            validSignature = verifyECDSASignature(
+               ecdsaPublicKey,
+               hash,
+               ecdsaSignature,
+            )
+         } else if (credential.algorithm === coseAlgorithmRS256) {
+            const rsaPublicKey = decodePKCS1RSAPublicKey(credential.publicKey)
+            const hash = sha256(
+               createAssertionSignatureMessage(
+                  decodedAuthenticatorData,
+                  decodedClientData,
+               ),
+            )
+            validSignature = verifyRSASSAPKCS1v15Signature(
+               rsaPublicKey,
+               sha256ObjectIdentifier,
+               hash,
+               decodedSignature,
+            )
+         } else {
+            throw new HTTPException(400, { message: "Unsupported algorithm" })
+         }
+
+         if (!validSignature)
+            throw new HTTPException(400, { message: "Invalid signature" })
+
+         await createSession(c, credential.userId)
+         return c.json({ status: "ok" })
+      },
+   )
    .post(
       "/send-login-otp",
       zValidator(
@@ -36,8 +170,8 @@ export const authRoute = createRouter()
       ),
       async (c) => {
          const { email } = c.req.valid("json")
-         logger.info(sendOtpBucket.check(email, 1))
-         if (!sendOtpBucket.check(email, 1))
+
+         if (!sendOtpBucket.consume(email, 1))
             throw new HTTPException(429, {
                message: "Too many requests. Please try again later.",
             })
@@ -90,11 +224,6 @@ export const authRoute = createRouter()
                   })
             }
          })
-
-         if (!sendOtpBucket.consume(email, 1))
-            throw new HTTPException(429, {
-               message: "Too many requests. Please try again later.",
-            })
 
          return c.json({ email })
       },
@@ -242,7 +371,7 @@ export const authRoute = createRouter()
                      <title>Opening app...</title>
                      </head>
                      <body>
-                     <p>If app isn't opening, <a href="${url}">click here</a>.</p>
+                     <p>Opening app... <br /> If app isn't opening, <a href="${url}">click here</a>.</p>
                      <script>
                         setTimeout(() => {
                            window.location.href = "${url}";

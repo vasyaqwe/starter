@@ -73,7 +73,7 @@ export function FieldError({
 }: React.ComponentProps<typeof FieldPrimitive.Error>) {
    return (
       <FieldPrimitive.Error
-         className={cn("text-red-11 text-sm dark:text-red-9", className)}
+         className={cn("text-destructive text-sm9", className)}
          {...props}
       />
    )
