@@ -1,5 +1,5 @@
+import { createRouter } from "@project/api/misc/utils"
 import { authMiddleware } from "@project/api/user/auth/middleware"
-import { createRouter } from "@project/api/utils"
 import { deleteSessionTokenCookie, invalidateSession } from "./auth"
 
 export const userRoute = createRouter()

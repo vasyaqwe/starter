@@ -1,6 +1,10 @@
 import { COOKIE_OPTIONS } from "@project/api/cookie/constants"
 import { handleError } from "@project/api/error/utils"
-import { createRouter, zValidator } from "@project/api/utils"
+import { createRouter, zValidator } from "@project/api/misc/utils"
+import {
+   ExpiringTokenBucket,
+   RefillingTokenBucket,
+} from "@project/api/rate-limit"
 import { eq } from "@project/db"
 import {
    oauthProviders,
@@ -18,6 +22,9 @@ import { z } from "zod"
 import { createSession, generateEmailOTP, verifyEmailOTP } from "."
 import { createGoogleSession, googleClient } from "./google"
 
+const sendOtpBucket = new ExpiringTokenBucket<string>(3, 60)
+const verifyOtpBucket = new RefillingTokenBucket<string>(5, 60)
+
 export const authRoute = createRouter()
    .post(
       "/send-login-otp",
@@ -29,7 +36,12 @@ export const authRoute = createRouter()
       ),
       async (c) => {
          const { email } = c.req.valid("json")
-         // const wait = (ms: number) =>  new Promise((resolve) => setTimeout(resolve, ms))
+         logger.info(sendOtpBucket.check(email, 1))
+         if (!sendOtpBucket.check(email, 1))
+            throw new HTTPException(429, {
+               message: "Too many requests. Please try again later.",
+            })
+
          await c.var.db.transaction(async (tx) => {
             let user: { id: string } | null = null
 
@@ -79,6 +91,11 @@ export const authRoute = createRouter()
             }
          })
 
+         if (!sendOtpBucket.consume(email, 1))
+            throw new HTTPException(429, {
+               message: "Too many requests. Please try again later.",
+            })
+
          return c.json({ email })
       },
    )
@@ -87,6 +104,12 @@ export const authRoute = createRouter()
       zValidator("json", verifyLoginOTPInput),
       async (c) => {
          const { code, email } = c.req.valid("json")
+
+         if (!verifyOtpBucket.consume(email, 1))
+            throw new HTTPException(429, {
+               message: "Too many requests. Please try again later.",
+            })
+
          const { userId } = await verifyEmailOTP(c.var.db, email, code)
 
          if (!userId)

@@ -67,8 +67,8 @@ function RouteComponent() {
             otpInputRef.current?.focus(),
          )
       },
-      onError: () => {
-         toast.error("An error occurred, couldn't send code")
+      onError: (error) => {
+         toast.error(error.message)
          timer.reset()
       },
    })
@@ -92,12 +92,14 @@ function RouteComponent() {
    })
 
    const onVerifyCode = ({ code }: { code: string }) => {
-      toast.dismiss("otp")
       toast.promise(verifyLoginCode.mutateAsync({ code, email }), {
          id: "otp",
          loading: "Verifying code...",
-         success: () => `Code is valid`,
-         error: () => `Code is invalid or expired`,
+         success: () => "Code is valid",
+         error: (error: unknown) =>
+            error instanceof Error
+               ? error.message
+               : "Code is invalid or expired",
          position:
             window.innerWidth < MOBILE_BREAKPOINT
                ? "top-center"

@@ -1,5 +1,5 @@
+import { createRouter, zValidator } from "@project/api/misc/utils"
 import { authMiddleware } from "@project/api/user/auth/middleware"
-import { createRouter, zValidator } from "@project/api/utils"
 import { z } from "zod"
 
 export const postRoute = createRouter()
