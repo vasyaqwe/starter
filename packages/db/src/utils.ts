@@ -55,7 +55,7 @@ const lifecycleDates = {
       .$onUpdateFn(() => new Date()),
 }
 
-const bytea = customType<{ data: string }>({
+const bytea = customType<{ data: Uint8Array }>({
    dataType() {
       return "bytea"
    },

@@ -14,6 +14,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@oslojs/encoding": "^1.1.0",
     "@project/shared": "workspace:*",
     "@project/ui": "workspace:*",
     "@tanstack/react-query": "^5.62.15",

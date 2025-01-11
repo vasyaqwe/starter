@@ -15,6 +15,13 @@
       "when": 1736598712670,
       "tag": "0001_left_multiple_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1736613568709,
+      "tag": "0002_supreme_zemo",
+      "breakpoints": true
     }
   ]
 }

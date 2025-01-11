@@ -16,8 +16,8 @@ export const user = pgTable(
    "user",
    {
       id: tableId("user"),
-      email: text(),
-      name: text(),
+      email: text().notNull(),
+      name: text().notNull().default(""),
       avatarUrl: text(),
       emailVerified: boolean().notNull().default(false),
       onboardingCompleted: boolean().notNull().default(false),
@@ -106,4 +106,5 @@ export const verifyLoginOTPInput = createSelectSchema(
 
 export type Session = InferSelectModel<typeof session>
 export type User = InferSelectModel<typeof user>
+export type PasskeyCredential = InferSelectModel<typeof passkeyCredential>
 export type OauthProvider = (typeof oauthProviders)[number]

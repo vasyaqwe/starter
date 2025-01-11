@@ -14,7 +14,7 @@ export const dialogStyles = {
       "fixed inset-0 bg-black opacity-25 transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 dark:opacity-50",
    title: "-mt-1 mb-2 font-semibold text-lg",
    description: "mb-6 text-foreground/75 text-sm",
-   footer: "flex justify-end gap-3",
+   footer: "flex justify-end gap-3 pt-3",
 }
 
 export const popupStyles = {

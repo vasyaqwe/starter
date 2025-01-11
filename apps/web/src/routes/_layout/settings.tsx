@@ -1,13 +1,37 @@
 import { subscriptionByUserIdQuery } from "@/billing/queries"
 import { useCssVariable } from "@/interactions/use-css-variable"
 import { hc, honoMutationFn } from "@/lib/hono"
+import { useAuth } from "@/user/hooks"
+import { passkeyListQuery } from "@/user/queries"
+import {
+   decodeBase64,
+   encodeBase64,
+   encodeBase64urlNoPadding,
+} from "@oslojs/encoding"
 import { Button } from "@project/ui/components/button"
+import {
+   Dialog,
+   DialogFooter,
+   DialogPopup,
+   DialogTitle,
+} from "@project/ui/components/dialog"
+import {
+   Field,
+   FieldControl,
+   FieldError,
+   FieldLabel,
+} from "@project/ui/components/field"
+import { Icons } from "@project/ui/components/icons"
+import {} from "@project/ui/components/popover"
 import { ScrollArea } from "@project/ui/components/scroll-area"
+import { Separator } from "@project/ui/components/separator"
 import { Switch } from "@project/ui/components/switch"
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@project/ui/components/tabs"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
+import type { InferRequestType, InferResponseType } from "hono"
+import * as React from "react"
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -26,15 +50,9 @@ export const Route = createFileRoute("/_layout/settings")({
    }),
 })
 
-function RouteComponent() {
+function BillingPanel() {
    const queryClient = useQueryClient()
-   const search = Route.useSearch()
-   const navigate = useNavigate()
-   const [cursor, setCursor] = useCssVariable("cursor", "default")
-
-   const query = useQuery(
-      subscriptionByUserIdQuery({ enabled: search.tab === "billing" }),
-   )
+   const query = useQuery(subscriptionByUserIdQuery())
    const subscription = query.data
    const subscribe = useMutation({
       mutationFn: async () => {
@@ -48,6 +66,140 @@ function RouteComponent() {
          queryClient.invalidateQueries(subscriptionByUserIdQuery())
       },
    })
+
+   return (
+      <div className="py-6">
+         <h2 className="font-semibold text-lg">Subscription</h2>
+         <p className="mt-2 mb-6 text-foreground/70">
+            Subscription is: {subscription?.status ?? "null"} <br />
+            {subscription?.status === "canceled" ? (
+               <>
+                  Was canceled on{" "}
+                  {new Date(
+                     subscription.currentPeriodEnd ?? "",
+                  ).toLocaleDateString()}
+               </>
+            ) : subscription?.cancelAtPeriodEnd ? (
+               <>
+                  Will be canceled on{" "}
+                  {new Date(
+                     subscription.currentPeriodEnd ?? "",
+                  ).toLocaleDateString()}
+               </>
+            ) : subscription?.currentPeriodEnd ? (
+               <>
+                  Next payment on:{" "}
+                  {new Date(
+                     subscription.currentPeriodEnd ?? "",
+                  ).toLocaleDateString()}
+               </>
+            ) : null}
+         </p>
+         {subscription?.cancelAtPeriodEnd ? null : subscription?.status ===
+           "active" ? (
+            <Button
+               isPending={cancel.isPending}
+               disabled={cancel.isPending}
+               onClick={() => cancel.mutate()}
+            >
+               Cancel
+            </Button>
+         ) : (
+            <Button onClick={() => subscribe.mutate()}>Subscribe</Button>
+         )}
+      </div>
+   )
+}
+
+function RouteComponent() {
+   const queryClient = useQueryClient()
+   const search = Route.useSearch()
+   const navigate = useNavigate()
+   const [cursor, setCursor] = useCssVariable("cursor", "default")
+   const { user } = useAuth()
+   const query = useQuery(passkeyListQuery())
+
+   const [createPasskeyOpen, setCreatePasskeyOpen] = React.useState(false)
+   const [attestation, setAttestation] = React.useState("")
+   const [clientDataJSON, setClientDataJSON] = React.useState("")
+
+   const requestChallenge = useMutation({
+      mutationFn: async () =>
+         honoMutationFn(await hc.user.passkey.challenge.$post()),
+      onSuccess: async (data) => {
+         const challenge = decodeBase64(data.challenge)
+         const credentialUserId = decodeBase64(data.credentialUserId)
+         const credentialIds = data.credentialIds
+            .split(",")
+            .map((i) => decodeBase64(i))
+
+         const credential = await navigator.credentials.create({
+            publicKey: {
+               challenge,
+               user: {
+                  displayName: user.name,
+                  id: credentialUserId,
+                  name: user.email,
+               },
+               rp: {
+                  name: "Project",
+               },
+               pubKeyCredParams: [
+                  {
+                     alg: -7,
+                     type: "public-key",
+                  },
+                  {
+                     alg: -257,
+                     type: "public-key",
+                  },
+               ],
+               attestation: "none",
+               authenticatorSelection: {
+                  userVerification: "required",
+                  residentKey: "required",
+                  requireResidentKey: true,
+               },
+               excludeCredentials: credentialIds
+                  .filter((id) => id && id.length > 0) // Filter out empty or invalid IDs
+                  .map((id) => ({
+                     id,
+                     type: "public-key",
+                  })),
+            },
+         })
+
+         if (!(credential instanceof PublicKeyCredential))
+            throw new Error("Failed to create public key")
+         if (!(credential.response instanceof AuthenticatorAttestationResponse))
+            throw new Error("Unexpected error")
+
+         setAttestation(
+            encodeBase64(new Uint8Array(credential.response.attestationObject)),
+         )
+         setClientDataJSON(
+            encodeBase64(new Uint8Array(credential.response.clientDataJSON)),
+         )
+         setCreatePasskeyOpen(true)
+      },
+      onError: (error) => {
+         if (error instanceof DOMException)
+            return toast.error("Request was cancelled")
+         toast.error(error.message)
+      },
+   })
+
+   const insertPasskey = useMutation({
+      mutationFn: async (
+         json: InferRequestType<typeof hc.user.passkey.insert.$post>["json"],
+      ) => honoMutationFn(await hc.user.passkey.insert.$post({ json })),
+      onSuccess: () => {
+         queryClient.invalidateQueries(passkeyListQuery())
+         setCreatePasskeyOpen(false)
+      },
+   })
+
+   const passkeys = query.data ?? []
 
    return (
       <>
@@ -80,10 +232,92 @@ function RouteComponent() {
                   className={"divide-y divide-primary-4"}
                >
                   <div className="py-6">
-                     <h2 className="font-semibold text-lg">Some setting</h2>
-                     <p className="mt-2 mb-6 text-foreground/70">
-                        Do this setting to do something.
+                     <h2 className="font-semibold text-lg">Passkeys</h2>
+                     <p className="mt-2 mb-4 text-foreground/70">
+                        Manage your authentication passkeys here.
                      </p>
+                     <Separator className={"mb-4"} />
+                     <ul>
+                        {passkeys.length === 0 ? (
+                           <li className="text-foreground/75">
+                              No passkeys added yet.
+                           </li>
+                        ) : (
+                           passkeys.map((passkey, idx) => (
+                              <PasskeyItem
+                                 passkey={passkey}
+                                 key={idx}
+                              />
+                           ))
+                        )}
+                     </ul>
+                     <Button
+                        className="mt-6"
+                        disabled={requestChallenge.isPending}
+                        onClick={() => requestChallenge.mutate()}
+                     >
+                        {requestChallenge.isPending ? (
+                           "Confirm passkey.."
+                        ) : (
+                           <>
+                              <Icons.plus className="size-4" /> New passkey
+                           </>
+                        )}
+                     </Button>
+                     <Dialog
+                        open={createPasskeyOpen}
+                        onOpenChange={setCreatePasskeyOpen}
+                     >
+                        <DialogPopup
+                           className={"w-80"}
+                           render={
+                              <form
+                                 onSubmit={(e) => {
+                                    e.preventDefault()
+                                    const { name } = Object.fromEntries(
+                                       new FormData(
+                                          e.target as HTMLFormElement,
+                                       ).entries(),
+                                    ) as { name: string }
+
+                                    insertPasskey.mutate({
+                                       name,
+                                       attestation,
+                                       clientDataJSON,
+                                    })
+                                 }}
+                              />
+                           }
+                        >
+                           <DialogTitle>Create your passkey</DialogTitle>
+                           <Field className={"mt-2"}>
+                              <FieldLabel>Name</FieldLabel>
+                              <FieldControl
+                                 required
+                                 name="name"
+                                 placeholder="my-passkey"
+                              />
+                              <FieldError match="valueMissing">
+                                 Name is required
+                              </FieldError>
+                           </Field>
+                           <DialogFooter>
+                              <Button
+                                 className="w-full"
+                                 isPending={
+                                    insertPasskey.isPending ||
+                                    insertPasskey.isSuccess
+                                 }
+                                 disabled={
+                                    insertPasskey.isPending ||
+                                    insertPasskey.isSuccess
+                                 }
+                              >
+                                 Confirm
+                              </Button>
+                           </DialogFooter>
+                        </DialogPopup>
+                     </Dialog>
                   </div>
                </TabsPanel>
                <TabsPanel
@@ -114,51 +348,49 @@ function RouteComponent() {
                   value={"billing"}
                   className={"divide-y divide-primary-4"}
                >
-                  <div className="py-6">
-                     <h2 className="font-semibold text-lg">Subscription</h2>
-                     <p className="mt-2 mb-6 text-foreground/70">
-                        Subscription is: {subscription?.status ?? "null"} <br />
-                        {subscription?.status === "canceled" ? (
-                           <>
-                              Was canceled on{" "}
-                              {new Date(
-                                 subscription.currentPeriodEnd ?? "",
-                              ).toLocaleDateString()}
-                           </>
-                        ) : subscription?.cancelAtPeriodEnd ? (
-                           <>
-                              Will be canceled on{" "}
-                              {new Date(
-                                 subscription.currentPeriodEnd ?? "",
-                              ).toLocaleDateString()}
-                           </>
-                        ) : subscription?.currentPeriodEnd ? (
-                           <>
-                              Next payment on:{" "}
-                              {new Date(
-                                 subscription.currentPeriodEnd ?? "",
-                              ).toLocaleDateString()}
-                           </>
-                        ) : null}
-                     </p>
-                     {subscription?.cancelAtPeriodEnd ? null : subscription?.status ===
-                       "active" ? (
-                        <Button
-                           isPending={cancel.isPending}
-                           disabled={cancel.isPending}
-                           onClick={() => cancel.mutate()}
-                        >
-                           Cancel
-                        </Button>
-                     ) : (
-                        <Button onClick={() => subscribe.mutate()}>
-                           Subscribe
-                        </Button>
-                     )}
-                  </div>
+                  <BillingPanel />
                </TabsPanel>
             </Tabs>
          </ScrollArea>
       </>
+   )
+}
+
+function PasskeyItem({
+   passkey,
+}: { passkey: InferResponseType<typeof hc.user.passkey.list.$get>[number] }) {
+   const queryClient = useQueryClient()
+   const deletePasskey = useMutation({
+      mutationFn: async (
+         param: InferRequestType<
+            (typeof hc.user.passkey)[":id"]["$delete"]
+         >["param"],
+      ) => honoMutationFn(await hc.user.passkey[":id"].$delete({ param })),
+      onSuccess: () => {
+         queryClient.invalidateQueries(passkeyListQuery())
+      },
+   })
+
+   return (
+      <li className="flex items-center">
+         <span className="line-clamp-1">{passkey.name}</span>
+         <Button
+            className="ml-auto"
+            variant={"ghost"}
+            size={"icon-sm"}
+            disabled={deletePasskey.isPending || deletePasskey.isSuccess}
+            aria-label={`Delete passkey ${passkey.name}`}
+            onClick={() =>
+               deletePasskey.mutate({
+                  id: encodeBase64urlNoPadding(
+                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                     new Uint8Array((passkey.id as any).data),
+                  ),
+               })
+            }
+         >
+            <Icons.trash className="size-4" />
+         </Button>
+      </li>
    )
 }

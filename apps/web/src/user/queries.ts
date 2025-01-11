@@ -8,3 +8,9 @@ export const userMeQuery = () =>
       staleTime: Infinity,
       retry: false,
    })
+
+export const passkeyListQuery = () =>
+   queryOptions({
+      queryKey: ["passkey_list"],
+      queryFn: honoQueryFn(() => hc.user.passkey.list.$get()),
+   })

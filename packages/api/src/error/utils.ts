@@ -21,6 +21,8 @@ export const statusToCode = (status: number): ErrorCode => {
          return "METHOD_NOT_ALLOWED"
       case 422:
          return "UNPROCESSABLE_ENTITY"
+      case 429:
+         return "TOO_MANY_REQUESTS"
       case 500:
          return "INTERNAL_SERVER_ERROR"
       default:
@@ -44,6 +46,8 @@ export const codeToStatus = (code: ErrorCode) => {
          return 409
       case "UNPROCESSABLE_ENTITY":
          return 422
+      case "TOO_MANY_REQUESTS":
+         return 429
       case "INTERNAL_SERVER_ERROR":
          return 500
       default:
