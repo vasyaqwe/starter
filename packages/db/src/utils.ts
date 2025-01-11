@@ -1,10 +1,10 @@
 import baseX from "base-x"
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { customType, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 const b58 = baseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
 const prefixes = {
    user: "user",
-   verification_code: "vc",
+   verification_request: "vr",
    oauth_account: "oa",
    subscription: "sub",
    file: "file",
@@ -55,4 +55,10 @@ const lifecycleDates = {
       .$onUpdateFn(() => new Date()),
 }
 
-export { createTable, generateId, lifecycleDates, tableId }
+const bytea = customType<{ data: string }>({
+   dataType() {
+      return "bytea"
+   },
+})
+
+export { createTable, generateId, lifecycleDates, tableId, bytea }

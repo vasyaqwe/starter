@@ -69,20 +69,20 @@ export const authRoute = createRouter()
                user = existingUser
             }
 
-            const verificationCode = await generateEmailOTP({
+            const otp = await generateEmailOTP({
                tx: tx as never,
                userId: user.id,
                email,
             })
 
             if (env.server.NODE_ENV === "development") {
-               logger.info(`OTP CODE: ${verificationCode}`)
+               logger.info(`OTP: ${otp}`)
             } else {
                const res = await c.var.email.emails.send({
                   from: EMAIL_FROM,
                   to: email,
                   subject: `Project one-time password`,
-                  html: loginOtpEmail(verificationCode),
+                  html: loginOtpEmail(otp),
                })
                if (res.error)
                   throw new HTTPException(500, {

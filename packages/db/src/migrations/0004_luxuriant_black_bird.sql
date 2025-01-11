@@ -1,1 +1,0 @@
-ALTER TABLE "subscription" DROP COLUMN "cancel_at_period_end";

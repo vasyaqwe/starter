@@ -9,7 +9,7 @@ import { COOKIE_OPTIONS } from "@project/api/cookie/constants"
 import { TimeSpan, createDate, isWithinExpirationDate } from "@project/api/date"
 import { eq } from "@project/db"
 import type { Database } from "@project/db/client"
-import { emailVerificationCode, session } from "@project/db/schema/user"
+import { emailVerificationRequest, session } from "@project/db/schema/user"
 import type { Context } from "hono"
 import { getCookie, setCookie } from "hono/cookie"
 import { SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS } from "./constants"
@@ -69,8 +69,8 @@ export const generateEmailOTP = async ({
    email: string
 }) => {
    await tx
-      .delete(emailVerificationCode)
-      .where(eq(emailVerificationCode.email, email))
+      .delete(emailVerificationRequest)
+      .where(eq(emailVerificationRequest.email, email))
 
    const random: RandomReader = {
       read(bytes) {
@@ -80,7 +80,7 @@ export const generateEmailOTP = async ({
 
    const code = generateRandomString(random, "0123456789", 6)
 
-   await tx.insert(emailVerificationCode).values({
+   await tx.insert(emailVerificationRequest).values({
       userId,
       email,
       code,
@@ -100,8 +100,8 @@ export const verifyEmailOTP = async (
    const databaseCode = await db.transaction(async (tx) => {
       const [databaseCode] = await tx
          .select()
-         .from(emailVerificationCode)
-         .where(eq(emailVerificationCode.email, email))
+         .from(emailVerificationRequest)
+         .where(eq(emailVerificationRequest.email, email))
 
       if (!databaseCode || databaseCode.code !== code) {
          isValid = false
@@ -123,8 +123,8 @@ export const verifyEmailOTP = async (
 
    if (databaseCode && isValid) {
       await db
-         .delete(emailVerificationCode)
-         .where(eq(emailVerificationCode.id, databaseCode.id))
+         .delete(emailVerificationRequest)
+         .where(eq(emailVerificationRequest.id, databaseCode.id))
    }
 
    return { userId: isValid ? databaseCode?.userId : null }

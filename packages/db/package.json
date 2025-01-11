@@ -29,11 +29,10 @@
       "build": "tsc",
       "clean": "rm -rf .turbo node_modules",
       "typecheck": "tsc --noEmit --emitDeclarationOnly false",
-      "push": "drizzle-kit push",
-      "drop": "drizzle-kit drop",
+      "drop": "bun run --env-file ../../.env drizzle-kit drop",
       "generate": "bun run --env-file ../../.env drizzle-kit generate",
       "migrate": "bun run --env-file ../../.env drizzle-kit migrate",
-      "studio": "drizzle-kit studio"
+      "studio": "bun run --env-file ../../.env drizzle-kit studio"
    },
    "dependencies": {
       "base-x": "^5.0.0",

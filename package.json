@@ -13,6 +13,7 @@
     "db:generate": "bun --filter @project/db generate",
     "db:migrate": "bun --filter @project/db migrate",
     "db:push": "bun --filter @project/db push",
+    "db:drop": "bun --filter @project/db drop",
     "db:studio": "bun --filter @project/db studio",
     "dev": "turbo dev --parallel",
     "dev:server": "turbo dev --filter=@project/server",

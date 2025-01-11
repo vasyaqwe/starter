@@ -1,1 +1,0 @@
-ALTER TABLE "subscription" RENAME COLUMN "canceled_at" TO "cancel_at_period_end";

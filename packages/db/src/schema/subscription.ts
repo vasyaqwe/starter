@@ -1,12 +1,5 @@
 import type { SubscriptionStatus } from "@polar-sh/sdk/src/models/components"
-import {
-   boolean,
-   index,
-   text,
-   timestamp,
-   unique,
-   varchar,
-} from "drizzle-orm/pg-core"
+import { boolean, index, text, timestamp, unique } from "drizzle-orm/pg-core"
 import { pgTable } from "drizzle-orm/pg-core"
 import { lifecycleDates } from "../utils"
 import { user } from "./user"
@@ -31,13 +24,9 @@ export const subscription = pgTable(
       status: text({
          enum: subscriptionStatuses,
       }).notNull(),
-      customerId: varchar({
-         length: 255,
-      }).notNull(),
-      priceId: varchar({
-         length: 255,
-      }).notNull(),
-      productId: varchar({ length: 255 }).notNull(),
+      customerId: text().notNull(),
+      priceId: text().notNull(),
+      productId: text().notNull(),
       currentPeriodStart: timestamp().notNull(),
       currentPeriodEnd: timestamp(),
       cancelAtPeriodEnd: boolean().default(false),
