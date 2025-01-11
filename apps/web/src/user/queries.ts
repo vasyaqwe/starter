@@ -12,5 +12,5 @@ export const userMeQuery = () =>
 export const passkeyListQuery = () =>
    queryOptions({
       queryKey: ["passkey_list"],
-      queryFn: honoQueryFn(() => hc.user.passkey.list.$get()),
+      queryFn: honoQueryFn(() => hc.user.passkey.$get()),
    })

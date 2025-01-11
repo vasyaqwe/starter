@@ -30,7 +30,7 @@ import { Tabs, TabsList, TabsPanel, TabsTab } from "@project/ui/components/tabs"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
-import type { InferRequestType, InferResponseType } from "hono"
+import type { InferRequestType } from "hono"
 import * as React from "react"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -191,11 +191,14 @@ function RouteComponent() {
 
    const insertPasskey = useMutation({
       mutationFn: async (
-         json: InferRequestType<typeof hc.user.passkey.insert.$post>["json"],
-      ) => honoMutationFn(await hc.user.passkey.insert.$post({ json })),
+         json: InferRequestType<typeof hc.user.passkey.$post>["json"],
+      ) => honoMutationFn(await hc.user.passkey.$post({ json })),
       onSuccess: () => {
          queryClient.invalidateQueries(passkeyListQuery())
          setCreatePasskeyOpen(false)
+         setTimeout(() => {
+            insertPasskey.reset()
+         }, 100)
       },
    })
 
@@ -243,12 +246,19 @@ function RouteComponent() {
                               No passkeys added yet.
                            </li>
                         ) : (
-                           passkeys.map((passkey, idx) => (
-                              <PasskeyItem
-                                 passkey={passkey}
-                                 key={idx}
-                              />
-                           ))
+                           passkeys.map((passkey) => {
+                              const id = encodeBase64urlNoPadding(
+                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                 new Uint8Array((passkey.id as any).data),
+                              )
+                              return (
+                                 <PasskeyItem
+                                    name={passkey.name}
+                                    id={id}
+                                    key={id}
+                                 />
+                              )
+                           })
                         )}
                      </ul>
                      <Button
@@ -356,9 +366,7 @@ function RouteComponent() {
    )
 }
 
-function PasskeyItem({
-   passkey,
-}: { passkey: InferResponseType<typeof hc.user.passkey.list.$get>[number] }) {
+function PasskeyItem({ name, id }: { name: string; id: string }) {
    const queryClient = useQueryClient()
    const deletePasskey = useMutation({
       mutationFn: async (
@@ -373,19 +381,16 @@ function PasskeyItem({
 
    return (
       <li className="flex items-center">
-         <span className="line-clamp-1">{passkey.name}</span>
+         <span className="line-clamp-1">{name}</span>
          <Button
             className="ml-auto"
             variant={"ghost"}
             size={"icon-sm"}
             disabled={deletePasskey.isPending || deletePasskey.isSuccess}
-            aria-label={`Delete passkey ${passkey.name}`}
+            aria-label={`Delete passkey ${name}`}
             onClick={() =>
                deletePasskey.mutate({
-                  id: encodeBase64urlNoPadding(
-                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                     new Uint8Array((passkey.id as any).data),
-                  ),
+                  id,
                })
             }
          >

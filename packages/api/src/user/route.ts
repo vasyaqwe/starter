@@ -23,7 +23,7 @@ import {
 import { createRouter, zValidator } from "@project/api/misc/utils"
 import { RefillingTokenBucket } from "@project/api/rate-limit"
 import { authMiddleware } from "@project/api/user/auth/middleware"
-import { and, eq } from "@project/db"
+import { and, desc, eq } from "@project/db"
 import {
    type PasskeyCredential,
    passkeyCredential,
@@ -52,13 +52,14 @@ export const userRoute = createRouter()
    .get("/me", async (c) => {
       return c.json(c.var.user)
    })
-   .get("/passkey/list", async (c) => {
+   .get("/passkey", async (c) => {
       const credentials = await c.var.db.query.passkeyCredential.findMany({
          where: eq(passkeyCredential.userId, c.var.user.id),
          columns: {
             id: true,
             name: true,
          },
+         orderBy: (data) => desc(data.createdAt),
       })
       return c.json(credentials)
    })
@@ -85,7 +86,7 @@ export const userRoute = createRouter()
       })
    })
    .post(
-      "/passkey/insert",
+      "/passkey",
       zValidator(
          "json",
          z.object({
@@ -132,7 +133,7 @@ export const userRoute = createRouter()
          )
             throw new HTTPException(400, { message: "Invalid data" })
 
-         let credential: PasskeyCredential
+         let credential: Omit<PasskeyCredential, "createdAt" | "updatedAt">
          if (
             authenticatorData.credential.publicKey.algorithm() ===
             coseAlgorithmES256

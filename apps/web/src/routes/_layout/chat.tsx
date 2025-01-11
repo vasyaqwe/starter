@@ -479,7 +479,7 @@ function RouteComponent() {
                      //       }
                      //    }),
                      // )
-                     // await hc.storage.upload.$post({
+                     // await hc.storage.$post({
                      //    json: {
                      //       files: filesData,
                      //    },

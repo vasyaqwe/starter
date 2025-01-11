@@ -38,6 +38,7 @@ export const oauthAccount = pgTable(
          enum: oauthProviders,
       }).notNull(),
       providerUserId: text().notNull().unique(),
+      ...lifecycleDates,
    },
    (table) => [
       primaryKey({ columns: [table.providerId, table.providerUserId] }),
@@ -81,6 +82,7 @@ export const passkeyCredential = pgTable(
       name: text().notNull(),
       algorithm: integer().notNull(),
       publicKey: bytea().notNull(),
+      ...lifecycleDates,
    },
    (table) => [index("passkey_credential_user_id_idx").on(table.userId)],
 )

@@ -18,7 +18,7 @@ const S3 = new S3Client({
 })
 
 export const storageRoute = createRouter().post(
-   "/upload",
+   "/",
    zValidator(
       "json",
       z.object({
