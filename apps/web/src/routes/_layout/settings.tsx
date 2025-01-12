@@ -239,13 +239,13 @@ function RouteComponent() {
                      <p className="mt-2 mb-4 text-foreground/70">
                         Manage your authentication passkeys here.
                      </p>
-                     <Separator className={"mb-4"} />
+                     <Separator className={"mb-3"} />
                      {query.isPending ? null : query.isError ? (
                         <p className="text-destructive">
                            There was an error loading your passkeys.
                         </p>
                      ) : (
-                        <ul>
+                        <ul className="space-y-0.5">
                            {passkeys.length === 0 ? (
                               <li className="text-foreground/75">
                                  No passkeys added yet.

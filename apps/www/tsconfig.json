@@ -1,0 +1,11 @@
+{
+   "extends": "@project/tsconfig/base.json",
+   "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+         "@/*": ["./src/*"],
+         "@@/*": ["./*"]
+      }
+   },
+   "include": [".astro/types.d.ts", "**/*"]
+}

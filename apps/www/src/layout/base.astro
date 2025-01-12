@@ -1,0 +1,76 @@
+---
+import "@project/ui/styles"
+
+const title = Astro.props.title ?? "Project"
+const description = Astro.props.description ?? "Description"
+
+type Props = {
+  title?: string
+  description?: string
+}
+
+const url = Astro.url
+---
+
+<html
+  lang="en"
+  class="font-primary leading-5 antialiased scroll-pt-4 overflow-y-scroll scroll-smooth"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta property="description" content={description} />
+    <meta property="og:type" content="website" />
+    <!-- <meta property="og:url" content={url} /> -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <!-- <meta
+      property="og:image"
+      content="${url}/og.png"
+    />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta
+      property="twitter:image"
+      content="${url}/twitter.png"
+    /> -->
+    <!-- <link rel="sitemap" href="/sitemap-index.xml" /> -->
+    <!-- <meta name="keywords" content="keywords"> -->
+    <link rel="icon" type="image" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- <style>
+      @font-face {
+        font-family: "sans";
+        src: url("/font/sans.ttf") format("truetype");
+        font-display: swap;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+    </style>
+    <link
+      rel="preload"
+      href="/font/sans.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    /> -->
+  </head>
+  <body
+    class="text-base font-normal bg-background text-foreground selection:bg-primary-12 selection:text-primary-1 grid min-h-svh grid-rows-[auto_1fr_auto]"
+  >
+    <header class="container z-[2] flex items-center h-[76px]">header</header>
+    <main class="z-[1] min-w-0">
+      <slot />
+    </main>
+    <footer>footer</footer>
+  </body>
+</html>

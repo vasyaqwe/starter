@@ -15,6 +15,7 @@
          "out",
          ".turbo",
          ".astro",
+         "*.astro",
          "routeTree.gen.ts",
          "migrations/meta",
          "package.json",

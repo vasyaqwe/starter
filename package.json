@@ -19,7 +19,7 @@
     "dev:server": "turbo dev --filter=@project/server",
     "dev:desktop": "concurrently \"turbo dev --filter=@project/ui --filter=@project/server\" \"bun --cwd apps/web tauri dev\"",
     "dev:web": "turbo dev --filter=@project/web --filter=@project/ui --filter=@project/server",
-    "dev:www": "turbo dev --filter=@project/www --filter=@project/server",
+    "dev:www": "turbo dev --filter=@project/www --filter=@project/ui",
     "format-lint": "biome check",
     "format-lint:fix": "biome check --write",
     "typecheck": "turbo typecheck"
