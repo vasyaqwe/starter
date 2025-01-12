@@ -1,5 +1,3 @@
-// @ts-check
-
 module.exports = {
    astroAllowShorthand: true,
    htmlWhitespaceSensitivity: "ignore",

@@ -3,39 +3,20 @@ packages/ui
 apps/web
 tooling/github
 
-# Logs
-logs
-_.log
-
-# Caches 
-.cache
-.temp
 *.tsbuildinfo
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
-
-# Runtime data
-pids
-_.pid
-_.seed
-*.pid.lock
-
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
-
-# dotenv environment variable files
+*.pem
+.dev.vars
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.env.me
+.env.vault
+env.d.ts
 
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# IntelliJ based IDEs
-.idea
-
-# Finder (MacOS) folder config
+.turbo
+.astro
+.wrangler
 .DS_Store
+.vscode
+.partykit
+vite.config.ts.timestamp-*.js
+vite.config.ts.timestamp-*.mjs

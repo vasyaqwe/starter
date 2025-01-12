@@ -18,7 +18,7 @@
          "dependsOn": ["^topo", "^build"],
          "outputs": [".cache/tsbuildinfo.json"]
       },
-      "push": {
+      "migrate": {
          "cache": false,
          "interactive": true
       },
@@ -37,6 +37,10 @@
          "cache": false
       }
    },
-   "globalEnv": ["DATABASE_URL", "RESEND_API_KEY"],
+   "globalEnv": [
+      "RESEND_API_KEY",
+      "POLAR_ACCESS_TOKEN",
+      "POLAR_ORGANIZATION_ID"
+   ],
    "globalPassThroughEnv": ["NODE_ENV"]
 }
