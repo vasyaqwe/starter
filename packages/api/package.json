@@ -8,14 +8,6 @@
       "types": "./dist/index.d.ts",
       "default": "./src/index.ts"
     },
-    "./utils": {
-      "types": "./dist/utils.d.ts",
-      "default": "./src/utils.ts"
-    },
-    "./user/*": {
-      "types": "./dist/user/*.d.ts",
-      "default": "./src/user/*.ts"
-    },
     "./error/*": {
       "types": "./dist/error/*.d.ts",
       "default": "./src/error/*.ts"

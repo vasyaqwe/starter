@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@project/api": "workspace:*",
+    "@project/db": "workspace:*",
     "@project/tsconfig": "workspace:*",
     "@tauri-apps/cli": "^2.2.2",
     "@types/node": "^20.12.9",

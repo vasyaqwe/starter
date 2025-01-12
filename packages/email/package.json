@@ -8,9 +8,9 @@
       "types": "./dist/index.d.ts",
       "default": "./src/index.ts"
     },
-    "./emails/*": {
-      "types": "./dist/emails/*.ts",
-      "default": "./src/emails/*.ts"
+    "./templates/*": {
+      "types": "./dist/templates/*.ts",
+      "default": "./src/templates/*.ts"
     }
   },
   "license": "MIT",

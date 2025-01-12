@@ -12,6 +12,7 @@ import { payment } from "@project/payment"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
 import { logger } from "hono/logger"
+
 export const ALLOWED_ORIGINS = ["https://www.project.io", "https://project.io"]
 
 const app = createRouter()

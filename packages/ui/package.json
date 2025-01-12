@@ -4,11 +4,22 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./*": "./src/*.ts",
-    "./components/*": "./src/components/*.tsx",
-    "./hooks/*": "./src/hooks/*.tsx",
-    "./styles.css": "./src/styles.css"
+    "./*": {
+        "types": "./dist/*.d.ts",
+        "default": "./src/*.ts"
+    },
+    "./components/*": {
+        "types": "./dist/components/*.d.ts",
+        "default": "./src/components/*.tsx"
+    },
+    "./hooks/*": {
+        "types": "./dist/hooks/*.d.ts",
+        "default": "./src/hooks/*.ts"
+    },
+    "./styles": {
+        "types": "./dist/styles.css",
+        "default": "./src/styles.css"
+    }
   },
   "license": "MIT",
   "scripts": {

@@ -2,7 +2,6 @@ import { useDevStore } from "@/dev/store"
 import { useCanGoForward } from "@/interactions/use-can-go-forward"
 import { useLocalStorage } from "@/interactions/use-local-storage"
 import { UserAvatar } from "@/ui/components/user-avatar"
-import { isNative } from "@/ui/constants"
 import { useAuth } from "@/user/hooks"
 import { logger } from "@project/shared/logger"
 import {
@@ -21,6 +20,7 @@ import {
    TooltipPopup,
    TooltipTrigger,
 } from "@project/ui/components/tooltip"
+import { isNative } from "@project/ui/constants"
 import { cn } from "@project/ui/utils"
 import { Link, useCanGoBack, useRouter } from "@tanstack/react-router"
 import { useEffect } from "hono/jsx"

@@ -1,4 +1,4 @@
-import "@project/ui/styles.css"
+import "@project/ui/styles"
 import type { HonoError } from "@/lib/hono"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { TooltipProvider } from "@project/ui/components/tooltip"

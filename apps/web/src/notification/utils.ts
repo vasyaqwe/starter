@@ -1,5 +1,5 @@
-import { isNative } from "@/ui/constants"
 import { logger } from "@project/shared/logger"
+import { isNative } from "@project/ui/constants"
 
 export async function sendNotification({
    title,

@@ -3,7 +3,7 @@ import { customType, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 const b58 = baseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
 const prefixes = {
-   user: "user",
+   user: "usr",
    verification_request: "vr",
    oauth_account: "oa",
    subscription: "sub",
@@ -28,14 +28,6 @@ const generateId = (prefix: keyof typeof prefixes) => {
    buf[3] = t & 255
 
    return `${prefixes[prefix]}_${b58.encode(buf)}` as const
-}
-
-export const generateCode = () => {
-   const buf = crypto.getRandomValues(new Uint8Array(9))
-
-   const encoded = b58.encode(buf)
-
-   return encoded.slice(0, 12)
 }
 
 const tableId = (prefix: keyof typeof prefixes) =>

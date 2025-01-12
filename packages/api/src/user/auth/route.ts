@@ -39,7 +39,7 @@ import {
    verifyLoginOTPInput,
 } from "@project/db/schema/user"
 import { EMAIL_FROM } from "@project/email"
-import { loginOtpEmail } from "@project/email/emails/login-otp"
+import { loginOtpEmail } from "@project/email/templates/login-otp"
 import { env } from "@project/env"
 import { logger } from "@project/shared/logger"
 import { generateCodeVerifier, generateState } from "arctic"

@@ -1,7 +1,10 @@
 import { encodeHexLowerCase } from "@oslojs/encoding"
 import { RefillingTokenBucket } from "@project/api/rate-limit"
 
-export const passkeyChallengeRateLimitBucket = new RefillingTokenBucket<string>(10, 10)
+export const passkeyChallengeRateLimitBucket = new RefillingTokenBucket<string>(
+   10,
+   10,
+)
 const challengeBucket = new Set<string>()
 
 export const createPasskeyChallenge = () => {
