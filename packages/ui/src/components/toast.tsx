@@ -1,12 +1,17 @@
+import { useAtomValue } from "jotai"
 import type * as React from "react"
 import { Toaster as Sonner, toast } from "sonner"
+import { isMobileAtom } from "../store"
 import { cn } from "../utils"
 import { buttonVariants } from "./button"
 import { Loading } from "./loading"
 
 function Toaster(props: React.ComponentProps<typeof Sonner>) {
+   const isMobile = useAtomValue(isMobileAtom)
+
    return (
       <Sonner
+         className="max-md:!bottom-(--offset)"
          icons={{
             loading: <Loading />,
             success: (
@@ -102,10 +107,14 @@ function Toaster(props: React.ComponentProps<typeof Sonner>) {
                ),
             },
             className:
-               "font-primary px-4 py-3 items-center shadow-lg justify-center flex select-none border border-transparent dark:border-primary-6 !w-max !max-w-(--width) !left-1/2 max-md:mb-[calc(env(safe-area-inset-bottom)+1.25rem)] dark:bg-primary-5 bg-primary-12 text-base text-white !right-auto justify-center pointer-events-auto rounded-full",
+               "font-primary px-4 py-3 items-center shadow-lg justify-center flex select-none border border-transparent dark:border-primary-6 !w-max !max-w-(--width) !left-1/2 dark:bg-primary-5 bg-primary-12 text-base text-white !right-auto justify-center pointer-events-auto rounded-full",
          }}
          expand
-         offset={26}
+         offset={
+            isMobile
+               ? `${getComputedStyle(document.documentElement).getPropertyValue("--sat") + 62}px`
+               : "24px"
+         }
          position="bottom-center"
          {...props}
       />

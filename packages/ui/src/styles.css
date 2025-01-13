@@ -2,6 +2,7 @@
 @import "tailwix";
 
 @theme default {
+   --sab: env(safe-area-inset-bottom);
    --cursor: pointer;
 
    --color-primary-1: var(--color-gray-1);
@@ -293,4 +294,19 @@ p {
 }
 [data-sonner-toaster] {
    --mobile-offset: 0 !important;
+}
+:where([data-sonner-toast][data-y-position="bottom"]):not(
+      [data-expanded="true"]
+   ) {
+   --y: translateY(calc(100% - calc(var(--offset) * 3))) !important;
+}
+@media (min-width: 768px) {
+   :where([data-sonner-toast][data-y-position="bottom"]) {
+      --lift: -1.5 !important;
+   }
+   :where([data-sonner-toast][data-y-position="bottom"]):not(
+         [data-expanded="true"]
+      ) {
+      --y: translateY(calc(100% - calc(var(--offset) * 2))) scale(0.5) !important;
+   }
 }

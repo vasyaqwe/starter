@@ -20,6 +20,7 @@ import {
 import { Icons } from "@project/ui/components/icons"
 import { Input } from "@project/ui/components/input"
 import { Kbd } from "@project/ui/components/kbd"
+import { Loading } from "@project/ui/components/loading"
 import {
    Menu,
    MenuItem,
@@ -55,6 +56,7 @@ export const Route = createFileRoute("/_layout/chat")({
 const scroll = (node: HTMLElement | null) => node?.scrollIntoView()
 
 const editingMessageIdAtom = atom<string | null>(null)
+const contentAtom = atom("")
 
 const fakeMessages = [
    {
@@ -189,7 +191,7 @@ function RouteComponent() {
    const [files, setFiles] = React.useState<File[]>([])
 
    const contentRef = React.useRef<HTMLInputElement>(null)
-   const [content, setContent] = React.useState("")
+   const [content, setContent] = useAtom(contentAtom)
 
    useHotkeys(
       "esc",
@@ -216,6 +218,8 @@ function RouteComponent() {
 
    const currentUserId = "1"
 
+   const isPending = false
+
    return (
       <>
          <FileUploader
@@ -234,62 +238,66 @@ function RouteComponent() {
                   "group/container mx-auto w-full max-w-4xl px-3 sm:px-4"
                }
             >
-               {groupedMessages.map((dateGroup) => (
-                  <div key={dateGroup.date}>
-                     <MessageGroupDate>{dateGroup.date}</MessageGroupDate>
-                     <span className="mx-auto mb-2 block w-fit text-foreground/70 text-xs">
-                        {formatDate(
-                           dateGroup.groups[0]?.messages[0]?.createdAt ??
-                              new Date(),
-                           {
-                              timeStyle: "short",
-                           },
-                        )}
-                     </span>
-                     {dateGroup.groups.map((group, index) => (
-                        <MessageGroup
-                           key={index}
-                           isMine={currentUserId === group.sender.id}
-                        >
-                           <UserAvatar
-                              className={cn(
-                                 "group-data-[editing]/container:opacity-30",
-                                 "mt-auto mb-[3px]",
-                                 currentUserId === group.sender.id
-                                    ? "hidden"
-                                    : "",
-                              )}
-                              user={group.sender}
+               {isPending ? (
+                  <Loading className="absolute inset-0 m-auto" />
+               ) : (
+                  groupedMessages.map((dateGroup) => (
+                     <div key={dateGroup.date}>
+                        <MessageGroupDate>{dateGroup.date}</MessageGroupDate>
+                        <span className="mx-auto mb-2 block w-fit text-foreground/70 text-xs">
+                           {formatDate(
+                              dateGroup.groups[0]?.messages[0]?.createdAt ??
+                                 new Date(),
+                              {
+                                 timeStyle: "short",
+                              },
+                           )}
+                        </span>
+                        {dateGroup.groups.map((group, index) => (
+                           <MessageGroup
+                              key={index}
+                              isMine={currentUserId === group.sender.id}
                            >
-                              <OnlineIndicator />
-                           </UserAvatar>
-                           <div className="mt-4 w-full">
-                              {group.messages.map(
-                                 (message, index, groupMessages) => (
-                                    <MessageComponent
-                                       key={message.id}
-                                       message={message}
-                                       isMine={
-                                          currentUserId === group.sender?.id
-                                       }
-                                       state={
-                                          index === 0
-                                             ? "first"
-                                             : index ===
-                                                 groupMessages.length - 1
-                                               ? "last"
-                                               : groupMessages.length === 1
-                                                 ? "single"
-                                                 : null
-                                       }
-                                    />
-                                 ),
-                              )}
-                           </div>
-                        </MessageGroup>
-                     ))}
-                  </div>
-               ))}
+                              <UserAvatar
+                                 className={cn(
+                                    "group-data-[editing]/container:opacity-30",
+                                    "mt-auto mb-[3px]",
+                                    currentUserId === group.sender.id
+                                       ? "hidden"
+                                       : "",
+                                 )}
+                                 user={group.sender}
+                              >
+                                 <OnlineIndicator />
+                              </UserAvatar>
+                              <div className="mt-4 w-full">
+                                 {group.messages.map(
+                                    (message, index, groupMessages) => (
+                                       <MessageComponent
+                                          key={message.id}
+                                          message={message}
+                                          isMine={
+                                             currentUserId === group.sender?.id
+                                          }
+                                          state={
+                                             index === 0
+                                                ? "first"
+                                                : index ===
+                                                    groupMessages.length - 1
+                                                  ? "last"
+                                                  : groupMessages.length === 1
+                                                    ? "single"
+                                                    : null
+                                          }
+                                       />
+                                    ),
+                                 )}
+                              </div>
+                           </MessageGroup>
+                        ))}
+                     </div>
+                  ))
+               )}
             </div>
             <div ref={scroll} />
          </ScrollArea>
@@ -487,6 +495,7 @@ function MessageComponent({
    state: "first" | "last" | "single" | null
 }) {
    const [editingMessageId, setEditingMessageId] = useAtom(editingMessageIdAtom)
+   const setContent = useSetAtom(contentAtom)
 
    return (
       <Message
@@ -513,10 +522,8 @@ function MessageComponent({
                   <MenuItem
                      onClick={() => {
                         setEditingMessageId(message.id)
+                        setContent(message.content)
                         // contentRef.current?.focus()
-                        // setContent(
-                        //    message.content,
-                        // )
                      }}
                   >
                      <Icons.pencil />

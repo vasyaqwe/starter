@@ -23,9 +23,9 @@ import {
 import { isNative } from "@project/ui/constants"
 import { cn } from "@project/ui/utils"
 import { Link, useCanGoBack, useRouter } from "@tanstack/react-router"
-import { useEffect } from "hono/jsx"
 import { useAtomValue } from "jotai"
 import { useTheme } from "next-themes"
+import * as React from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { toast } from "sonner"
 
@@ -267,7 +267,7 @@ function NotificationPermissionCard() {
          "default",
       )
 
-   useEffect(() => {
+   React.useEffect(() => {
       async function checkPermission() {
          if (isNative) {
             const { isPermissionGranted } = await import(
@@ -275,10 +275,8 @@ function NotificationPermissionCard() {
             )
             const granted = await isPermissionGranted()
             setPermissionStatus(granted ? "granted" : "default")
-            logger.info("TAURI ran:", granted)
          } else if ("Notification" in window) {
             setPermissionStatus(Notification.permission)
-            logger.info("WEB ran:", Notification.permission)
          }
       }
       checkPermission()
