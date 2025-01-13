@@ -8,7 +8,18 @@ export default defineConfig(({ mode }) => {
    process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
 
    return {
-      plugins: [react(), TanStackRouterVite(), tsconfigPaths()],
+      plugins: [
+         react({
+            babel: {
+               plugins: [["babel-plugin-react-compiler", {}]],
+            },
+         }),
+         TanStackRouterVite(),
+         tsconfigPaths(),
+      ],
+      preview: {
+         port: 3000,
+      },
       server: {
          port: 3000,
       },

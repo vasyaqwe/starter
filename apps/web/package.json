@@ -28,6 +28,7 @@
     "@tauri-apps/plugin-fs": "^2.2.0",
     "@tauri-apps/plugin-notification": "^2.2.0",
     "@tauri-apps/plugin-shell": "^2.2.0",
+    "babel-plugin-react-compiler": "^19.0.0-beta-e552027-20250112",
     "hono": "^4.6.12",
     "input-otp": "^1.4.1",
     "jotai": "^2.11.0",

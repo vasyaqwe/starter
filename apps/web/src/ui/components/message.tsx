@@ -82,16 +82,12 @@ export function MessageActions({
 
 export function MessageContent({
    className,
-   isFirst,
-   isLast,
    isMine,
-   isOnlyOne,
+   state,
    ...props
 }: React.ComponentProps<"div"> & {
    isMine: boolean
-   isOnlyOne: boolean
-   isFirst: boolean
-   isLast: boolean
+   state: "first" | "last" | "single" | null
 }) {
    return (
       <div
@@ -100,11 +96,11 @@ export function MessageContent({
             isMine
                ? "rounded-r-md rounded-l-3xl bg-accent text-white"
                : "rounded-r-3xl rounded-l-md bg-primary-3 dark:bg-primary-5",
-            isOnlyOne ? "!rounded-3xl" : "",
-            isFirst && !isMine ? "rounded-tl-3xl" : "",
-            isLast && !isMine ? "rounded-bl-3xl" : "",
-            isFirst && isMine ? "rounded-tr-3xl" : "",
-            isLast && isMine ? "rounded-br-3xl" : "",
+            state === "single" ? "!rounded-3xl" : "",
+            state === "first" && !isMine ? "rounded-tl-3xl" : "",
+            state === "last" && !isMine ? "rounded-bl-3xl" : "",
+            state === "first" && isMine ? "rounded-tr-3xl" : "",
+            state === "last" && isMine ? "rounded-br-3xl" : "",
             className,
          )}
          {...props}

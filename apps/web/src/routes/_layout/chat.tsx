@@ -40,9 +40,10 @@ import {
 import { fileTriggerOpenAtom } from "@project/ui/store"
 import { cn } from "@project/ui/utils"
 import { createFileRoute } from "@tanstack/react-router"
-import { useSetAtom } from "jotai"
+import { atom, useAtom, useSetAtom } from "jotai"
 import * as React from "react"
 import { useHotkeys } from "react-hotkeys-hook"
+import { toast } from "sonner"
 
 export const Route = createFileRoute("/_layout/chat")({
    component: RouteComponent,
@@ -53,92 +54,90 @@ export const Route = createFileRoute("/_layout/chat")({
 
 const scroll = (node: HTMLElement | null) => node?.scrollIntoView()
 
-function RouteComponent() {
-   const [messages, setMessages] = React.useState(
-      [
-         {
-            content:
-               "I've just pushed the UI changes for review. Main nav is completely refactored now.",
-            sender: {
-               id: "1",
-               name: "John",
-               avatarUrl: "https://i.pravatar.cc/150?img=1",
-            },
-            createdAt: new Date("2024-12-27T15:30:00"),
-         },
-         {
-            content:
-               "Great, I'll take a look. Did you address the mobile menu issues?",
-            sender: {
-               id: "2",
-               name: "Jane",
-               avatarUrl: "https://i.pravatar.cc/150?img=2",
-            },
-            createdAt: new Date("2024-12-27T15:35:00"),
-         },
-         {
-            content: "Yes, should be fixed now. The animation is smoother too.",
-            sender: {
-               id: "1",
-               name: "John",
-               avatarUrl: "https://i.pravatar.cc/150?img=1",
-            },
-            createdAt: new Date("2024-12-27T15:36:00"),
-         },
-         {
-            content:
-               "Hey, how's the project coming along? I noticed some design inconsistencies in the latest build.",
-            sender: {
-               id: "1",
-               name: "John",
-               avatarUrl: "https://i.pravatar.cc/150?img=1",
-            },
-            createdAt: new Date("2024-12-28T09:00:00"),
-         },
-         {
-            content:
-               "Yeah, I've been meaning to discuss that. The spacing issues, right?",
-            sender: {
-               id: "2",
-               name: "Jane",
-               avatarUrl: "https://i.pravatar.cc/150?img=2",
-            },
-            createdAt: new Date("2024-12-28T09:01:00"),
-         },
-         {
-            content:
-               "Exactly. Especially in the dashboard components. Want to hop on a quick call to review? I've just pushed the UI changes for review. Main nav is completely refactored now. I've just pushed the UI changes for review. Main nav is completely refactored now.",
-            sender: {
-               id: "1",
-               name: "John",
-               avatarUrl: "https://i.pravatar.cc/150?img=1",
-            },
-            createdAt: new Date("2024-12-28T09:02:00"),
-         },
-         {
-            content: "Sure, give me 10 minutes to wrap up what I'm working on.",
-            sender: {
-               id: "2",
-               name: "Jane",
-               avatarUrl: "https://i.pravatar.cc/150?img=2",
-            },
-            createdAt: new Date("2024-12-28T09:03:00"),
-         },
-         {
-            content: "Sure, give me 10 minutes to wrap up what I'm working on.",
-            sender: {
-               id: "2",
-               name: "Jane",
-               avatarUrl: "https://i.pravatar.cc/150?img=2",
-            },
-            createdAt: new Date("2024-12-28T09:03:00"),
-         },
-      ].map((m) => ({ ...m, id: crypto.randomUUID() })),
-   )
+const editingMessageIdAtom = atom<string | null>(null)
 
-   const [editingMessageId, setEditingMessageId] = React.useState<
-      string | null
-   >(null)
+const fakeMessages = [
+   {
+      content:
+         "I've just pushed the UI changes for review. Main nav is completely refactored now.",
+      sender: {
+         id: "1",
+         name: "John",
+         avatarUrl: "https://i.pravatar.cc/150?img=1",
+      },
+      createdAt: new Date("2024-12-27T15:30:00"),
+   },
+   {
+      content:
+         "Great, I'll take a look. Did you address the mobile menu issues?",
+      sender: {
+         id: "2",
+         name: "Jane",
+         avatarUrl: "https://i.pravatar.cc/150?img=2",
+      },
+      createdAt: new Date("2024-12-27T15:35:00"),
+   },
+   {
+      content: "Yes, should be fixed now. The animation is smoother too.",
+      sender: {
+         id: "1",
+         name: "John",
+         avatarUrl: "https://i.pravatar.cc/150?img=1",
+      },
+      createdAt: new Date("2024-12-27T15:36:00"),
+   },
+   {
+      content:
+         "Hey, how's the project coming along? I noticed some design inconsistencies in the latest build.",
+      sender: {
+         id: "1",
+         name: "John",
+         avatarUrl: "https://i.pravatar.cc/150?img=1",
+      },
+      createdAt: new Date("2024-12-28T09:00:00"),
+   },
+   {
+      content:
+         "Yeah, I've been meaning to discuss that. The spacing issues, right?",
+      sender: {
+         id: "2",
+         name: "Jane",
+         avatarUrl: "https://i.pravatar.cc/150?img=2",
+      },
+      createdAt: new Date("2024-12-28T09:01:00"),
+   },
+   {
+      content:
+         "Exactly. Especially in the dashboard components. Want to hop on a quick call to review? I've just pushed the UI changes for review. Main nav is completely refactored now. I've just pushed the UI changes for review. Main nav is completely refactored now.",
+      sender: {
+         id: "1",
+         name: "John",
+         avatarUrl: "https://i.pravatar.cc/150?img=1",
+      },
+      createdAt: new Date("2024-12-28T09:02:00"),
+   },
+   {
+      content: "Sure, give me 10 minutes to wrap up what I'm working on.",
+      sender: {
+         id: "2",
+         name: "Jane",
+         avatarUrl: "https://i.pravatar.cc/150?img=2",
+      },
+      createdAt: new Date("2024-12-28T09:03:00"),
+   },
+   {
+      content: "Sure, give me 10 minutes to wrap up what I'm working on.",
+      sender: {
+         id: "2",
+         name: "Jane",
+         avatarUrl: "https://i.pravatar.cc/150?img=2",
+      },
+      createdAt: new Date("2024-12-28T09:03:00"),
+   },
+].map((m) => ({ ...m, id: crypto.randomUUID() }))
+
+function RouteComponent() {
+   const [messages, setMessages] = React.useState(fakeMessages)
 
    const groupedMessages = Object.entries(
       messages.reduce(
@@ -167,9 +166,9 @@ function RouteComponent() {
       groups,
    }))
 
-   const currentUserId = "1"
-   const scrollAreaRef = React.useRef<HTMLDivElement>(null)
+   const [editingMessageId, setEditingMessageId] = useAtom(editingMessageIdAtom)
 
+   const scrollAreaRef = React.useRef<HTMLDivElement>(null)
    const scrollToBottom = () => {
       setTimeout(() => {
          scrollAreaRef.current?.firstElementChild?.lastElementChild?.scrollIntoView(
@@ -215,6 +214,8 @@ function RouteComponent() {
       }
    })
 
+   const currentUserId = "1"
+
    return (
       <>
          <FileUploader
@@ -223,7 +224,6 @@ function RouteComponent() {
             ref={fileUploaderRef}
             className="absolute inset-0 z-[9] h-full"
          />
-
          <ScrollArea
             ref={scrollAreaRef}
             className="pb-8"
@@ -265,104 +265,25 @@ function RouteComponent() {
                            </UserAvatar>
                            <div className="mt-4 w-full">
                               {group.messages.map(
-                                 (message, index, messages) => {
-                                    const isMine =
-                                       currentUserId === group.sender?.id
-
-                                    return (
-                                       <Message
-                                          key={message.id}
-                                          isMine={isMine}
-                                          data-highlighted={
-                                             editingMessageId === message.id
-                                                ? ""
-                                                : undefined
-                                          }
-                                          className={cn(
-                                             "data-[highlighted]:opacity-100 group-data-[editing]/container:opacity-30",
-                                          )}
-                                       >
-                                          <MessageActions>
-                                             <Menu>
-                                                <MenuTrigger
-                                                   className={cn(
-                                                      buttonVariants({
-                                                         variant: "ghost",
-                                                         size: "icon-sm",
-                                                      }),
-                                                      "rounded-full",
-                                                   )}
-                                                >
-                                                   <Icons.ellipsisHorizontal className="size-[22px]" />
-                                                </MenuTrigger>
-                                                <MenuPopup
-                                                   align={
-                                                      isMine ? "end" : "start"
-                                                   }
-                                                >
-                                                   <MenuItem
-                                                      onClick={() => {
-                                                         setEditingMessageId(
-                                                            message.id,
-                                                         )
-                                                         contentRef.current?.focus()
-                                                         setContent(
-                                                            message.content,
-                                                         )
-                                                      }}
-                                                   >
-                                                      <Icons.pencil />
-                                                      Edit
-                                                   </MenuItem>
-                                                   <MenuItem
-                                                      destructive
-                                                      onClick={() =>
-                                                         setMessages((prev) =>
-                                                            prev.filter(
-                                                               (m) =>
-                                                                  m.id !==
-                                                                  message.id,
-                                                            ),
-                                                         )
-                                                      }
-                                                   >
-                                                      <Icons.trash />
-                                                      Delete
-                                                   </MenuItem>
-                                                </MenuPopup>
-                                             </Menu>
-                                          </MessageActions>
-                                          <Tooltip>
-                                             <TooltipTrigger
-                                                render={
-                                                   <MessageContent
-                                                      isMine={isMine}
-                                                      isFirst={index === 0}
-                                                      isLast={
-                                                         index ===
-                                                         group.messages.length -
-                                                            1
-                                                      }
-                                                      isOnlyOne={
-                                                         messages.length === 1
-                                                      }
-                                                   />
-                                                }
-                                             >
-                                                {message.content}
-                                             </TooltipTrigger>
-                                             <TooltipPopup
-                                                align={isMine ? "end" : "start"}
-                                             >
-                                                {formatDate(message.createdAt, {
-                                                   dateStyle: "medium",
-                                                   timeStyle: "short",
-                                                })}
-                                             </TooltipPopup>
-                                          </Tooltip>
-                                       </Message>
-                                    )
-                                 },
+                                 (message, index, groupMessages) => (
+                                    <MessageComponent
+                                       key={message.id}
+                                       message={message}
+                                       isMine={
+                                          currentUserId === group.sender?.id
+                                       }
+                                       state={
+                                          index === 0
+                                             ? "first"
+                                             : index ===
+                                                 groupMessages.length - 1
+                                               ? "last"
+                                               : groupMessages.length === 1
+                                                 ? "single"
+                                                 : null
+                                       }
+                                    />
+                                 ),
                               )}
                            </div>
                         </MessageGroup>
@@ -372,7 +293,6 @@ function RouteComponent() {
             </div>
             <div ref={scroll} />
          </ScrollArea>
-
          <div className="border-neutral border-t bg-background">
             <div className="mx-auto flex max-w-4xl items-end gap-2 p-2 md:p-4">
                <div className="mb-0.5 flex items-center gap-0.5">
@@ -554,5 +474,82 @@ function RouteComponent() {
             </div>
          </div>
       </>
+   )
+}
+
+function MessageComponent({
+   message,
+   isMine,
+   state,
+}: {
+   message: (typeof fakeMessages)[number]
+   isMine: boolean
+   state: "first" | "last" | "single" | null
+}) {
+   const [editingMessageId, setEditingMessageId] = useAtom(editingMessageIdAtom)
+
+   return (
+      <Message
+         isMine={isMine}
+         data-highlighted={editingMessageId === message.id ? "" : undefined}
+         className={cn(
+            "data-[highlighted]:opacity-100 group-data-[editing]/container:opacity-30",
+         )}
+      >
+         <MessageActions>
+            <Menu>
+               <MenuTrigger
+                  className={cn(
+                     buttonVariants({
+                        variant: "ghost",
+                        size: "icon-sm",
+                     }),
+                     "rounded-full",
+                  )}
+               >
+                  <Icons.ellipsisHorizontal className="size-[22px]" />
+               </MenuTrigger>
+               <MenuPopup align={isMine ? "end" : "start"}>
+                  <MenuItem
+                     onClick={() => {
+                        setEditingMessageId(message.id)
+                        // contentRef.current?.focus()
+                        // setContent(
+                        //    message.content,
+                        // )
+                     }}
+                  >
+                     <Icons.pencil />
+                     Edit
+                  </MenuItem>
+                  <MenuItem
+                     destructive
+                     onClick={() => toast("deleted message (fake)")}
+                  >
+                     <Icons.trash />
+                     Delete
+                  </MenuItem>
+               </MenuPopup>
+            </Menu>
+         </MessageActions>
+         <Tooltip>
+            <TooltipTrigger
+               render={
+                  <MessageContent
+                     isMine={isMine}
+                     state={state}
+                  />
+               }
+            >
+               {message.content}
+            </TooltipTrigger>
+            <TooltipPopup align={isMine ? "end" : "start"}>
+               {formatDate(message.createdAt, {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+               })}
+            </TooltipPopup>
+         </Tooltip>
+      </Message>
    )
 }
