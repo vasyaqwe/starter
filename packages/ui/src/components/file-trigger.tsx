@@ -1,5 +1,6 @@
+import { useSetAtom } from "jotai"
 import * as React from "react"
-import { useUIStore } from "../store"
+import { fileTriggerOpenAtom } from "../store"
 import { Button } from "./button"
 import { Icons } from "./icons"
 import { Kbd } from "./kbd"
@@ -16,6 +17,7 @@ export function FileTrigger({
    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
    multiple?: boolean
 }) {
+   const setFileTriggerOpen = useSetAtom(fileTriggerOpenAtom)
    const inputRef = React.useRef<HTMLInputElement>(null)
 
    return (
@@ -23,7 +25,7 @@ export function FileTrigger({
          aria-label="Add files"
          {...props}
          onClick={(e) => {
-            useUIStore.setState({ fileTriggerOpen: true })
+            setFileTriggerOpen(true)
             inputRef?.current?.click()
             onClick?.(e)
          }}
@@ -35,7 +37,7 @@ export function FileTrigger({
             multiple={multiple}
             onChange={(e) => {
                onChange(e)
-               useUIStore.setState({ fileTriggerOpen: false })
+               setFileTriggerOpen(false)
             }}
          />
          {children}

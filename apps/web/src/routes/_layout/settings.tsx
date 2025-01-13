@@ -268,7 +268,7 @@ function RouteComponent() {
                         </ul>
                      )}
                      <Button
-                        className="mt-6"
+                        className="mt-5"
                         disabled={requestChallenge.isPending}
                         onClick={() => requestChallenge.mutate()}
                      >

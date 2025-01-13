@@ -37,9 +37,10 @@ import {
    TooltipPopup,
    TooltipTrigger,
 } from "@project/ui/components/tooltip"
-import { useUIStore } from "@project/ui/store"
+import { fileTriggerOpenAtom } from "@project/ui/store"
 import { cn } from "@project/ui/utils"
 import { createFileRoute } from "@tanstack/react-router"
+import { useSetAtom } from "jotai"
 import * as React from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 
@@ -179,6 +180,7 @@ function RouteComponent() {
       }, 0)
    }
 
+   const setFileTriggerOpen = useSetAtom(fileTriggerOpenAtom)
    const fileUploaderRef = React.useRef<HTMLDivElement>(null)
    useHotkeys(FILE_TRIGGER_HOTKEY, () => fileUploaderRef.current?.click(), {
       enableOnContentEditable: true,
@@ -379,7 +381,7 @@ function RouteComponent() {
                         render={
                            <Button
                               onClick={() => {
-                                 useUIStore.setState({ fileTriggerOpen: true })
+                                 setFileTriggerOpen(true)
                                  fileUploaderRef.current?.click()
                               }}
                               size={"icon"}

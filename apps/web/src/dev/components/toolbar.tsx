@@ -1,5 +1,5 @@
 import { FLAGS } from "@/dev/constants"
-import { useDevStore } from "@/dev/store"
+import { flagsAtom } from "@/dev/store"
 import { Button } from "@project/ui/components/button"
 import {
    Menu,
@@ -11,12 +11,12 @@ import {
 } from "@project/ui/components/menu"
 import { popupStyles } from "@project/ui/constants"
 import { cn } from "@project/ui/utils"
+import { useAtom } from "jotai"
 import * as React from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 
 export function Toolbar() {
-   const flags = useDevStore().flags
-   const toggleFlag = useDevStore().toggleFlag
+   const [flags, setFlags] = useAtom(flagsAtom)
    const [visible, setVisible] = React.useState(true)
 
    useHotkeys("t", (e) => {
@@ -67,7 +67,12 @@ export function Toolbar() {
                      <MenuCheckboxItem
                         key={flag}
                         checked={flags[flag]}
-                        onCheckedChange={() => toggleFlag("CHAT")}
+                        onCheckedChange={() =>
+                           setFlags((prev) => ({
+                              ...prev,
+                              [flag]: !prev[flag],
+                           }))
+                        }
                      >
                         {flag}
                      </MenuCheckboxItem>

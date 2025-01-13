@@ -1,4 +1,4 @@
-import { useDevStore } from "@/dev/store"
+import { flagsAtom } from "@/dev/store"
 import { useCanGoForward } from "@/interactions/use-can-go-forward"
 import { useLocalStorage } from "@/interactions/use-local-storage"
 import { UserAvatar } from "@/ui/components/user-avatar"
@@ -24,6 +24,7 @@ import { isNative } from "@project/ui/constants"
 import { cn } from "@project/ui/utils"
 import { Link, useCanGoBack, useRouter } from "@tanstack/react-router"
 import { useEffect } from "hono/jsx"
+import { useAtomValue } from "jotai"
 import { useTheme } from "next-themes"
 import { useHotkeys } from "react-hotkeys-hook"
 import { toast } from "sonner"
@@ -47,7 +48,7 @@ export function Sidebar() {
       enableOnContentEditable: true,
    })
 
-   const flags = useDevStore().flags
+   const flags = useAtomValue(flagsAtom)
 
    return (
       <aside className="z-[10] h-svh w-[15rem] max-md:hidden">

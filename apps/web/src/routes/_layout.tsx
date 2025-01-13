@@ -1,7 +1,7 @@
 import { BottomNavigation } from "@/routes/-components/bottom-navigation"
 import { Sidebar } from "@/routes/-components/sidebar"
 import { userMeQuery } from "@/user/queries"
-import { useUIStore } from "@project/ui/store"
+import { historyLengthAtom } from "@project/ui/store"
 import { cn } from "@project/ui/utils"
 import {
    Outlet,
@@ -9,6 +9,7 @@ import {
    redirect,
    useRouter,
 } from "@tanstack/react-router"
+import { useAtom } from "jotai"
 import * as React from "react"
 
 export const Route = createFileRoute("/_layout")({
@@ -35,12 +36,12 @@ export const Route = createFileRoute("/_layout")({
 function RouteComponent() {
    // for useCanGoForward
    const router = useRouter()
-   const historyLength = useUIStore().historyLength
+   const [historyLength, setHistoryLength] = useAtom(historyLengthAtom)
    React.useEffect(() => {
       return router.subscribe("onBeforeNavigate", () => {
          const currentIndex = router.state.location.state.__TSR_index
          if (currentIndex >= historyLength) {
-            useUIStore.setState({ historyLength: currentIndex + 1 })
+            setHistoryLength(currentIndex + 1)
          }
       })
    }, [historyLength])

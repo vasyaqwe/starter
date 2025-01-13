@@ -368,40 +368,42 @@ function RouteComponent() {
                         }}
                      >
                         <>
-                           <p className="my-7 text-center font-medium text-lg">
+                           <p className="mt-7 text-center font-medium text-lg">
                               Enter the code sent to your email
                            </p>
-                           <InputOTP
-                              key={otp.toString()}
-                              disabled={verifyLoginCode.isSuccess}
-                              ref={otpInputRef}
-                              containerClassName={
-                                 !otp
-                                    ? "[&>div>input]:!pointer-events-none"
-                                    : ""
-                              }
-                              maxLength={6}
-                              onComplete={(code) => {
-                                 if (verifyLoginCode.isPending) return
-
-                                 // blur on mobile for toast to be visible
-                                 if (window.innerWidth < MOBILE_BREAKPOINT) {
-                                    otpInputRef.current?.blur()
+                           <div className="my-8">
+                              <InputOTP
+                                 key={otp.toString()}
+                                 disabled={verifyLoginCode.isSuccess}
+                                 ref={otpInputRef}
+                                 containerClassName={
+                                    !otp
+                                       ? "[&>div>input]:!pointer-events-none"
+                                       : ""
                                  }
+                                 maxLength={6}
+                                 onComplete={(code) => {
+                                    if (verifyLoginCode.isPending) return
 
-                                 onVerifyCode({ code })
-                              }}
-                           >
-                              <>
-                                 <InputOTPSlot index={0} />
-                                 <InputOTPSlot index={1} />
-                                 <InputOTPSlot index={2} />
-                                 <InputOTPSlot index={3} />
-                                 <InputOTPSlot index={4} />
-                                 <InputOTPSlot index={5} />
-                              </>
-                           </InputOTP>
-                           <p className="mt-7 text-center text-foreground/70 leading-relaxed">
+                                    // blur on mobile for toast to be visible
+                                    if (window.innerWidth < MOBILE_BREAKPOINT) {
+                                       otpInputRef.current?.blur()
+                                    }
+
+                                    onVerifyCode({ code })
+                                 }}
+                              >
+                                 <>
+                                    <InputOTPSlot index={0} />
+                                    <InputOTPSlot index={1} />
+                                    <InputOTPSlot index={2} />
+                                    <InputOTPSlot index={3} />
+                                    <InputOTPSlot index={4} />
+                                    <InputOTPSlot index={5} />
+                                 </>
+                              </InputOTP>
+                           </div>
+                           <p className="mb-2 text-center text-foreground/70 leading-relaxed">
                               The code expires in 5 minutes. <br /> Trouble?{" "}
                               <button
                                  disabled={timer.timeLeft > 0}
