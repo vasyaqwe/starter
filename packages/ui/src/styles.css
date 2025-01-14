@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tailwix";
+@import "./components/toast/styles.css";
 
 @theme default {
    --sab: env(safe-area-inset-bottom);
@@ -286,27 +287,4 @@ h4 {
 
 p {
    text-wrap: pretty;
-}
-
-/* sonner */
-:where([data-sonner-toast]) :where([data-title]) {
-   line-height: 1.2 !important;
-}
-[data-sonner-toaster] {
-   --mobile-offset: 0 !important;
-}
-:where([data-sonner-toast][data-y-position="bottom"]):not(
-      [data-expanded="true"]
-   ) {
-   --y: translateY(calc(100% - calc(var(--offset) * 3))) !important;
-}
-@media (min-width: 768px) {
-   :where([data-sonner-toast][data-y-position="bottom"]) {
-      --lift: -1.5 !important;
-   }
-   :where([data-sonner-toast][data-y-position="bottom"]):not(
-         [data-expanded="true"]
-      ) {
-      --y: translateY(calc(100% - calc(var(--offset) * 2))) scale(0.5) !important;
-   }
 }

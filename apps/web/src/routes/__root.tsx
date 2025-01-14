@@ -1,6 +1,6 @@
 import { Toolbar } from "@/dev/components/toolbar"
 import { useLocalStorage } from "@/interactions/use-local-storage"
-import { Toaster } from "@project/ui/components/toast"
+import { Toaster } from "@project/ui/components/toast/index"
 import { MOBILE_BREAKPOINT } from "@project/ui/constants"
 import { isMobileAtom } from "@project/ui/store"
 import type { QueryClient } from "@tanstack/react-query"

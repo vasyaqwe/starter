@@ -29,10 +29,10 @@ import {
    SelectTrigger,
    SelectValue,
 } from "@project/ui/components/select"
-import { toast } from "@project/ui/components/toast"
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import type { InferRequestType } from "hono"
+import { toast } from "sonner"
 
 export const Route = createFileRoute("/_layout/")({
    component: RouteComponent,

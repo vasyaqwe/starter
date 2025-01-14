@@ -15,8 +15,8 @@ import {
 import { Icons } from "@project/ui/components/icons"
 import { InputOTP, InputOTPSlot } from "@project/ui/components/input-otp"
 import { Separator } from "@project/ui/components/separator"
-import { toast } from "@project/ui/components/toast"
-import { MOBILE_BREAKPOINT, isNative } from "@project/ui/constants"
+import { isNative } from "@project/ui/constants"
+import { isMobileAtom } from "@project/ui/store"
 import { cn } from "@project/ui/utils"
 import { useMutation } from "@tanstack/react-query"
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
@@ -24,7 +24,9 @@ import { zodValidator } from "@tanstack/zod-adapter"
 import { onOpenUrl } from "@tauri-apps/plugin-deep-link"
 import { open } from "@tauri-apps/plugin-shell"
 import type { InferRequestType } from "hono"
+import { useAtomValue } from "jotai"
 import * as React from "react"
+import { toast } from "sonner"
 import { z } from "zod"
 
 export const Route = createFileRoute("/login")({
@@ -73,6 +75,8 @@ function RouteComponent() {
       init()
       isMounted = true
    }, [])
+
+   const isMobile = useAtomValue(isMobileAtom)
 
    const { otp, email } = Route.useSearch()
    const navigate = useNavigate()
@@ -128,14 +132,8 @@ function RouteComponent() {
          id: "otp",
          loading: "Verifying code...",
          success: () => "Code is valid",
-         error: (error: unknown) =>
-            error instanceof Error
-               ? error.message
-               : "Code is invalid or expired",
-         position:
-            window.innerWidth < MOBILE_BREAKPOINT
-               ? "top-center"
-               : "bottom-center",
+         error: (error: Error) => error.message,
+         position: isMobile ? "top-center" : "bottom-center",
       })
    }
 
@@ -386,7 +384,7 @@ function RouteComponent() {
                                     if (verifyLoginCode.isPending) return
 
                                     // blur on mobile for toast to be visible
-                                    if (window.innerWidth < MOBILE_BREAKPOINT) {
+                                    if (isMobile) {
                                        otpInputRef.current?.blur()
                                     }
 
