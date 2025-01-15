@@ -1,6 +1,7 @@
 node_modules
 packages/ui
 apps/web
+apps/www
 tooling/github
 
 *.tsbuildinfo

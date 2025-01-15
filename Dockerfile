@@ -1,39 +1,27 @@
-ARG BUN_IMAGE_PROD=docker.io/oven/bun:1.1.15-slim
+FROM oven/bun:1.1.15-slim
 
-FROM ${BUN_IMAGE_PROD} AS base
-
-WORKDIR /app
 ENV NODE_ENV="production"
 
-COPY ./package.json ./
-COPY ./tooling/typescript/package.json ./tooling/typescript/package.json
-COPY ./packages/api/package.json ./packages/api/package.json
-COPY ./packages/db/package.json ./packages/db/package.json
-COPY ./packages/email/package.json ./packages/email/package.json
-COPY ./packages/env/package.json ./packages/env/package.json
-COPY ./packages/payment/package.json ./packages/payment/package.json
-COPY ./packages/shared/package.json ./packages/shared/package.json
-COPY ./apps/server/package.json ./apps/server/package.json
+WORKDIR /app
 
-FROM base AS install
-RUN bun install --ci
+COPY package.json .
+COPY turbo.json .
+COPY tooling/typescript/package.json tooling/typescript/
+COPY packages/api/package.json packages/api/
+COPY packages/db/package.json packages/db/
+COPY packages/email/package.json packages/email/
+COPY packages/env/package.json packages/env/
+COPY packages/payment/package.json packages/payment/
+COPY packages/shared/package.json packages/shared/
+COPY apps/server/package.json apps/server/
 
-FROM base AS build
-COPY --from=install ./app/node_modules ./node_modules
-COPY ./tooling/typescript ./tooling/typescript
-COPY ./packages/ ./packages/
-COPY ./apps/server ./apps/server
+RUN bun install --production && bun install turbo@^2.3.3 -g
 
-RUN cd packages && \
-    for pkg in api db email env payment shared; do \
-        bun run --cwd ./$pkg build; \
-    done
+COPY tooling/typescript tooling/typescript
+COPY packages/ packages/
+COPY apps/server apps/server
 
-FROM base AS start
-
-COPY --from=build /app/packages/ ./packages/
-COPY --from=build /app/apps/server ./apps/server
-COPY --from=install /app/node_modules ./node_modules
+RUN bun run turbo build
 
 EXPOSE 8080
 CMD [ "bun", "run", "--cwd", "/app/apps/server", "start" ]
