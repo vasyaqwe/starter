@@ -1,5 +1,4 @@
 import { useAtomValue } from "jotai"
-import type * as React from "react"
 import { Toaster as Sonner } from "sonner"
 import { isMobileAtom } from "../../store"
 import { cn } from "../../utils"

@@ -22,7 +22,6 @@ import {
    FieldLabel,
 } from "@project/ui/components/field"
 import { Icons } from "@project/ui/components/icons"
-import {} from "@project/ui/components/popover"
 import { ScrollArea } from "@project/ui/components/scroll-area"
 import { Separator } from "@project/ui/components/separator"
 import { Switch } from "@project/ui/components/switch"
