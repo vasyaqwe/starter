@@ -16,6 +16,7 @@ import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
 import { Route as LayoutChatImport } from './routes/_layout/chat'
+import { Route as LayoutChartImport } from './routes/_layout/chart'
 
 // Create/Update Routes
 
@@ -48,6 +49,12 @@ const LayoutChatRoute = LayoutChatImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutChartRoute = LayoutChartImport.update({
+  id: '/chart',
+  path: '/chart',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -65,6 +72,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
+    }
+    '/_layout/chart': {
+      id: '/_layout/chart'
+      path: '/chart'
+      fullPath: '/chart'
+      preLoaderRoute: typeof LayoutChartImport
+      parentRoute: typeof LayoutImport
     }
     '/_layout/chat': {
       id: '/_layout/chat'
@@ -93,12 +107,14 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface LayoutRouteChildren {
+  LayoutChartRoute: typeof LayoutChartRoute
   LayoutChatRoute: typeof LayoutChatRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutChartRoute: LayoutChartRoute,
   LayoutChatRoute: LayoutChatRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
@@ -110,6 +126,7 @@ const LayoutRouteWithChildren =
 export interface FileRoutesByFullPath {
   '': typeof LayoutRouteWithChildren
   '/login': typeof LoginRoute
+  '/chart': typeof LayoutChartRoute
   '/chat': typeof LayoutChatRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
@@ -117,6 +134,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/chart': typeof LayoutChartRoute
   '/chat': typeof LayoutChatRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
@@ -126,6 +144,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
   '/login': typeof LoginRoute
+  '/_layout/chart': typeof LayoutChartRoute
   '/_layout/chat': typeof LayoutChatRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
@@ -133,13 +152,14 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/login' | '/chat' | '/settings' | '/'
+  fullPaths: '' | '/login' | '/chart' | '/chat' | '/settings' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/chat' | '/settings' | '/'
+  to: '/login' | '/chart' | '/chat' | '/settings' | '/'
   id:
     | '__root__'
     | '/_layout'
     | '/login'
+    | '/_layout/chart'
     | '/_layout/chat'
     | '/_layout/settings'
     | '/_layout/'
@@ -173,6 +193,7 @@ export const routeTree = rootRoute
     "/_layout": {
       "filePath": "_layout.tsx",
       "children": [
+        "/_layout/chart",
         "/_layout/chat",
         "/_layout/settings",
         "/_layout/"
@@ -180,6 +201,10 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/_layout/chart": {
+      "filePath": "_layout/chart.tsx",
+      "parent": "/_layout"
     },
     "/_layout/chat": {
       "filePath": "_layout/chat.tsx",

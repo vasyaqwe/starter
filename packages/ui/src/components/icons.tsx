@@ -20,6 +20,60 @@ export const Icons = {
          />
       </svg>
    ),
+   chart: (props: IconProps) => (
+      <svg
+         xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 20 20"
+         {...props}
+      >
+         <g fill="currentColor">
+            <line
+               x1="4"
+               y1="17"
+               x2="4"
+               y2="3"
+               fill="none"
+               stroke="currentColor"
+               strokeLinecap="round"
+               strokeLinejoin="round"
+               strokeWidth="2"
+            />
+            <circle
+               cx="4"
+               cy="10"
+               r="2.5"
+               fill="currentColor"
+               strokeWidth="0"
+            />
+            <rect
+               x="8"
+               y="3"
+               width="9"
+               height="5"
+               rx="1.5"
+               ry="1.5"
+               fill="none"
+               stroke="currentColor"
+               strokeLinecap="round"
+               strokeLinejoin="round"
+               strokeWidth="2"
+            />
+            <rect
+               x="8"
+               y="12"
+               width="9"
+               height="5"
+               rx="1.5"
+               ry="1.5"
+               fill="none"
+               stroke="currentColor"
+               strokeLinecap="round"
+               strokeLinejoin="round"
+               strokeWidth="2"
+            />
+         </g>
+      </svg>
+   ),
    home: (props: IconProps) => (
       <svg
          viewBox="0 0 20 20"

@@ -15,9 +15,13 @@
   },
   "dependencies": {
     "@base-ui-components/react": "^1.0.0-alpha.4",
+    "@nivo/bar": "^0.88.0",
+    "@nivo/line": "^0.88.0",
+    "@nivo/tooltip": "^0.88.0",
     "@oslojs/encoding": "^1.1.0",
     "@project/shared": "workspace:*",
     "@project/ui": "workspace:*",
+    "@react-spring/web": "^9.7.5",
     "@tanstack/react-query": "^5.62.15",
     "@tanstack/react-router": "^1.95.1",
     "@tanstack/react-router-with-query": "^1.95.1",
@@ -28,9 +32,8 @@
     "@tauri-apps/plugin-fs": "^2.2.0",
     "@tauri-apps/plugin-notification": "^2.2.0",
     "@tauri-apps/plugin-shell": "^2.2.0",
-    "babel-plugin-react-compiler": "^19.0.0-beta-e552027-20250112",
     "@vitejs/plugin-react": "^4.3.4",
-    "vite-tsconfig-paths": "^5.1.4",
+    "babel-plugin-react-compiler": "^19.0.0-beta-e552027-20250112",
     "hono": "^4.6.12",
     "input-otp": "^1.4.1",
     "jotai": "^2.11.0",
@@ -42,16 +45,18 @@
     "react-use-precision-timer": "^3.5.5",
     "remeda": "^2.6.0",
     "sonner": "^1.7.1",
+    "vite-tsconfig-paths": "^5.1.4",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@project/api": "workspace:*",
     "@project/db": "workspace:*",
     "@project/tsconfig": "workspace:*",
+    "@react-spring/types": "^9.7.5",
     "@tauri-apps/cli": "^2.2.2",
+    "@types/node": "^20.12.9",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
-    "@types/node": "^20.12.9",
     "vite": "^6.0.1"
   }
 }

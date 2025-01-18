@@ -111,6 +111,18 @@ export function Sidebar() {
                         Home
                      </Link>
                   </li>
+                  <li>
+                     <Link
+                        to={"/chart"}
+                        className={cn(
+                           buttonVariants({ variant: "ghost" }),
+                           "group flex justify-start gap-2 px-2 font-medium text-base text-foreground/70 leading-none hover:text-foreground aria-[current=page]:text-foreground",
+                        )}
+                     >
+                        <Icons.chart className="size-5" />
+                        Chart
+                     </Link>
+                  </li>
                   {flags.CHAT ? (
                      <li>
                         <Link

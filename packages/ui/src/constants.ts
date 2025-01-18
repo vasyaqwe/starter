@@ -25,6 +25,10 @@ export const popupStyles = {
       "-mx-(--padding) mt-0.5 mb-1 h-px w-[calc(100%+calc(var(--padding)*2))] bg-black shadow-[0px_1px_0px_var(--color-white-a3)] dark:bg-primary-2 dark:shadow-[0px_1px_0px_var(--color-primary-6)]",
 }
 
+export const tooltipStyles = {
+   base: "flex items-center gap-px rounded-[9px] px-2 py-[3px] text-sm",
+}
+
 export const menuItemStyles = {
    base: "cursor-(--cursor) text-sm h-8 flex items-center select-none gap-2 rounded-[calc(var(--radius-xl)-var(--padding))] px-2 py-[5px] focus-visible:border-transparent [&>svg]:size-5 [&>svg]:text-primary-8 hover:[&>svg]:text-white focus:[&>svg]:text-white dark:[&>svg]:text-primary-11 hover:bg-primary-11 hover:shadow-sm focus-visible:outline-none focus-visible:outline-hidden focus-visible:bg-primary-11 shadow-black/20 focus-visible:shadow-sm dark:hover:bg-primary-6 dark:focus-visible:bg-primary-6",
    destructive:

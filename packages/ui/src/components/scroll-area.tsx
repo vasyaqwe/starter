@@ -9,7 +9,10 @@ export function ScrollArea({
    return (
       <ScrollAreaPrimitive.Root className={"flex-1"}>
          <ScrollAreaPrimitive.Viewport
-            className={cn("absolute inset-0 overscroll-contain", className)}
+            className={cn(
+               "[&>div]:!min-w-0 absolute inset-0 overscroll-contain",
+               className,
+            )}
             {...props}
          >
             {children}

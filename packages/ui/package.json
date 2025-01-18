@@ -12,6 +12,10 @@
       "types": "./dist/components/*.d.ts",
       "default": "./src/components/*.tsx"
     },
+    "./components/chart/constants": {
+      "types": "./dist/components/chart/constants.d.ts",
+      "default": "./src/components/chart/constants.ts"
+    },
     "./hooks/*": {
       "types": "./dist/hooks/*.d.ts",
       "default": "./src/hooks/*.ts"
