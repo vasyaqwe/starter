@@ -12,9 +12,9 @@
       "types": "./dist/components/*.d.ts",
       "default": "./src/components/*.tsx"
     },
-    "./components/chart/constants": {
-      "types": "./dist/components/chart/constants.d.ts",
-      "default": "./src/components/chart/constants.ts"
+    "./components/chart-nivo/constants": {
+      "types": "./dist/components/chart-nivo/constants.d.ts",
+      "default": "./src/components/chart-nivo/constants.ts"
     },
     "./hooks/*": {
       "types": "./dist/hooks/*.d.ts",

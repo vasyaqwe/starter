@@ -1,10 +1,10 @@
 import { Card } from "@project/ui/components/card"
-import { Bar } from "@project/ui/components/chart/bar"
+import { Bar } from "@project/ui/components/chart-nivo/bar"
 import {
    CrosshairLine,
    CrosshairTooltip,
-} from "@project/ui/components/chart/crosshair"
-import { Line } from "@project/ui/components/chart/line"
+} from "@project/ui/components/chart-nivo/crosshair"
+import { Line } from "@project/ui/components/chart-nivo/line"
 import { ScrollArea } from "@project/ui/components/scroll-area"
 import { createFileRoute } from "@tanstack/react-router"
 
