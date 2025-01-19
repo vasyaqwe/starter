@@ -1,7 +1,7 @@
 import type { BarDatum, ComputedDatum } from "@nivo/bar"
 
-export type Point = {
+export type Point<T extends BarDatum = BarDatum> = {
    x: number
    y: number
-   data: ComputedDatum<BarDatum>
-} | null
+   data: ComputedDatum<T>
+}
