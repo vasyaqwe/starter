@@ -11,9 +11,9 @@ export const hc = honoClient<AppRoutes>("http://localhost:8080", {
 
 type HonoResponse<T> = Promise<ClientResponse<T, StatusCode, "json">>
 
-export const honoQueryFn = <T>(apiFn: () => HonoResponse<T>) => {
+export const honoQueryFn = <T>(fn: () => HonoResponse<T>) => {
    return async () => {
-      const res = await apiFn()
+      const res = await fn()
       if (res.ok) return res.json()
       return Promise.reject(await res.json())
    }

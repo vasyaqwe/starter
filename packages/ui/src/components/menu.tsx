@@ -20,7 +20,7 @@ export function MenuGroupLabel({
 }: React.ComponentProps<typeof MenuPrimitive.GroupLabel>) {
    return (
       <MenuPrimitive.GroupLabel
-         className={cn("my-1 ml-2 text-sm text-white/75 uppercase", className)}
+         className={cn(popupStyles.groupLabel, className)}
          {...props}
       >
          {children}

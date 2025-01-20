@@ -360,11 +360,7 @@ function RouteComponent() {
                      >
                         <Icons.arrowLeft className="size-5" />
                      </Link>
-                     <form
-                        onSubmit={(e) => {
-                           e.preventDefault()
-                        }}
-                     >
+                     <div>
                         <>
                            <p className="mt-7 text-center font-medium text-lg">
                               Enter the code sent to your email
@@ -419,7 +415,7 @@ function RouteComponent() {
                               </button>
                            </p>
                         </>
-                     </form>
+                     </div>
                   </Card>
                </AnimatedStack>
             </div>

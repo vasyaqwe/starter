@@ -1,7 +1,7 @@
 import { Select as SelectPrimitive } from "@base-ui-components/react/select"
 import { menuItemStyles, popupStyles } from "../constants"
 import { cn } from "../utils"
-import { buttonVariants } from "./button"
+import { type ButtonProps, buttonVariants } from "./button"
 import { Icons } from "./icons"
 
 export const Select = SelectPrimitive.Root
@@ -15,23 +15,42 @@ export const SelectBackdrop = SelectPrimitive.Backdrop
 export const SelectPositioner = SelectPrimitive.Positioner
 export const SelectArrow = SelectPrimitive.Arrow
 
-export function SelectTrigger({
+export function SelectGroupLabel({
    className,
    children,
    ...props
-}: React.ComponentProps<typeof SelectPrimitive.Trigger>) {
+}: React.ComponentProps<typeof SelectPrimitive.GroupLabel>) {
+   return (
+      <SelectPrimitive.GroupLabel
+         className={cn(popupStyles.groupLabel, className)}
+         {...props}
+      >
+         {children}
+      </SelectPrimitive.GroupLabel>
+   )
+}
+
+export function SelectTrigger({
+   className,
+   children,
+   variant = "secondary",
+   size = "default",
+   ...props
+}: React.ComponentProps<typeof SelectPrimitive.Trigger> & ButtonProps) {
    return (
       <SelectPrimitive.Trigger
          className={cn(
-            buttonVariants({ variant: "secondary" }),
             "justify-start",
-            className,
+            buttonVariants({ variant, size, className }),
          )}
          {...props}
       >
          {children}
-         <SelectIcon className="-mr-1 ml-auto flex">
-            <Icons.chevronUpDown className="size-4 text-foreground/75" />
+         <SelectIcon
+            data-icon
+            className="-mr-1.5 ml-auto flex shrink-0"
+         >
+            <Icons.chevronUpDown className="size-[17px] text-foreground/75" />
          </SelectIcon>
       </SelectPrimitive.Trigger>
    )

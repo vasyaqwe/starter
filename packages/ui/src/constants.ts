@@ -23,6 +23,7 @@ export const popupStyles = {
    base: "rounded-xl bg-primary-12 text-white shadow-md outline-1 outline-transparent outline-offset-0 dark:bg-primary-3 dark:shadow-lg dark:shadow-black/35 dark:outline-primary-6",
    separator:
       "-mx-(--padding) mt-0.5 mb-1 h-px w-[calc(100%+calc(var(--padding)*2))] bg-black shadow-[0px_1px_0px_var(--color-white-a3)] dark:bg-primary-2 dark:shadow-[0px_1px_0px_var(--color-primary-6)]",
+   groupLabel: "my-1 ml-2 text-sm text-white/75 uppercase",
 }
 
 export const tooltipStyles = {
