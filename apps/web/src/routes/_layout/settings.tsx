@@ -213,7 +213,7 @@ function RouteComponent() {
                }
             >
                <div>
-                  <h1 className="font-bold text-xl">Settings</h1>
+                  <h1 className="font-semibold text-xl">Settings</h1>
                   <p className="mt-1 mb-6 text-foreground/75">
                      View and manage your workspace settings.
                   </p>

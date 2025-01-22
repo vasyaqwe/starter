@@ -1,118 +1,229 @@
 import { Card } from "@project/ui/components/card"
-import { Bar } from "@project/ui/components/chart-nivo/bar"
 import {
-   CrosshairLine,
-   CrosshairTooltip,
-} from "@project/ui/components/chart-nivo/crosshair"
-import { Line } from "@project/ui/components/chart-nivo/line"
+   ChartContainer,
+   ChartTooltip,
+   ChartTooltipContent,
+} from "@project/ui/components/chart"
 import { ScrollArea } from "@project/ui/components/scroll-area"
 import { createFileRoute } from "@tanstack/react-router"
+import { CartesianGrid, Line, LineChart, Rectangle, XAxis } from "recharts"
 
 export const Route = createFileRoute("/_layout/chart")({
    component: RouteComponent,
 })
 
+const chartData = [
+   { date: "2024-04-01", desktop: 222, mobile: 150 },
+   { date: "2024-04-02", desktop: 97, mobile: 180 },
+   { date: "2024-04-03", desktop: 167, mobile: 120 },
+   { date: "2024-04-04", desktop: 242, mobile: 260 },
+   { date: "2024-04-05", desktop: 373, mobile: 290 },
+   { date: "2024-04-06", desktop: 301, mobile: 340 },
+   { date: "2024-04-07", desktop: 245, mobile: 180 },
+   { date: "2024-04-08", desktop: 409, mobile: 320 },
+   { date: "2024-04-09", desktop: 59, mobile: 110 },
+   { date: "2024-04-10", desktop: 261, mobile: 190 },
+   { date: "2024-04-11", desktop: 327, mobile: 350 },
+   { date: "2024-04-12", desktop: 292, mobile: 210 },
+   { date: "2024-04-13", desktop: 342, mobile: 380 },
+   { date: "2024-04-14", desktop: 137, mobile: 220 },
+   { date: "2024-04-15", desktop: 120, mobile: 170 },
+   { date: "2024-04-16", desktop: 138, mobile: 190 },
+   { date: "2024-04-17", desktop: 446, mobile: 360 },
+   { date: "2024-04-18", desktop: 364, mobile: 410 },
+   { date: "2024-04-19", desktop: 243, mobile: 180 },
+   { date: "2024-04-20", desktop: 89, mobile: 150 },
+   { date: "2024-04-21", desktop: 137, mobile: 200 },
+   { date: "2024-04-22", desktop: 224, mobile: 170 },
+   { date: "2024-04-23", desktop: 138, mobile: 230 },
+   { date: "2024-04-24", desktop: 387, mobile: 290 },
+   { date: "2024-04-25", desktop: 215, mobile: 250 },
+   { date: "2024-04-26", desktop: 75, mobile: 130 },
+   { date: "2024-04-27", desktop: 383, mobile: 420 },
+   { date: "2024-04-28", desktop: 122, mobile: 180 },
+   { date: "2024-04-29", desktop: 315, mobile: 240 },
+   { date: "2024-04-30", desktop: 454, mobile: 380 },
+   { date: "2024-05-01", desktop: 165, mobile: 220 },
+   { date: "2024-05-02", desktop: 293, mobile: 310 },
+   { date: "2024-05-03", desktop: 247, mobile: 190 },
+   { date: "2024-05-04", desktop: 385, mobile: 420 },
+   { date: "2024-05-05", desktop: 481, mobile: 390 },
+   { date: "2024-05-06", desktop: 498, mobile: 520 },
+   { date: "2024-05-07", desktop: 388, mobile: 300 },
+   { date: "2024-05-08", desktop: 149, mobile: 210 },
+   { date: "2024-05-09", desktop: 227, mobile: 180 },
+   { date: "2024-05-10", desktop: 293, mobile: 330 },
+   { date: "2024-05-11", desktop: 335, mobile: 270 },
+   { date: "2024-05-12", desktop: 197, mobile: 240 },
+   { date: "2024-05-13", desktop: 197, mobile: 160 },
+   { date: "2024-05-14", desktop: 448, mobile: 490 },
+   { date: "2024-05-15", desktop: 473, mobile: 380 },
+   { date: "2024-05-16", desktop: 338, mobile: 400 },
+   { date: "2024-05-17", desktop: 499, mobile: 420 },
+   { date: "2024-05-18", desktop: 315, mobile: 350 },
+   { date: "2024-05-19", desktop: 235, mobile: 180 },
+   { date: "2024-05-20", desktop: 177, mobile: 230 },
+   { date: "2024-05-21", desktop: 82, mobile: 140 },
+   { date: "2024-05-22", desktop: 81, mobile: 120 },
+   { date: "2024-05-23", desktop: 252, mobile: 290 },
+   { date: "2024-05-24", desktop: 294, mobile: 220 },
+   { date: "2024-05-25", desktop: 201, mobile: 250 },
+   { date: "2024-05-26", desktop: 213, mobile: 170 },
+   { date: "2024-05-27", desktop: 420, mobile: 460 },
+   { date: "2024-05-28", desktop: 233, mobile: 190 },
+   { date: "2024-05-29", desktop: 78, mobile: 130 },
+   { date: "2024-05-30", desktop: 340, mobile: 280 },
+   { date: "2024-05-31", desktop: 178, mobile: 230 },
+   { date: "2024-06-01", desktop: 178, mobile: 200 },
+   { date: "2024-06-02", desktop: 470, mobile: 410 },
+   { date: "2024-06-03", desktop: 103, mobile: 160 },
+   { date: "2024-06-04", desktop: 439, mobile: 380 },
+   { date: "2024-06-05", desktop: 88, mobile: 140 },
+   { date: "2024-06-06", desktop: 294, mobile: 250 },
+   { date: "2024-06-07", desktop: 323, mobile: 370 },
+   { date: "2024-06-08", desktop: 385, mobile: 320 },
+   { date: "2024-06-09", desktop: 438, mobile: 480 },
+   { date: "2024-06-10", desktop: 155, mobile: 200 },
+   { date: "2024-06-11", desktop: 92, mobile: 150 },
+   { date: "2024-06-12", desktop: 492, mobile: 420 },
+   { date: "2024-06-13", desktop: 81, mobile: 130 },
+   { date: "2024-06-14", desktop: 426, mobile: 380 },
+   { date: "2024-06-15", desktop: 307, mobile: 350 },
+   { date: "2024-06-16", desktop: 371, mobile: 310 },
+   { date: "2024-06-17", desktop: 475, mobile: 520 },
+   { date: "2024-06-18", desktop: 107, mobile: 170 },
+   { date: "2024-06-19", desktop: 341, mobile: 290 },
+   { date: "2024-06-20", desktop: 408, mobile: 450 },
+   { date: "2024-06-21", desktop: 169, mobile: 210 },
+   { date: "2024-06-22", desktop: 317, mobile: 270 },
+   { date: "2024-06-23", desktop: 480, mobile: 530 },
+   { date: "2024-06-24", desktop: 132, mobile: 180 },
+   { date: "2024-06-25", desktop: 141, mobile: 190 },
+   { date: "2024-06-26", desktop: 434, mobile: 380 },
+   { date: "2024-06-27", desktop: 448, mobile: 490 },
+   { date: "2024-06-28", desktop: 149, mobile: 200 },
+   { date: "2024-06-29", desktop: 103, mobile: 160 },
+   { date: "2024-06-30", desktop: 446, mobile: 400 },
+]
+
 function RouteComponent() {
+   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+   const CustomCursor = ({ points, height }: any) => (
+      <>
+         <defs>
+            <linearGradient
+               id="gradientCursor"
+               x1="0"
+               y1="0"
+               x2="0"
+               y2="1"
+            >
+               <stop
+                  offset="0%"
+                  stopColor="white"
+                  stopOpacity="0"
+               />
+               <stop
+                  offset="25%"
+                  stopColor="white"
+                  stopOpacity="0.9"
+               />
+               <stop
+                  offset="75%"
+                  stopColor="white"
+                  stopOpacity="0.9"
+               />
+               <stop
+                  offset="100%"
+                  stopColor="white"
+                  stopOpacity="0"
+               />
+            </linearGradient>
+         </defs>
+         <Rectangle
+            x={points[0].x}
+            y={0}
+            width={2}
+            height={height}
+            fill="url(#gradientCursor)"
+            className="relative z-[5000]"
+            style={{ pointerEvents: "all" }}
+         />
+      </>
+   )
+
    return (
       <ScrollArea className={"min-w-0 p-4 md:p-6"}>
-         <Card className=" flex w-full max-w-fit flex-wrap gap-4 overflow-x-auto p-6">
-            <Bar
-               height={300}
-               width={500}
-               data={[
-                  { country: "USA", value: 120 },
-                  { country: "UK", value: 90 },
-                  { country: "Canada", value: 75 },
-                  { country: "Germany", value: 110 },
-               ]}
-               colors={(_bar) => "var(--color-accent)"}
-               keys={["value"]}
-               indexBy="country"
-            >
-               <CrosshairTooltip>
-                  {(data) => <div>{data.data.country}</div>}
-               </CrosshairTooltip>
-               <CrosshairLine />
-            </Bar>
-         </Card>
-         <Card className="flex w-full max-w-fit flex-wrap gap-4 overflow-x-auto p-6">
-            <Line
-               height={300}
-               width={500}
-               data={[
-                  {
-                     id: "stock-1",
-                     data: [
-                        { x: "Day 1", y: 100.0 },
-                        { x: "Day 2", y: 101.25 },
-                        { x: "Day 3", y: 102.5 },
-                        { x: "Day 4", y: 103.0 },
-                        { x: "Day 5", y: 101.75 },
-                        { x: "Day 6", y: 100.5 },
-                        { x: "Day 7", y: 101.0 },
-                        { x: "Day 8", y: 112.25 },
-                        { x: "Day 9", y: 103.5 },
-                        { x: "Day 10", y: 104.0 },
-                        { x: "Day 11", y: 104.5 },
-                        { x: "Day 12", y: 105.0 },
-                        { x: "Day 13", y: 103.75 },
-                        { x: "Day 14", y: 102.5 },
-                        { x: "Day 15", y: 103.0 },
-                        { x: "Day 16", y: 103.5 },
-                        { x: "Day 17", y: 104.0 },
-                        { x: "Day 18", y: 104.5 },
-                        { x: "Day 19", y: 105.0 },
-                        { x: "Day 20", y: 154.0 },
-                        { x: "Day 21", y: 105.5 },
-                        { x: "Day 22", y: 106.0 },
-                        { x: "Day 23", y: 106.5 },
-                        { x: "Day 24", y: 155.25 },
-                        { x: "Day 25", y: 154.0 },
-                        { x: "Day 26", y: 154.5 },
-                        { x: "Day 27", y: 155.0 },
-                        { x: "Day 28", y: 155.5 },
-                        { x: "Day 29", y: 156.0 },
-                        { x: "Day 30", y: 156.5 },
-                        { x: "Day q", y: 100.0 },
-                        { x: "Day w", y: 101.25 },
-                        { x: "Day e", y: 102.5 },
-                        { x: "Day r", y: 103.0 },
-                        { x: "Day t", y: 101.75 },
-                        { x: "Day y", y: 100.5 },
-                        { x: "Day u", y: 101.0 },
-                        { x: "Day i", y: 112.25 },
-                        { x: "Day o", y: 103.5 },
-                        { x: "Day p", y: 104.0 },
-                        { x: "Day a", y: 104.5 },
-                        { x: "Day s", y: 105.0 },
-                        { x: "Day d", y: 103.75 },
-                        { x: "Day f", y: 102.5 },
-                        { x: "Day g", y: 103.0 },
-                        { x: "Day h", y: 103.5 },
-                        { x: "Day j", y: 104.0 },
-                        { x: "Day k", y: 104.5 },
-                        { x: "Day l", y: 105.0 },
-                        { x: "Day z", y: 154.0 },
-                        { x: "Day x", y: 105.5 },
-                        { x: "Day c", y: 106.0 },
-                        { x: "Day v", y: 106.5 },
-                        { x: "Day b", y: 155.25 },
-                        { x: "Day n", y: 154.0 },
-                        { x: "Day m", y: 154.5 },
-                        { x: "Day 123123", y: 155.0 },
-                        { x: "Day 321321", y: 155.5 },
-                        { x: "Day dsadsa", y: 156.0 },
-                        { x: "Day 2135", y: 100 },
-                     ],
+         <Card className="flex w-full flex-wrap gap-4 overflow-x-auto p-6">
+            <ChartContainer
+               config={{
+                  views: {
+                     label: "Page Views",
                   },
-               ]}
-               colors={(_bar) => "var(--color-accent)"}
+                  desktop: {
+                     label: "Desktop",
+                     color: "var(--color-accent)",
+                  },
+                  mobile: {
+                     label: "Mobile",
+                     color: "var(--color-accent)",
+                  },
+               }}
+               className="aspect-auto h-[250px] w-full"
             >
-               <CrosshairTooltip>
-                  {(data) => <div>{JSON.stringify(data)}</div>}
-               </CrosshairTooltip>
-               <CrosshairLine />
-            </Line>
+               <LineChart
+                  accessibilityLayer
+                  data={chartData}
+                  margin={{
+                     left: 12,
+                     right: 12,
+                  }}
+               >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                     dataKey="date"
+                     tickLine={false}
+                     axisLine={false}
+                     tickMargin={8}
+                     minTickGap={32}
+                     tickFormatter={(value) => {
+                        const date = new Date(value)
+                        return date.toLocaleDateString("en-US", {
+                           month: "short",
+                           day: "numeric",
+                        })
+                     }}
+                  />
+                  <Line
+                     activeDot={false}
+                     isAnimationActive={false}
+                     dataKey={"desktop"}
+                     type="monotone"
+                     stroke={`var(--color-desktop)`}
+                     strokeWidth={2}
+                     dot={false}
+                  />
+                  <ChartTooltip
+                     cursor={<CustomCursor />}
+                     content={
+                        <ChartTooltipContent
+                           className="w-[150px]"
+                           nameKey="views"
+                           labelFormatter={(value) => {
+                              return new Date(value).toLocaleDateString(
+                                 "en-US",
+                                 {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                 },
+                              )
+                           }}
+                        />
+                     }
+                  />
+               </LineChart>
+            </ChartContainer>
          </Card>
       </ScrollArea>
    )
