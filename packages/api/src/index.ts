@@ -18,27 +18,27 @@ export const ALLOWED_ORIGINS = ["https://www.project.io", "https://project.io"]
 const app = createRouter()
 
 app.use(logger())
-   .use((c, next) => {
+   .use(async (c, next) => {
       c.set("db", db)
       c.set("email", email)
       c.set("payment", payment)
-
-      const handler = cors({
+      await next()
+   })
+   .use(
+      cors({
          origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
          credentials: true,
          maxAge: 600,
-      })
-      return handler(c, next)
-   })
-   // .use("*", async (c, next) => {
-   //    const sentryMiddleware = sentry({
-   //       enabled: env.server.NODE_ENV === "production",
-   //    })
-   //    return await sentryMiddleware(c, next)
-   // })
+      }),
+   )
    .onError(handleError)
 
-const apiRoutes = createRouter()
+const v1 = createRouter()
+   .use(
+      csrf({
+         origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
+      }),
+   )
    .route("/auth", authRoute)
    .get("/hello", (c) => {
       return c.json({
@@ -46,19 +46,13 @@ const apiRoutes = createRouter()
       })
    })
 
-const baseRoutes = createRouter()
-   .use((c, next) => {
-      const handler = csrf({
-         origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
-      })
-      return handler(c, next)
-   })
+const base = createRouter()
    .route("/billing", billingRoute)
    .route("/storage", storageRoute)
    .route("/user", userRoute)
    .route("/post", postRoute)
 
-const routes = app.route("/api", apiRoutes).route("/", baseRoutes)
+const routes = app.route("/v1", v1).route("/", base)
 
 export type AppRoutes = typeof routes
 
