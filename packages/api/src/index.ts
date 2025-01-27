@@ -33,26 +33,26 @@ app.use(logger())
    )
    .onError(handleError)
 
-const v1 = createRouter()
-   .use(
-      csrf({
-         origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
-      }),
-   )
-   .route("/auth", authRoute)
-   .get("/hello", (c) => {
+const base = createRouter()
+   .get("/health", (c) => {
       return c.json({
-         message: "Hello from Hono!",
+         message: "Healthy",
       })
    })
-
-const base = createRouter()
    .route("/billing", billingRoute)
    .route("/storage", storageRoute)
    .route("/user", userRoute)
    .route("/post", postRoute)
 
-const routes = app.route("/v1", v1).route("/", base)
+const auth = createRouter()
+   .use(
+      csrf({
+         origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
+      }),
+   )
+   .route("/", authRoute)
+
+const routes = app.route("/auth", auth).route("/", base)
 
 export type AppRoutes = typeof routes
 

@@ -56,7 +56,7 @@ function RouteComponent() {
                   const code_verifier =
                      url.searchParams.get("code_verifier") ?? ""
 
-                  const res = await hc.v1.auth[":provider"].callback.$get({
+                  const res = await hc.auth[":provider"].callback.$get({
                      param: { provider: "google" },
                      query: { client: "native", code, state, code_verifier },
                   })
@@ -89,12 +89,10 @@ function RouteComponent() {
    const sendLoginCode = useMutation({
       mutationFn: async (
          data: InferRequestType<
-            (typeof hc.v1.auth)["send-login-otp"]["$post"]
+            (typeof hc.auth)["send-login-otp"]["$post"]
          >["json"],
       ) =>
-         honoMutationFn(
-            await hc.v1.auth["send-login-otp"].$post({ json: data }),
-         ),
+         honoMutationFn(await hc.auth["send-login-otp"].$post({ json: data })),
       onMutate: () => {
          timer.start()
       },
@@ -112,11 +110,11 @@ function RouteComponent() {
    const verifyLoginCode = useMutation({
       mutationFn: async (
          data: InferRequestType<
-            (typeof hc.v1.auth)["verify-login-otp"]["$post"]
+            (typeof hc.auth)["verify-login-otp"]["$post"]
          >["json"],
       ) =>
          honoMutationFn(
-            await hc.v1.auth["verify-login-otp"].$post({ json: data }),
+            await hc.auth["verify-login-otp"].$post({ json: data }),
          ),
       onError: () => undefined,
       onSuccess: () => {
@@ -139,7 +137,7 @@ function RouteComponent() {
 
    const loginWithGoogle = useMutation({
       mutationFn: async () => {
-         const url = hc.v1.auth[":provider"]
+         const url = hc.auth[":provider"]
             .$url({
                param: { provider: "google" },
                query: {
@@ -158,8 +156,8 @@ function RouteComponent() {
 
    const loginWithPasskey = useMutation({
       mutationFn: async (
-         json: InferRequestType<typeof hc.v1.auth.passkey.login.$post>["json"],
-      ) => honoMutationFn(await hc.v1.auth.passkey.login.$post({ json })),
+         json: InferRequestType<typeof hc.auth.passkey.login.$post>["json"],
+      ) => honoMutationFn(await hc.auth.passkey.login.$post({ json })),
       onSuccess: () => {
          navigate({ to: "/" })
       },
@@ -167,7 +165,7 @@ function RouteComponent() {
 
    const requestChallenge = useMutation({
       mutationFn: async () =>
-         honoMutationFn(await hc.v1.auth.passkey.challenge.$post()),
+         honoMutationFn(await hc.auth.passkey.challenge.$post()),
       onSuccess: async (data) => {
          const challenge = decodeBase64(data)
 

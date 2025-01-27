@@ -41,7 +41,7 @@ export const Route = createFileRoute("/_layout/")({
 const someQuery = () =>
    queryOptions({
       queryKey: ["query"],
-      queryFn: honoQueryFn(() => hc.v1.hello.$get()),
+      queryFn: honoQueryFn(() => hc.health.$get()),
    })
 const someQuery2 = ({ id }: { id: string }) =>
    queryOptions({
