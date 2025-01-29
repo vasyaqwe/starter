@@ -1,9 +1,10 @@
 import { Polar } from "@polar-sh/sdk"
-import { env } from "@project/env"
+import type { Env } from "@project/env"
 
-export const payment = new Polar({
-   accessToken: env.server.POLAR_ACCESS_TOKEN,
-   server: "sandbox",
-})
+export const payment = (c: { var: { env: Env } }) =>
+   new Polar({
+      accessToken: c.var.env.server.POLAR_ACCESS_TOKEN,
+      server: "sandbox",
+   })
 
-export type Payment = typeof payment
+export type Payment = ReturnType<typeof payment>

@@ -40,7 +40,6 @@ import {
 } from "@project/db/schema/user"
 import { EMAIL_FROM } from "@project/email"
 import { loginOtpEmail } from "@project/email/templates/login-otp"
-import { env } from "@project/env"
 import { logger } from "@project/misc/logger"
 import { generateCodeVerifier, generateState } from "arctic"
 import { getCookie, setCookie } from "hono/cookie"
@@ -97,7 +96,7 @@ export const authRoute = createRouter()
          if (
             parsedClientData.type !== ClientDataType.Get ||
             !verifyPasskeyChallenge(parsedClientData.challenge) ||
-            parsedClientData.origin !== env.client.WEB_DOMAIN ||
+            parsedClientData.origin !== c.var.env.client.WEB_DOMAIN ||
             (parsedClientData.crossOrigin !== null &&
                parsedClientData.crossOrigin)
          )
@@ -209,7 +208,7 @@ export const authRoute = createRouter()
                email,
             })
 
-            if (env.server.NODE_ENV === "development") {
+            if (c.var.env.server.NODE_ENV === "development") {
                logger.info(`OTP: ${otp}`)
             } else {
                const res = await c.var.email.emails.send({
@@ -268,7 +267,8 @@ export const authRoute = createRouter()
       ),
       async (c) => {
          const provider = c.req.valid("param").provider
-         const redirect = c.req.valid("query").redirect ?? env.client.WEB_DOMAIN
+         const redirect =
+            c.req.valid("query").redirect ?? c.var.env.client.WEB_DOMAIN
 
          setCookie(c, "redirect", redirect, COOKIE_OPTIONS)
 
@@ -282,7 +282,7 @@ export const authRoute = createRouter()
          if (provider === "google") {
             const codeVerifier = generateCodeVerifier()
 
-            const url = googleClient().createAuthorizationURL(
+            const url = googleClient(c).createAuthorizationURL(
                state,
                codeVerifier,
                ["profile", "email"],
@@ -313,7 +313,8 @@ export const authRoute = createRouter()
          }),
       ),
       async (c) => {
-         const redirect = getCookie(c, "redirect") ?? env.client.WEB_DOMAIN
+         const redirect =
+            getCookie(c, "redirect") ?? c.var.env.client.WEB_DOMAIN
          const redirectUrl = new URL(redirect).toString()
 
          const provider = c.req.valid("param").provider

@@ -1,18 +1,17 @@
 import type { HonoEnv } from "@project/api/context"
 import { eq } from "@project/db"
 import { oauthAccount, user } from "@project/db/schema/user"
-import { env } from "@project/env"
 import { Google } from "arctic"
 import type { Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import ky from "ky"
 import { createSession } from "."
 
-export const googleClient = () =>
+export const googleClient = (c: Context<HonoEnv>) =>
    new Google(
-      env.server.GOOGLE_CLIENT_ID,
-      env.server.GOOGLE_CLIENT_SECRET,
-      `${env.client.SERVER_DOMAIN}/api/auth/google/callback`,
+      c.var.env.server.GOOGLE_CLIENT_ID,
+      c.var.env.server.GOOGLE_CLIENT_SECRET,
+      `${c.var.env.client.SERVER_DOMAIN}/auth/google/callback`,
    )
 
 export const createGoogleSession = async ({
@@ -24,7 +23,7 @@ export const createGoogleSession = async ({
    code: string
    codeVerifier: string
 }) => {
-   const tokens = await googleClient().validateAuthorizationCode(
+   const tokens = await googleClient(c).validateAuthorizationCode(
       code,
       codeVerifier,
    )

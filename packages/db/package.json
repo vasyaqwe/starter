@@ -34,6 +34,7 @@
       "studio": "bun run --env-file ../../.env drizzle-kit studio"
    },
    "dependencies": {
+      "@project/env": "workspace:*",
       "base-x": "^5.0.0",
       "drizzle-orm": "^0.38.3",
       "drizzle-zod": "^0.6.1",

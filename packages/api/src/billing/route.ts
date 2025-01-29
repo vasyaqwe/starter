@@ -4,7 +4,6 @@ import { createRouter } from "@project/api/misc/utils"
 import { authMiddleware } from "@project/api/user/auth/middleware"
 import { and, eq } from "@project/db"
 import { subscription } from "@project/db/schema/subscription"
-import { env } from "@project/env"
 import { HTTPException } from "hono/http-exception"
 
 export const billingRoute = createRouter()
@@ -61,7 +60,7 @@ export const billingRoute = createRouter()
          const event = validateEvent(
             rawBody,
             Object.fromEntries(c.req.raw.headers),
-            env.server.POLAR_WEBHOOK_SECRET,
+            c.var.env.server.POLAR_WEBHOOK_SECRET,
          )
 
          if (event.type === "subscription.created") {

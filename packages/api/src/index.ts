@@ -19,18 +19,20 @@ const app = createRouter()
 
 app.use(logger())
    .use(async (c, next) => {
-      c.set("db", db)
-      c.set("email", email)
-      c.set("payment", payment)
+      c.set("env", env)
+      c.set("db", db(c))
+      c.set("email", email(c))
+      c.set("payment", payment(c))
       await next()
    })
-   .use(
-      cors({
-         origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
+   .use((c, next) => {
+      const handler = cors({
+         origin: [c.var.env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
          credentials: true,
          maxAge: 600,
-      }),
-   )
+      })
+      return handler(c, next)
+   })
    .onError(handleError)
 
 const base = createRouter()
@@ -45,11 +47,12 @@ const base = createRouter()
    .route("/post", postRoute)
 
 const auth = createRouter()
-   .use(
-      csrf({
-         origin: [env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
-      }),
-   )
+   .use((c, next) => {
+      const handler = csrf({
+         origin: [c.var.env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
+      })
+      return handler(c, next)
+   })
    .route("/", authRoute)
 
 const routes = app.route("/auth", auth).route("/", base)

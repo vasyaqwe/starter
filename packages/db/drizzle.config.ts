@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { env } from "@project/env"
 import { defineConfig } from "drizzle-kit"
 
 export default defineConfig({
@@ -7,8 +8,7 @@ export default defineConfig({
    out: "./src/migrations",
    casing: "snake_case",
    dbCredentials: {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      url: process.env.DATABASE_URL!,
+      url: env.server.DATABASE_URL,
    },
    verbose: true,
 })

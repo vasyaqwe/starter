@@ -26,7 +26,6 @@ import {
    type PasskeyCredential,
    passkeyCredential,
 } from "@project/db/schema/user"
-import { env } from "@project/env"
 import { HTTPException } from "hono/http-exception"
 import { z } from "zod"
 
@@ -100,7 +99,7 @@ export const passkeyRoute = createRouter()
          if (
             parsedClientData.type !== ClientDataType.Create ||
             !verifyPasskeyChallenge(parsedClientData.challenge) ||
-            parsedClientData.origin !== env.client.WEB_DOMAIN ||
+            parsedClientData.origin !== c.var.env.client.WEB_DOMAIN ||
             (parsedClientData.crossOrigin !== null &&
                parsedClientData.crossOrigin)
          )

@@ -55,7 +55,7 @@ export const storageRoute = createRouter().post(
 
                return {
                   name: file.name,
-                  url: `${env.client.STORAGE_DOMAIN}/${PATH}${file.name}`,
+                  url: `${c.var.env.client.STORAGE_DOMAIN}/${PATH}${file.name}`,
                }
             } catch (err) {
                return {
