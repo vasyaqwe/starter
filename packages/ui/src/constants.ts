@@ -4,12 +4,12 @@ export const isNative =
 export const MOBILE_BREAKPOINT = 768
 
 export const focusStyles =
-   "focus-visible:border-primary-11 focus-visible:outline-primary-7 outline outline-3 outline-hidden outline-offset-0"
+   "focus-visible:border-primary-11 focus-visible:outline-primary-7 focus-visible:outline-3 outline-hidden outline-offset-0"
 
 export const dialogStyles = {
    transition:
       "transition-all duration-150 data-[ending-style]:scale-[98%] data-[starting-style]:scale-[102%] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
-   popup: "-mt-8 -translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2 w-96 max-w-[calc(100vw-3rem)] rounded-xl bg-primary-2 p-4 shadow-sm dark:shadow-xl shadow-black/15 dark:shadow-black/75 outline outline-transparent dark:outline-primary-5",
+   popup: "-mt-8 -translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2 w-96 max-w-[calc(100vw-3rem)] rounded-xl bg-primary-2 p-4 shadow-sm dark:shadow-xl shadow-black/15 dark:shadow-black/60 outline outline-transparent dark:outline-primary-5",
    backdrop:
       "fixed inset-0 bg-black opacity-25 transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 dark:opacity-50",
    title: "-mt-1 mb-2 font-semibold text-lg",

@@ -12,10 +12,6 @@
       "types": "./dist/components/*.d.ts",
       "default": "./src/components/*.tsx"
     },
-    "./components/chart-nivo/constants": {
-      "types": "./dist/components/chart-nivo/constants.d.ts",
-      "default": "./src/components/chart-nivo/constants.ts"
-    },
     "./hooks/*": {
       "types": "./dist/hooks/*.d.ts",
       "default": "./src/hooks/*.ts"
@@ -31,10 +27,10 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.0.0-beta.8",
+    "@tailwindcss/postcss": "^4.0.0",
     "class-variance-authority": "^0.7.0",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss": "^4.0.0-beta.8",
+    "tailwindcss": "^4.0.0",
     "tailwix": "^3.0.0"
   },
   "devDependencies": {

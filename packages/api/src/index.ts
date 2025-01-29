@@ -16,8 +16,7 @@ import { logger } from "hono/logger"
 export const ALLOWED_ORIGINS = ["https://www.project.io", "https://project.io"]
 
 const app = createRouter()
-
-app.use(logger())
+   .use(logger())
    .use(async (c, next) => {
       c.set("env", env)
       c.set("db", db(c))
