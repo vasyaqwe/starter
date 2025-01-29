@@ -9,9 +9,9 @@ import { createSession } from "."
 
 export const googleClient = (c: Context<HonoEnv>) =>
    new Google(
-      c.var.env.server.GOOGLE_CLIENT_ID,
-      c.var.env.server.GOOGLE_CLIENT_SECRET,
-      `${c.var.env.client.SERVER_DOMAIN}/auth/google/callback`,
+      c.var.env.GOOGLE_CLIENT_ID,
+      c.var.env.GOOGLE_CLIENT_SECRET,
+      `${c.var.env.SERVER_DOMAIN}/auth/google/callback`,
    )
 
 export const createGoogleSession = async ({

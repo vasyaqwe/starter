@@ -12,8 +12,8 @@ const S3 = new S3Client({
    region: "eeur",
    endpoint: `https://bfef1e994f1aac7e7a42dc4ba75197a0.r2.cloudflarestorage.com`,
    credentials: {
-      accessKeyId: env.server.R2_ACCESS_KEY_ID,
-      secretAccessKey: env.server.R2_SECRET_ACCESS_KEY,
+      accessKeyId: env.R2_ACCESS_KEY_ID,
+      secretAccessKey: env.R2_SECRET_ACCESS_KEY,
    },
 })
 
@@ -55,7 +55,7 @@ export const storageRoute = createRouter().post(
 
                return {
                   name: file.name,
-                  url: `${c.var.env.client.STORAGE_DOMAIN}/${PATH}${file.name}`,
+                  url: `${c.var.env.STORAGE_DOMAIN}/${PATH}${file.name}`,
                }
             } catch (err) {
                return {

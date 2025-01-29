@@ -11,12 +11,12 @@ type Variables = {
    env: Env
 }
 
-type AuthVariables = { user: User; session: Session }
+type AuthVariables = Variables & { user: User; session: Session }
 
 export type HonoEnv = {
    Variables: Variables
 }
 
 export type AuthedHonoEnv = {
-   Variables: Variables & AuthVariables
+   Variables: AuthVariables
 }

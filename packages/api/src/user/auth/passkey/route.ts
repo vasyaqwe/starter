@@ -99,7 +99,7 @@ export const passkeyRoute = createRouter()
          if (
             parsedClientData.type !== ClientDataType.Create ||
             !verifyPasskeyChallenge(parsedClientData.challenge) ||
-            parsedClientData.origin !== c.var.env.client.WEB_DOMAIN ||
+            parsedClientData.origin !== c.var.env.WEB_DOMAIN ||
             (parsedClientData.crossOrigin !== null &&
                parsedClientData.crossOrigin)
          )

@@ -31,12 +31,12 @@ export const server = createEnv({
 
 export const baseEnv = {
    development: {
-      server,
-      client: clientEnv.development,
+      ...server,
+      ...clientEnv.development,
    },
    production: {
-      server,
-      client: clientEnv.production,
+      ...server,
+      ...clientEnv.production,
    },
 } as const
 

@@ -96,7 +96,7 @@ export const authRoute = createRouter()
          if (
             parsedClientData.type !== ClientDataType.Get ||
             !verifyPasskeyChallenge(parsedClientData.challenge) ||
-            parsedClientData.origin !== c.var.env.client.WEB_DOMAIN ||
+            parsedClientData.origin !== c.var.env.WEB_DOMAIN ||
             (parsedClientData.crossOrigin !== null &&
                parsedClientData.crossOrigin)
          )
@@ -208,7 +208,7 @@ export const authRoute = createRouter()
                email,
             })
 
-            if (c.var.env.server.NODE_ENV === "development") {
+            if (c.var.env.NODE_ENV === "development") {
                logger.info(`OTP: ${otp}`)
             } else {
                const res = await c.var.email.emails.send({
@@ -267,8 +267,7 @@ export const authRoute = createRouter()
       ),
       async (c) => {
          const provider = c.req.valid("param").provider
-         const redirect =
-            c.req.valid("query").redirect ?? c.var.env.client.WEB_DOMAIN
+         const redirect = c.req.valid("query").redirect ?? c.var.env.WEB_DOMAIN
 
          setCookie(c, "redirect", redirect, COOKIE_OPTIONS)
 
@@ -313,8 +312,7 @@ export const authRoute = createRouter()
          }),
       ),
       async (c) => {
-         const redirect =
-            getCookie(c, "redirect") ?? c.var.env.client.WEB_DOMAIN
+         const redirect = getCookie(c, "redirect") ?? c.var.env.WEB_DOMAIN
          const redirectUrl = new URL(redirect).toString()
 
          const provider = c.req.valid("param").provider

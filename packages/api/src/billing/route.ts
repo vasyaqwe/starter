@@ -60,7 +60,7 @@ export const billingRoute = createRouter()
          const event = validateEvent(
             rawBody,
             Object.fromEntries(c.req.raw.headers),
-            c.var.env.server.POLAR_WEBHOOK_SECRET,
+            c.var.env.POLAR_WEBHOOK_SECRET,
          )
 
          if (event.type === "subscription.created") {

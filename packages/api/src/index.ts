@@ -27,7 +27,7 @@ app.use(logger())
    })
    .use((c, next) => {
       const handler = cors({
-         origin: [c.var.env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
+         origin: [c.var.env.WEB_DOMAIN, ...ALLOWED_ORIGINS],
          credentials: true,
          maxAge: 600,
       })
@@ -49,7 +49,7 @@ const base = createRouter()
 const auth = createRouter()
    .use((c, next) => {
       const handler = csrf({
-         origin: [c.var.env.client.WEB_DOMAIN, ...ALLOWED_ORIGINS],
+         origin: [c.var.env.WEB_DOMAIN, ...ALLOWED_ORIGINS],
       })
       return handler(c, next)
    })
