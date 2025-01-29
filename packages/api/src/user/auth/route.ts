@@ -41,7 +41,7 @@ import {
 import { EMAIL_FROM } from "@project/email"
 import { loginOtpEmail } from "@project/email/templates/login-otp"
 import { env } from "@project/env"
-import { logger } from "@project/shared/logger"
+import { logger } from "@project/misc/logger"
 import { generateCodeVerifier, generateState } from "arctic"
 import { getCookie, setCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"

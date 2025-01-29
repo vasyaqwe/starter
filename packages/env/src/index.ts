@@ -1,5 +1,6 @@
 import { createEnv } from "@t3-oss/env-core"
 import { z } from "zod"
+import { clientEnv } from "./client"
 
 export const server = createEnv({
    server: {
@@ -28,19 +29,17 @@ export const server = createEnv({
    },
 })
 
-export const env = {
-   server,
-   client: {
-      STORAGE_DOMAIN: "https://pub-adc2676146514653aefef032cae1fc9d.r2.dev",
-      SERVER_DOMAIN:
-         process.env.NODE_ENV === "production"
-            ? "https://api.project.io"
-            : "http://localhost:8080",
-      WEB_DOMAIN:
-         process.env.NODE_ENV === "production"
-            ? "https://app.project.io"
-            : "http://localhost:3000",
+export const baseEnv = {
+   development: {
+      server,
+      client: clientEnv.development,
    },
-}
+   production: {
+      server,
+      client: clientEnv.production,
+   },
+} as const
+
+export const env = baseEnv[server.NODE_ENV]
 
 export type Env = typeof env

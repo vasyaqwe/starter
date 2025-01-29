@@ -13,7 +13,6 @@
       "default": "./src/error/*.ts"
     }
   },
-  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf .turbo node_modules",
@@ -29,7 +28,7 @@
     "@project/email": "workspace:*",
     "@project/env": "workspace:*",
     "@project/payment": "workspace:*",
-    "@project/shared": "workspace:*",
+    "@project/misc": "workspace:*",
     "arctic": "^2.3.3",
     "hono": "^4.6.12",
     "ky": "^1.7.4",

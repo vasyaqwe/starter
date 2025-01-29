@@ -1,5 +1,5 @@
 {
-   "name": "@project/shared",
+   "name": "@project/misc",
    "version": "0.1.0",
    "private": true,
    "type": "module",
@@ -9,7 +9,6 @@
          "types": "./src/logger/index.ts"
       }
    },
-   "license": "MIT",
    "scripts": {
       "build": "tsc",
       "clean": "rm -rf .turbo node_modules",

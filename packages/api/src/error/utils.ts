@@ -1,5 +1,5 @@
 import type { HonoEnv } from "@project/api/context"
-import { logger } from "@project/shared/logger"
+import { logger } from "@project/misc/logger"
 import type { Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import { ZodError, type ZodIssue } from "zod"
@@ -77,11 +77,12 @@ export const handleError = (error: Error, c: Context<HonoEnv>) => {
       return c.json(
          {
             code: statusToCode(400),
-            message: message,
+            message,
          },
          400,
       )
    }
+
    if (error instanceof HTTPException) {
       logger.error(error.status, error.message)
       return c.json(
@@ -93,11 +94,12 @@ export const handleError = (error: Error, c: Context<HonoEnv>) => {
       )
    }
 
-   logger.error(500, error.message ?? "Unknown error")
+   const message = error.message ?? "Unknown error"
+   logger.error(500, message)
    return c.json(
       {
          code: statusToCode(500),
-         message: error.message ?? "Unknown error",
+         message,
       },
       500,
    )

@@ -1,4 +1,4 @@
-import { logger } from "@project/shared/logger"
+import { logger } from "@project/misc/logger"
 import { isNative } from "@project/ui/constants"
 
 export async function sendNotification({

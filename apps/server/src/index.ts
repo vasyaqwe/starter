@@ -1,5 +1,5 @@
 import app from "@project/api"
-import { logger } from "@project/shared/logger"
+import { logger } from "@project/misc/logger"
 
 const server = Bun.serve({
    port: 8080,

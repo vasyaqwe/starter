@@ -24,7 +24,6 @@
          "default": "./src/schema/*.ts"
       }
    },
-   "license": "MIT",
    "scripts": {
       "build": "tsc",
       "clean": "rm -rf .turbo node_modules",

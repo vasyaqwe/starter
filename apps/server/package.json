@@ -8,7 +8,7 @@
    "dependencies": {
       "@project/api": "workspace:*",
       "@project/db": "workspace:*",
-      "@project/shared": "workspace:*"
+      "@project/misc": "workspace:*"
    },
    "devDependencies": {
       "@types/bun": "latest",

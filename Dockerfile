@@ -12,7 +12,7 @@ COPY packages/db/package.json packages/db/
 COPY packages/email/package.json packages/email/
 COPY packages/env/package.json packages/env/
 COPY packages/payment/package.json packages/payment/
-COPY packages/shared/package.json packages/shared/
+COPY packages/misc/package.json packages/misc/
 COPY apps/server/package.json apps/server/
 
 RUN bun install --production && bun install turbo@^2.3.3 -g

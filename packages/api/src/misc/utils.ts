@@ -1,6 +1,6 @@
 import type { HonoEnv } from "@project/api/context"
-import { parseZodErrorIssues } from "@project/api/error/utils"
-import { logger } from "@project/shared/logger"
+import { parseZodErrorIssues, statusToCode } from "@project/api/error/utils"
+import { logger } from "@project/misc/logger"
 import { Hono, type ValidationTargets } from "hono"
 import { validator } from "hono/validator"
 import { ZodError, type ZodSchema, type z } from "zod"
@@ -30,25 +30,28 @@ export const zValidator = <
       try {
          return (await schema.parseAsync(value)) as z.infer<T>
       } catch (error) {
-         logger.error(error)
-
          if (error instanceof ZodError) {
+            const message = parseZodErrorIssues(error.issues)
+            logger.error(400, message)
             return c.json(
                {
-                  code: "BAD_REQUEST",
-                  message: parseZodErrorIssues(error.issues),
+                  code: statusToCode(400),
+                  message,
                },
                400,
             )
          }
 
+         const message =
+            error instanceof Error
+               ? (error.message ?? "Unknown error")
+               : "Unknown error"
+
+         logger.error(500, message)
          return c.json(
             {
-               code: "INTERNAL_SERVER_ERROR",
-               message:
-                  error instanceof Error
-                     ? (error.message ?? "Unknown error")
-                     : "Unknown error",
+               code: statusToCode(500),
+               message,
             },
             500,
          )

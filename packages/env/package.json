@@ -7,9 +7,12 @@
       ".": {
          "types": "./dist/index.d.ts",
          "default": "./src/index.ts"
+      },
+      "./client": {
+         "types": "./dist/client.d.ts",
+         "default": "./src/client.ts"
       }
    },
-   "license": "MIT",
    "scripts": {
       "build": "tsc",
       "clean": "rm -rf .turbo node_modules",
