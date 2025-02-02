@@ -1,8 +1,9 @@
 import "@project/ui/styles"
+import { env } from "@/env"
 import type { HonoError } from "@/lib/hono"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { TooltipProvider } from "@project/ui/components/tooltip"
-import { QueryClient } from "@tanstack/react-query"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import {
    ErrorComponent,
    type ErrorComponentProps,
@@ -13,7 +14,6 @@ import {
    useMatch,
    useRouter,
 } from "@tanstack/react-router"
-import { routerWithQueryClient } from "@tanstack/react-router-with-query"
 import type * as TauriAPI from "@tauri-apps/api"
 import { ThemeProvider } from "next-themes"
 import * as React from "react"
@@ -21,38 +21,35 @@ import ReactDOM from "react-dom/client"
 import { toast } from "sonner"
 import { routeTree } from "./routeTree.gen"
 
-function createRouter() {
-   const queryClient = new QueryClient({
-      defaultOptions: {
-         queries: {
-            retry(failureCount) {
-               // 2 max
-               return failureCount < 1
-            },
-            // 15 min
-            staleTime: 900 * 1000,
+const queryClient = new QueryClient({
+   defaultOptions: {
+      queries: {
+         retry(failureCount) {
+            // 2 max
+            return failureCount < 1
          },
-         mutations: {
-            onError: (error) => {
-               return toast.error(error.message)
-            },
+         // 15 min
+         staleTime: 900 * 1000,
+      },
+      mutations: {
+         onError: (error) => {
+            return toast.error(error.message)
          },
       },
-   })
-   return routerWithQueryClient(
-      createTanStackRouter({
-         routeTree,
-         context: { queryClient },
-         defaultPreload: "intent",
-         defaultPendingMs: 150,
-         defaultPendingMinMs: 200,
-         defaultPreloadStaleTime: 0,
-         defaultNotFoundComponent: NotFound,
-         defaultErrorComponent: CatchBoundary,
-      }),
-      queryClient,
-   )
-}
+   },
+})
+
+const router = createTanStackRouter({
+   routeTree,
+   scrollRestoration: true,
+   context: { queryClient },
+   defaultPreload: "intent",
+   defaultPendingMs: 150,
+   defaultPendingMinMs: 200,
+   defaultPreloadStaleTime: 0,
+   defaultNotFoundComponent: NotFound,
+   defaultErrorComponent: CatchBoundary,
+})
 
 function NotFound() {
    return (
@@ -82,13 +79,7 @@ function CatchBoundary({ error }: ErrorComponentProps) {
    })
 
    return (
-      <div className="grid h-svh place-items-center text-center">
-         {import.meta.env.DEV && (
-            <div className="absolute top-0">
-               <ErrorComponent error={error} />
-            </div>
-         )}
-
+      <div className="pt-12 text-center md:mt-24">
          <div>
             <h1 className="mb-2 font-semibold text-xl">An error occurred</h1>
             <p className="mb-5 text-lg leading-snug opacity-70">
@@ -104,6 +95,11 @@ function CatchBoundary({ error }: ErrorComponentProps) {
                </Button>
             </div>
          </div>
+         {env.DEV ? (
+            <div className="top-20 mx-auto mt-12 w-fit">
+               <ErrorComponent error={error} />
+            </div>
+         ) : null}
       </div>
    )
 }
@@ -114,7 +110,7 @@ declare global {
 
 declare module "@tanstack/react-router" {
    interface Register {
-      router: ReturnType<typeof createRouter>
+      router: typeof router
    }
 }
 
@@ -125,17 +121,23 @@ declare module "@tanstack/react-query" {
 }
 
 // biome-ignore lint/style/noNonNullAssertion: ...
-ReactDOM.createRoot(document.getElementById("app")!).render(
-   <React.StrictMode>
-      <ThemeProvider
-         defaultTheme="light"
-         attribute="class"
-         enableSystem
-         disableTransitionOnChange
-      >
-         <TooltipProvider>
-            <RouterProvider router={createRouter()} />
-         </TooltipProvider>
-      </ThemeProvider>
-   </React.StrictMode>,
-)
+const rootElement = document.getElementById("app")!
+if (!rootElement.innerHTML || rootElement.innerHTML.trim().length === 0) {
+   const root = ReactDOM.createRoot(rootElement)
+   root.render(
+      <React.StrictMode>
+         <ThemeProvider
+            defaultTheme="light"
+            attribute="class"
+            enableSystem
+            disableTransitionOnChange
+         >
+            <QueryClientProvider client={queryClient}>
+               <TooltipProvider>
+                  <RouterProvider router={router} />
+               </TooltipProvider>
+            </QueryClientProvider>
+         </ThemeProvider>
+      </React.StrictMode>,
+   )
+}

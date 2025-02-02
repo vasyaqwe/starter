@@ -3,10 +3,11 @@ import {
    ChartContainer,
    ChartTooltip,
    ChartTooltipContent,
+   ChartTooltipCursor,
 } from "@project/ui/components/chart"
 import { ScrollArea } from "@project/ui/components/scroll-area"
 import { createFileRoute } from "@tanstack/react-router"
-import { CartesianGrid, Line, LineChart, Rectangle, XAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 export const Route = createFileRoute("/_layout/chart")({
    component: RouteComponent,
@@ -107,51 +108,6 @@ const chartData = [
 ]
 
 function RouteComponent() {
-   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-   const CustomCursor = ({ points, height }: any) => (
-      <>
-         <defs>
-            <linearGradient
-               id="gradientCursor"
-               x1="0"
-               y1="0"
-               x2="0"
-               y2="1"
-            >
-               <stop
-                  offset="0%"
-                  stopColor="white"
-                  stopOpacity="0"
-               />
-               <stop
-                  offset="25%"
-                  stopColor="white"
-                  stopOpacity="0.9"
-               />
-               <stop
-                  offset="75%"
-                  stopColor="white"
-                  stopOpacity="0.9"
-               />
-               <stop
-                  offset="100%"
-                  stopColor="white"
-                  stopOpacity="0"
-               />
-            </linearGradient>
-         </defs>
-         <Rectangle
-            x={points[0].x}
-            y={0}
-            width={2}
-            height={height}
-            fill="url(#gradientCursor)"
-            className="relative z-[5000]"
-            style={{ pointerEvents: "all" }}
-         />
-      </>
-   )
-
    return (
       <ScrollArea className={"min-w-0 p-4 md:p-6"}>
          <Card className="flex w-full flex-wrap gap-4 overflow-x-auto p-6">
@@ -204,7 +160,7 @@ function RouteComponent() {
                      dot={false}
                   />
                   <ChartTooltip
-                     cursor={<CustomCursor />}
+                     cursor={<ChartTooltipCursor />}
                      content={
                         <ChartTooltipContent
                            className="w-[150px]"

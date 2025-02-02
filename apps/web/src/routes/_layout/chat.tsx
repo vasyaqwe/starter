@@ -543,6 +543,7 @@ function MessageComponent({
             <TooltipTrigger
                render={
                   <MessageContent
+                     className="hyphens-auto"
                      isMine={isMine}
                      state={state}
                   />

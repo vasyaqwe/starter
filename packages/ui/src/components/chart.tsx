@@ -101,6 +101,53 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
    )
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function ChartTooltipCursor({ points, height }: any) {
+   return (
+      <>
+         <defs>
+            <linearGradient
+               id="gradientCursor"
+               x1="0"
+               y1="0"
+               x2="0"
+               y2="1"
+            >
+               <stop
+                  offset="0%"
+                  stopColor="var(--color-foreground)"
+                  stopOpacity="0"
+               />
+               <stop
+                  offset="25%"
+                  stopColor="var(--color-foreground)"
+                  stopOpacity="0.9"
+               />
+               <stop
+                  offset="75%"
+                  stopColor="var(--color-foreground)"
+                  stopOpacity="0.9"
+               />
+               <stop
+                  offset="100%"
+                  stopColor="var(--color-foreground)"
+                  stopOpacity="0"
+               />
+            </linearGradient>
+         </defs>
+         <RechartsPrimitive.Rectangle
+            x={points[0].x}
+            y={0}
+            width={2}
+            height={height}
+            fill="url(#gradientCursor)"
+            className="relative z-[5000]"
+            style={{ pointerEvents: "all" }}
+         />
+      </>
+   )
+}
+
 const ChartTooltip = RechartsPrimitive.Tooltip
 
 function ChartTooltipContent({
@@ -356,6 +403,7 @@ function getPayloadConfigFromPayload(
 export {
    ChartContainer,
    ChartTooltip,
+   ChartTooltipCursor,
    ChartTooltipContent,
    ChartLegend,
    ChartLegendContent,
