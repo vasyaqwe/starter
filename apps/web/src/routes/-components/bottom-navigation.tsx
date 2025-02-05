@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router"
 export function BottomNavigation() {
    return (
       <nav className="fixed bottom-0 z-[2] flex h-(--bottom-navigation-height) w-full items-center border-neutral border-t bg-background px-1.5 shadow md:hidden">
-         <ul className="flex flex-1 items-center justify-around gap-2">
+         <ul className="flex grow items-center justify-around gap-2">
             <li>
                <Link
                   to={"/"}

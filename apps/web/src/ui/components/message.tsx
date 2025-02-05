@@ -34,14 +34,14 @@ export function MessageGroupDate({
          )}
          {...props}
       >
-         <Separator className="flex-1" />
+         <Separator className="grow" />
          <Badge
             size={"sm"}
             className="rounded-full px-4"
          >
             {children}
          </Badge>
-         <Separator className="flex-1" />
+         <Separator className="grow" />
       </div>
    )
 }

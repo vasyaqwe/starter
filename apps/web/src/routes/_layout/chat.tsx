@@ -280,13 +280,13 @@ function RouteComponent() {
                                              currentUserId === group.sender?.id
                                           }
                                           state={
-                                             index === 0
-                                                ? "first"
-                                                : index ===
-                                                    groupMessages.length - 1
-                                                  ? "last"
-                                                  : groupMessages.length === 1
-                                                    ? "single"
+                                             groupMessages.length === 1
+                                                ? "single"
+                                                : index === 0
+                                                  ? "first"
+                                                  : index ===
+                                                      groupMessages.length - 1
+                                                    ? "last"
                                                     : null
                                           }
                                        />
@@ -418,7 +418,7 @@ function RouteComponent() {
                      setFiles([])
                      scrollToBottom()
                   }}
-                  className="relative flex-1"
+                  className="relative grow"
                >
                   {files?.length ? (
                      <div className="mb-4 flex flex-wrap gap-2">
@@ -546,11 +546,11 @@ function MessageComponent({
                      className="hyphens-auto"
                      isMine={isMine}
                      state={state}
-                  />
+                  >
+                     {message.content}
+                  </MessageContent>
                }
-            >
-               {message.content}
-            </TooltipTrigger>
+            />
             <TooltipPopup align={isMine ? "end" : "start"}>
                {formatDate(message.createdAt, {
                   dateStyle: "medium",

@@ -51,10 +51,10 @@ function RouteComponent() {
          <Sidebar />
          <main
             className={cn(
-               "flex h-[calc(100svh-var(--bottom-navigation-height))] md:h-svh md:flex-1",
+               "flex h-[calc(100svh-var(--bottom-navigation-height))] md:h-svh md:grow",
             )}
          >
-            <div className={cn("relative flex flex-1 flex-col")}>
+            <div className={cn("relative flex grow flex-col")}>
                <Outlet />
             </div>
          </main>

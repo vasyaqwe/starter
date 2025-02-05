@@ -7,7 +7,7 @@ export function ScrollArea({
    ...props
 }: React.ComponentProps<typeof ScrollAreaPrimitive.Viewport>) {
    return (
-      <ScrollAreaPrimitive.Root className={"flex-1"}>
+      <ScrollAreaPrimitive.Root className={"grow"}>
          <ScrollAreaPrimitive.Viewport
             className={cn(
                "[&>div]:!min-w-0 absolute inset-0 overscroll-contain",

@@ -262,9 +262,9 @@ function RouteComponent() {
                         </Button>
                      </form>
                      <span className="my-4 flex items-center justify-center gap-1.5 text-foreground/70">
-                        <Separator className="flex-1 bg-primary-5" />
+                        <Separator className="grow bg-primary-5" />
                         or
-                        <Separator className="flex-1 bg-primary-5" />
+                        <Separator className="grow bg-primary-5" />
                      </span>
                      <Button
                         disabled={

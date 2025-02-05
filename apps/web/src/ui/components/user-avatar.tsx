@@ -1,16 +1,14 @@
 import type { User } from "@project/db/schema/user"
 import { cn } from "@project/ui/utils"
 
-type UserAvatarProps = React.ComponentProps<"div"> & {
-   user: Partial<Omit<User, "createdAt" | "updatedAt">>
-}
-
 export function UserAvatar({
    user,
    className,
    children,
    ...props
-}: UserAvatarProps) {
+}: React.ComponentProps<"div"> & {
+   user: Partial<Omit<User, "createdAt" | "updatedAt">>
+}) {
    const name =
       user.name && user.name !== ""
          ? user.name[0]?.toUpperCase()
