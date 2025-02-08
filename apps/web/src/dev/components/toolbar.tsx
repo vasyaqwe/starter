@@ -38,8 +38,8 @@ export function Toolbar() {
                render={
                   <Button
                      variant={"menu-item"}
-                     size={"icon"}
-                     className="rounded-full"
+                     kind={"icon"}
+                     shape={"circle"}
                   >
                      <svg
                         className="!text-white size-5"

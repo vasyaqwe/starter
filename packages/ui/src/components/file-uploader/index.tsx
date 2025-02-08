@@ -349,7 +349,8 @@ export function FileCard({
             <Button
                onClick={onRemove}
                type="button"
-               size={"icon-xs"}
+               kind={"icon"}
+               size={"xs"}
                aria-label={`Remove ${file.name}`}
                className="-top-2 -left-2 invisible absolute rounded-full border-neutral bg-white p-1 text-foreground shadow-none hover:border-red-9 hover:bg-red-9 hover:text-white group-hover:visible dark:border-transparent dark:bg-primary-7 dark:shadow-xs dark:hover:border-red-9 dark:hover:bg-red-9"
             >

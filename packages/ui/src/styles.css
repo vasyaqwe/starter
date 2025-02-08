@@ -118,6 +118,12 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+@utility container {
+   margin-inline: auto;
+   padding-inline: 1rem;
+   max-width: 42rem;
+}
+
 @layer components {
    .squircle {
       clip-path: polygon(
@@ -257,7 +263,6 @@
    }
 }
 
-/* reset */
 .scrollbar-hidden {
    -ms-overflow-style: none;
    scrollbar-width: none;

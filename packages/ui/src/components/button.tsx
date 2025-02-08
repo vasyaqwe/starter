@@ -4,7 +4,7 @@ import { cn } from "../utils"
 import { Loading } from "./loading"
 
 const buttonVariants = cva(
-   `inline-flex cursor-(--cursor) items-center justify-center gap-2 whitespace-nowrap 
+   `inline-flex cursor-(--cursor) items-center justify-center whitespace-nowrap 
     disabled:opacity-70 disabled:cursor-not-allowed border overflow-hidden relative`,
    {
       variants: {
@@ -24,23 +24,37 @@ const buttonVariants = cva(
             ),
          },
          size: {
-            default: "h-8 rounded-[10px] px-3 text-sm",
-            sm: "h-7 rounded-lg px-2.5 text-sm",
+            default:
+               "h-10 rounded-[12px] px-3 text-base md:h-8 md:rounded-[10px] md:text-sm",
+            xs: "h-9 rounded-[10px] md:h-7 md:rounded-[9px]",
+            sm: "h-9 rounded-[10px] px-2.5 text-base md:h-8 md:text-sm",
             lg: "h-10 gap-2 rounded-xl px-4 text-base",
             xl: "h-11 gap-3 rounded-xl px-4 text-base",
-            icon: "size-9 gap-0 rounded-[10px]",
-            "icon-sm": "size-8 gap-0 rounded-[9px]",
-            "icon-xs": "size-7 gap-0 rounded-[8px]",
+         },
+         kind: {
+            default: "gap-2",
+            icon: "aspect-square w-auto justify-center gap-0 px-0",
+         },
+         shape: {
+            default: "",
+            circle: "!rounded-full",
          },
       },
       compoundVariants: [
          {
             className: focusStyles,
          },
+         {
+            kind: "icon",
+            size: "default",
+            className: "md:h-9",
+         },
       ],
       defaultVariants: {
          variant: "default",
          size: "default",
+         kind: "default",
+         shape: "default",
       },
    },
 )
@@ -52,13 +66,17 @@ function Button({
    className,
    variant,
    size,
+   kind,
+   shape,
    children,
    isPending,
    ...props
 }: ButtonProps & { isPending?: boolean | undefined }) {
    return (
       <button
-         className={cn(buttonVariants({ variant, size, className }))}
+         className={cn(
+            buttonVariants({ variant, size, kind, shape, className }),
+         )}
          {...props}
       >
          {isPending === undefined ? (

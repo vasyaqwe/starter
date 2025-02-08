@@ -63,7 +63,7 @@ export function Sidebar() {
                                  disabled={!canGoBack}
                                  onClick={() => router.history.back()}
                                  variant={"ghost"}
-                                 size={"icon-sm"}
+                                 size={"sm"}
                                  aria-label="Go back"
                               />
                            }
@@ -83,7 +83,7 @@ export function Sidebar() {
                                  disabled={!canGoForward}
                                  onClick={() => router.history.forward()}
                                  variant={"ghost"}
-                                 size={"icon-sm"}
+                                 size={"sm"}
                                  aria-label="Go forward"
                               />
                            }
@@ -204,7 +204,8 @@ export function Sidebar() {
                         )
                      }
                      variant={"ghost"}
-                     size={"icon"}
+                     kind={"icon"}
+                     shape={"circle"}
                   >
                      {theme.resolvedTheme === "light" ? (
                         <svg

@@ -50,7 +50,7 @@ export function SelectTrigger({
             data-icon
             className="-mr-1.5 ml-auto flex shrink-0"
          >
-            <Icons.chevronUpDown className="size-[17px] text-foreground/75" />
+            <Icons.chevronUpDown className="size-[18px] text-foreground/75 md:size-[17px]" />
          </SelectIcon>
       </SelectPrimitive.Trigger>
    )
@@ -75,7 +75,9 @@ export function SelectItem({
          {...props}
       >
          <SelectItemIndicator className="col-start-1">
-            <Icons.check className={"size-[18px] text-white/90"} />
+            <Icons.check
+               className={"size-[20px] text-white/90 md:size-[18px]"}
+            />
          </SelectItemIndicator>
          <SelectItemText className={"col-start-2"}>{children}</SelectItemText>
       </SelectPrimitive.Item>

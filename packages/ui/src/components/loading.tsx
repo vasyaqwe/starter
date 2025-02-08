@@ -4,9 +4,9 @@ import { cn } from "../utils"
 const loadingVariants = cva("relative block opacity-85", {
    variants: {
       size: {
-         sm: "size-[17px]",
-         md: "size-[18px]",
-         lg: "size-[19px]",
+         sm: "size-[18px] md:size-[17px]",
+         md: "size-[19px] md:size-[18px]",
+         lg: "size-[20px] md:size-[19px]",
       },
    },
    defaultVariants: {
@@ -22,6 +22,7 @@ export function Loading({
    VariantProps<typeof loadingVariants>) {
    return (
       <svg
+         data-loading
          className={cn(
             loadingVariants({ size, className }),
             "animate-spin",

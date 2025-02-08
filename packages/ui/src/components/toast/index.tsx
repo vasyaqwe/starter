@@ -10,7 +10,7 @@ export function Toaster(props: React.ComponentProps<typeof Sonner>) {
 
    return (
       <Sonner
-         className="max-md:data-[y-position=bottom]:!bottom-(--offset)"
+         className="max-md:data-[y-position=bottom]:!bottom-(--offset-bottom)"
          icons={{
             loading: <Loading />,
             success: (
@@ -109,6 +109,7 @@ export function Toaster(props: React.ComponentProps<typeof Sonner>) {
                "font-primary px-4 py-3 items-center shadow-lg justify-center flex select-none border border-transparent dark:border-primary-6 !w-max !max-w-(--width) !left-1/2 dark:bg-primary-5 bg-primary-12 text-base text-white !right-auto justify-center pointer-events-auto rounded-full",
          }}
          expand
+         mobileOffset={0}
          offset={
             isMobile
                ? `${getComputedStyle(document.documentElement).getPropertyValue("--sat") + 62}px`

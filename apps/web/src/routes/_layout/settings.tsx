@@ -1,6 +1,7 @@
 import { subscriptionByUserIdQuery } from "@/billing/queries"
 import { useCssVariable } from "@/interactions/use-css-variable"
 import { hc, honoMutationFn } from "@/lib/hono"
+import { Main } from "@/routes/-components/main"
 import { useAuth } from "@/user/hooks"
 import { passkeyListQuery } from "@/user/queries"
 import {
@@ -22,7 +23,6 @@ import {
    FieldLabel,
 } from "@project/ui/components/field"
 import { Icons } from "@project/ui/components/icons"
-import { ScrollArea } from "@project/ui/components/scroll-area"
 import { Separator } from "@project/ui/components/separator"
 import { Switch } from "@project/ui/components/switch"
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@project/ui/components/tabs"
@@ -204,170 +204,168 @@ function RouteComponent() {
    const passkeys = query.data ?? []
 
    return (
-      <>
-         <ScrollArea className={"mx-auto w-full max-w-2xl p-4 md:p-6"}>
-            <Tabs
-               value={search.tab}
-               onValueChange={(tab) =>
-                  navigate({ to: ".", search: { tab }, replace: true })
-               }
+      <Main>
+         <Tabs
+            value={search.tab}
+            onValueChange={(tab) =>
+               navigate({ to: ".", search: { tab }, replace: true })
+            }
+         >
+            <div>
+               <h1 className="font-semibold text-xl">Settings</h1>
+               <p className="mt-1 mb-6 text-foreground/75">
+                  View and manage your workspace settings.
+               </p>
+               <TabsList>
+                  {tabs.map((tab) => (
+                     <TabsTab
+                        className={"capitalize"}
+                        key={tab}
+                        value={tab}
+                     >
+                        {tab}
+                     </TabsTab>
+                  ))}
+               </TabsList>
+            </div>
+            <TabsPanel
+               value={"general"}
+               className={"divide-y divide-primary-4"}
             >
-               <div>
-                  <h1 className="font-semibold text-xl">Settings</h1>
-                  <p className="mt-1 mb-6 text-foreground/75">
-                     View and manage your workspace settings.
+               <div className="py-6">
+                  <h2 className="font-semibold text-lg">Passkeys</h2>
+                  <p className="mt-2 mb-4 text-foreground/70">
+                     Manage your authentication passkeys here.
                   </p>
-                  <TabsList>
-                     {tabs.map((tab) => (
-                        <TabsTab
-                           className={"capitalize"}
-                           key={tab}
-                           value={tab}
-                        >
-                           {tab}
-                        </TabsTab>
-                     ))}
-                  </TabsList>
-               </div>
-               <TabsPanel
-                  value={"general"}
-                  className={"divide-y divide-primary-4"}
-               >
-                  <div className="py-6">
-                     <h2 className="font-semibold text-lg">Passkeys</h2>
-                     <p className="mt-2 mb-4 text-foreground/70">
-                        Manage your authentication passkeys here.
+                  <Separator className={"mb-3"} />
+                  {query.isPending ? null : query.isError ? (
+                     <p className="text-destructive">
+                        There was an error loading your passkeys.
                      </p>
-                     <Separator className={"mb-3"} />
-                     {query.isPending ? null : query.isError ? (
-                        <p className="text-destructive">
-                           There was an error loading your passkeys.
-                        </p>
-                     ) : (
-                        <ul className="space-y-0.5">
-                           {passkeys.length === 0 ? (
-                              <li className="text-foreground/75">
-                                 No passkeys added yet.
-                              </li>
-                           ) : (
-                              passkeys.map((passkey) => {
-                                 const id = encodeBase64urlNoPadding(
-                                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                                    new Uint8Array((passkey.id as any).data),
-                                 )
-                                 return (
-                                    <PasskeyItem
-                                       name={passkey.name}
-                                       id={id}
-                                       key={id}
-                                    />
-                                 )
-                              })
-                           )}
-                        </ul>
-                     )}
-                     <Button
-                        className="mt-5"
-                        disabled={requestChallenge.isPending}
-                        onClick={() => requestChallenge.mutate()}
-                     >
-                        {requestChallenge.isPending ? (
-                           "Confirm passkey.."
+                  ) : (
+                     <ul className="space-y-0.5">
+                        {passkeys.length === 0 ? (
+                           <li className="text-foreground/75">
+                              No passkeys added yet.
+                           </li>
                         ) : (
-                           <>
-                              <Icons.plus className="size-4" /> New passkey
-                           </>
-                        )}
-                     </Button>
-                     <Dialog
-                        open={createPasskeyOpen}
-                        onOpenChange={setCreatePasskeyOpen}
-                     >
-                        <DialogPopup
-                           className={"w-80"}
-                           render={
-                              <form
-                                 onSubmit={(e) => {
-                                    e.preventDefault()
-                                    const { name } = Object.fromEntries(
-                                       new FormData(
-                                          e.target as HTMLFormElement,
-                                       ).entries(),
-                                    ) as { name: string }
-
-                                    insertPasskey.mutate({
-                                       name,
-                                       attestation,
-                                       clientData,
-                                    })
-                                 }}
-                              />
-                           }
-                        >
-                           <DialogTitle>Create your passkey</DialogTitle>
-                           <Field className={"mt-2"}>
-                              <FieldLabel>Name</FieldLabel>
-                              <FieldControl
-                                 required
-                                 name="name"
-                                 placeholder="my-passkey"
-                              />
-                              <FieldError match="valueMissing">
-                                 Name is required
-                              </FieldError>
-                           </Field>
-                           <DialogFooter>
-                              <Button
-                                 className="w-full"
-                                 isPending={
-                                    insertPasskey.isPending ||
-                                    insertPasskey.isSuccess
-                                 }
-                                 disabled={
-                                    insertPasskey.isPending ||
-                                    insertPasskey.isSuccess
-                                 }
-                              >
-                                 Confirm
-                              </Button>
-                           </DialogFooter>
-                        </DialogPopup>
-                     </Dialog>
-                  </div>
-               </TabsPanel>
-               <TabsPanel
-                  value={"preferences"}
-                  className={"divide-y divide-primary-4"}
-               >
-                  <div className="py-6">
-                     <div className="flex items-center justify-between">
-                        <h2 className="font-semibold text-lg">
-                           Use pointer cursors
-                        </h2>
-                        <Switch
-                           checked={cursor === "pointer"}
-                           onCheckedChange={() =>
-                              setCursor(
-                                 cursor === "pointer" ? "default" : "pointer",
+                           passkeys.map((passkey) => {
+                              const id = encodeBase64urlNoPadding(
+                                 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                                 new Uint8Array((passkey.id as any).data),
                               )
-                           }
-                        />
-                     </div>
-                     <p className="mt-2 mb-6 text-foreground/70">
-                        Change the cursor to pointer when hovering over any
-                        interactive elements.
-                     </p>
+                              return (
+                                 <PasskeyItem
+                                    name={passkey.name}
+                                    id={id}
+                                    key={id}
+                                 />
+                              )
+                           })
+                        )}
+                     </ul>
+                  )}
+                  <Button
+                     className="mt-5"
+                     disabled={requestChallenge.isPending}
+                     onClick={() => requestChallenge.mutate()}
+                  >
+                     {requestChallenge.isPending ? (
+                        "Confirm passkey.."
+                     ) : (
+                        <>
+                           <Icons.plus className="size-5" /> New passkey
+                        </>
+                     )}
+                  </Button>
+                  <Dialog
+                     open={createPasskeyOpen}
+                     onOpenChange={setCreatePasskeyOpen}
+                  >
+                     <DialogPopup
+                        className={"w-80"}
+                        render={
+                           <form
+                              onSubmit={(e) => {
+                                 e.preventDefault()
+                                 const { name } = Object.fromEntries(
+                                    new FormData(
+                                       e.target as HTMLFormElement,
+                                    ).entries(),
+                                 ) as { name: string }
+
+                                 insertPasskey.mutate({
+                                    name,
+                                    attestation,
+                                    clientData,
+                                 })
+                              }}
+                           />
+                        }
+                     >
+                        <DialogTitle>Create your passkey</DialogTitle>
+                        <Field className={"mt-2"}>
+                           <FieldLabel>Name</FieldLabel>
+                           <FieldControl
+                              required
+                              name="name"
+                              placeholder="my-passkey"
+                           />
+                           <FieldError match="valueMissing">
+                              Name is required
+                           </FieldError>
+                        </Field>
+                        <DialogFooter>
+                           <Button
+                              className="w-full"
+                              isPending={
+                                 insertPasskey.isPending ||
+                                 insertPasskey.isSuccess
+                              }
+                              disabled={
+                                 insertPasskey.isPending ||
+                                 insertPasskey.isSuccess
+                              }
+                           >
+                              Confirm
+                           </Button>
+                        </DialogFooter>
+                     </DialogPopup>
+                  </Dialog>
+               </div>
+            </TabsPanel>
+            <TabsPanel
+               value={"preferences"}
+               className={"divide-y divide-primary-4"}
+            >
+               <div className="py-6">
+                  <div className="flex items-center justify-between">
+                     <h2 className="font-semibold text-lg">
+                        Use pointer cursors
+                     </h2>
+                     <Switch
+                        checked={cursor === "pointer"}
+                        onCheckedChange={() =>
+                           setCursor(
+                              cursor === "pointer" ? "default" : "pointer",
+                           )
+                        }
+                     />
                   </div>
-               </TabsPanel>
-               <TabsPanel
-                  value={"billing"}
-                  className={"divide-y divide-primary-4"}
-               >
-                  <BillingPanel />
-               </TabsPanel>
-            </Tabs>
-         </ScrollArea>
-      </>
+                  <p className="mt-2 mb-6 text-foreground/70">
+                     Change the cursor to pointer when hovering over any
+                     interactive elements.
+                  </p>
+               </div>
+            </TabsPanel>
+            <TabsPanel
+               value={"billing"}
+               className={"divide-y divide-primary-4"}
+            >
+               <BillingPanel />
+            </TabsPanel>
+         </Tabs>
+      </Main>
    )
 }
 
@@ -390,7 +388,8 @@ function PasskeyItem({ name, id }: { name: string; id: string }) {
          <Button
             className="ml-auto"
             variant={"ghost"}
-            size={"icon-sm"}
+            kind={"icon"}
+            size={"sm"}
             disabled={deletePasskey.isPending || deletePasskey.isSuccess}
             aria-label={`Delete passkey ${name}`}
             onClick={() =>
@@ -399,7 +398,7 @@ function PasskeyItem({ name, id }: { name: string; id: string }) {
                })
             }
          >
-            <Icons.trash className="size-4" />
+            <Icons.trash className="size-5 md:size-[18px]" />
          </Button>
       </li>
    )

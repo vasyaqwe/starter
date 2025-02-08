@@ -302,8 +302,8 @@ function RouteComponent() {
             <div ref={scroll} />
          </ScrollArea>
          <div className="border-neutral border-t bg-background">
-            <div className="mx-auto flex max-w-4xl items-end gap-2 p-2 md:p-4">
-               <div className="mb-0.5 flex items-center gap-0.5">
+            <div className="mx-auto flex max-w-4xl items-end gap-1 p-2 md:gap-2 md:p-4">
+               <div className="flex items-center gap-0.5 md:mb-0.5">
                   <Tooltip>
                      <TooltipTrigger
                         render={
@@ -312,9 +312,9 @@ function RouteComponent() {
                                  setFileTriggerOpen(true)
                                  fileUploaderRef.current?.click()
                               }}
-                              size={"icon"}
+                              kind={"icon"}
                               variant={"ghost"}
-                              className="rounded-full"
+                              shape={"circle"}
                            />
                         }
                      >
@@ -331,8 +331,8 @@ function RouteComponent() {
                               <PopoverTrigger
                                  render={
                                     <Button
-                                       className="rounded-full"
-                                       size={"icon"}
+                                       shape={"circle"}
+                                       kind={"icon"}
                                        variant={"ghost"}
                                     />
                                  }
@@ -360,7 +360,9 @@ function RouteComponent() {
                            <Button
                               key={index}
                               variant={"menu-item"}
-                              size={"icon-sm"}
+                              size={"sm"}
+                              kind={"icon"}
+                              shape={"circle"}
                               className="justify-center rounded-full"
                            >
                               <span className="-mt-px block">{emoji}</span>
@@ -451,7 +453,9 @@ function RouteComponent() {
                         render={
                            <Button
                               className="absolute right-1 bottom-1 size-[33px] rounded-full"
-                              size={"icon-sm"}
+                              size={"sm"}
+                              kind={"icon"}
+                              shape={"circle"}
                               aria-label="Send message"
                            />
                         }
@@ -511,9 +515,10 @@ function MessageComponent({
                   className={cn(
                      buttonVariants({
                         variant: "ghost",
-                        size: "icon-sm",
+                        size: "sm",
+                        kind: "icon",
+                        shape: "circle",
                      }),
-                     "rounded-full",
                   )}
                >
                   <Icons.ellipsisHorizontal className="size-[22px]" />

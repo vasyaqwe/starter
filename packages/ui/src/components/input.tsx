@@ -11,7 +11,7 @@ export const inputVariants = cva(
             chat: "min-h-[41px] rounded-full border-primary-5 bg-primary-2 px-4 py-2 dark:border-primary-6 dark:bg-primary-3",
          },
          size: {
-            default: "h-9 px-3 text-base",
+            default: "h-10 px-3 text-base md:h-9",
          },
       },
       compoundVariants: [
