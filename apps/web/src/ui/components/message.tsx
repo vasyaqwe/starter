@@ -94,7 +94,7 @@ export function MessageContent({
          className={cn(
             "w-fit max-w-[82%] shrink-0 px-3 py-2 sm:max-w-[30rem] md:max-w-[25rem] lg:max-w-[32rem] dark:shadow-md",
             isMine
-               ? "rounded-r-md rounded-l-3xl bg-accent text-white"
+               ? "rounded-r-md rounded-l-3xl bg-accent-8 text-white"
                : "rounded-r-3xl rounded-l-md bg-primary-3 dark:bg-primary-5",
             state === "single" ? "!rounded-3xl" : "",
             state === "first" && !isMine ? "rounded-tl-3xl" : "",

@@ -14,7 +14,7 @@ function Switch({
             onCheckedChange?.(checked, e)
          }}
          className={cn(
-            "inline-flex h-[23px] w-[38px] cursor-(--cursor) items-center rounded-full bg-primary-7 shadow-xs hover:bg-primary-8 data-checked:bg-accent data-checked:hover:bg-accent/90",
+            "inline-flex h-[28px] w-[47px] cursor-(--cursor) items-center rounded-full bg-primary-7 shadow-xs hover:bg-primary-8 data-checked:bg-accent-8 data-checked:hover:bg-accent-8/90 md:h-[23px] md:w-[38px]",
             focusStyles,
             className,
          )}
@@ -33,7 +33,7 @@ function SwitchThumb({
    return (
       <SwitchPrimitive.Thumb
          className={cn(
-            "ml-[3px] block size-[17px] rounded-full bg-[#fff] shadow-sm transition-transform ease-vaul data-checked:translate-x-[calc(100%-2px)]",
+            "ml-[4px] block size-[20px] rounded-full bg-white shadow-sm transition-transform ease-vaul data-checked:translate-x-[calc(100%-1px)] md:ml-[3px] md:size-[17px] md:data-checked:translate-x-[calc(100%-2px)]",
             className,
          )}
          {...props}

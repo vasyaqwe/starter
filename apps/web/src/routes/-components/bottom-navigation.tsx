@@ -23,7 +23,7 @@ export function BottomNavigation() {
                   <Icons.chat className="ml-[3px] size-6 shrink-0 group-aria-[current=page]:hidden" />
                   <Icons.chatSolid className="ml-[3px] hidden size-6 shrink-0 group-aria-[current=page]:block" />
                   Chat
-                  <span className="-right-1 absolute top-0.5 size-1.5 rounded-full bg-accent" />
+                  <span className="-right-1 absolute top-0.5 size-1.5 rounded-full bg-accent-8" />
                </Link>
             </li>
             <li>

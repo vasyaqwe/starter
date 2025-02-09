@@ -69,7 +69,7 @@ export function SelectItem({
          className={cn(
             menuItemStyles.base,
             destructive ? menuItemStyles.destructive : "",
-            "grid min-w-[calc(var(--anchor-width)+1.45rem)] grid-cols-[1.1rem_1fr] items-center gap-2 pr-4 pl-2",
+            "grid min-w-[calc(var(--anchor-width)+1.3rem)] grid-cols-[1.1rem_1fr] items-center gap-2 pr-4 pl-2",
             className,
          )}
          {...props}

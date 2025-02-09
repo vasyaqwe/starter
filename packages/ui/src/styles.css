@@ -32,7 +32,7 @@
    --color-primary-a12: var(--color-gray-a12);
    --color-foreground: var(--color-primary-12);
    --color-background: #fff;
-   --color-accent: #3c83f6;
+   --color-accent-8: #3c83f6;
    --color-destructive: var(--color-red-11);
    --color-neutral: var(--color-primary-4);
 
@@ -113,7 +113,7 @@
 .dark {
    --color-background: #171717;
    --color-destructive: var(--color-red-9);
-   --color-accent: #3780f6;
+   --color-accent-8: #3780f6;
 }
 
 @variant dark (&:where(.dark, .dark *));

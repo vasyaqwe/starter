@@ -118,11 +118,11 @@ function RouteComponent() {
                   },
                   desktop: {
                      label: "Desktop",
-                     color: "var(--color-accent)",
+                     color: "var(--color-accent-8)",
                   },
                   mobile: {
                      label: "Mobile",
-                     color: "var(--color-accent)",
+                     color: "var(--color-accent-8)",
                   },
                }}
                className="aspect-auto h-[250px] w-full"
