@@ -20,7 +20,6 @@ import {
 import { Icons } from "@project/ui/components/icons"
 import { Input } from "@project/ui/components/input"
 import { Kbd } from "@project/ui/components/kbd"
-import { Loading } from "@project/ui/components/loading"
 import {
    Menu,
    MenuItem,
@@ -44,6 +43,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { atom, useAtom, useSetAtom } from "jotai"
 import * as React from "react"
 import { useHotkeys } from "react-hotkeys-hook"
+import * as R from "remeda"
 import { toast } from "sonner"
 
 export const Route = createFileRoute("/_layout/chat")({
@@ -141,32 +141,7 @@ const fakeMessages = [
 function RouteComponent() {
    const [messages, setMessages] = React.useState(fakeMessages)
 
-   const groupedMessages = Object.entries(
-      messages.reduce(
-         (acc, msg) => {
-            const date = formatDate(msg.createdAt)
-            if (!acc[date]) acc[date] = []
-            const lastGroup = acc[date]?.at(-1)
-
-            if (lastGroup?.sender.name === msg.sender.name) {
-               lastGroup.messages.push(msg)
-            } else {
-               acc[date]?.push({ sender: msg.sender, messages: [msg] })
-            }
-            return acc
-         },
-         {} as Record<
-            string,
-            {
-               sender: (typeof messages)[0]["sender"]
-               messages: typeof messages
-            }[]
-         >,
-      ),
-   ).map(([date, groups]) => ({
-      date,
-      groups,
-   }))
+   const groupedMessages = R.groupBy(messages, (m) => formatDate(m.createdAt))
 
    const [editingMessageId, setEditingMessageId] = useAtom(editingMessageIdAtom)
 
@@ -211,14 +186,10 @@ function RouteComponent() {
       if (document.activeElement?.tagName === "INPUT") return
 
       // Focus input if typing letter/number keys
-      if (e.key.length === 1) {
-         contentRef.current?.focus()
-      }
+      if (e.key.length === 1) contentRef.current?.focus()
    })
 
    const currentUserId = "1"
-
-   const isPending = false
 
    return (
       <>
@@ -238,66 +209,55 @@ function RouteComponent() {
                   "group/container mx-auto w-full max-w-4xl px-3 sm:px-4"
                }
             >
-               {isPending ? (
-                  <Loading className="absolute inset-0 m-auto" />
-               ) : (
-                  groupedMessages.map((dateGroup) => (
-                     <div key={dateGroup.date}>
-                        <MessageGroupDate>{dateGroup.date}</MessageGroupDate>
-                        <span className="mx-auto mb-2 block w-fit text-foreground/70 text-xs">
-                           {formatDate(
-                              dateGroup.groups[0]?.messages[0]?.createdAt ??
-                                 new Date(),
-                              {
-                                 timeStyle: "short",
-                              },
-                           )}
-                        </span>
-                        {dateGroup.groups.map((group, index) => (
-                           <MessageGroup
-                              key={index}
-                              isMine={currentUserId === group.sender.id}
-                           >
-                              <UserAvatar
-                                 className={cn(
-                                    "group-data-[editing]/container:opacity-30",
-                                    "mt-auto mb-[3px]",
-                                    currentUserId === group.sender.id
-                                       ? "hidden"
-                                       : "",
-                                 )}
-                                 user={group.sender}
+               {Object.entries(groupedMessages).map(([date, messages]) => (
+                  <div key={date}>
+                     <MessageGroupDate>{date}</MessageGroupDate>{" "}
+                     <div className="mt-4 w-full">
+                        {messages.map((message, idx) => {
+                           const isFirstInSenderGroup =
+                              idx === 0 ||
+                              messages[idx - 1]?.sender?.id !==
+                                 message.sender?.id
+
+                           const isLastInSenderGroup =
+                              idx === messages.length - 1 ||
+                              messages[idx + 1]?.sender?.id !==
+                                 message.sender?.id
+
+                           const prevMessage = messages[idx - 1]
+                           const isFirstMessageInAWhile =
+                              !prevMessage ||
+                              new Date(message.createdAt).getTime() -
+                                 new Date(prevMessage.createdAt).getTime() >
+                                 10 * 60 * 1000 // 10 min
+
+                           return (
+                              <div
+                                 className="flex flex-col"
+                                 key={message.id}
                               >
-                                 <OnlineIndicator />
-                              </UserAvatar>
-                              <div className="mt-4 w-full">
-                                 {group.messages.map(
-                                    (message, index, groupMessages) => (
-                                       <MessageComponent
-                                          key={message.id}
-                                          message={message}
-                                          isMine={
-                                             currentUserId === group.sender?.id
-                                          }
-                                          state={
-                                             groupMessages.length === 1
-                                                ? "single"
-                                                : index === 0
-                                                  ? "first"
-                                                  : index ===
-                                                      groupMessages.length - 1
-                                                    ? "last"
-                                                    : null
-                                          }
-                                       />
-                                    ),
+                                 {isFirstMessageInAWhile && (
+                                    <span className="mx-auto mb-3 block w-fit text-foreground/70 text-xs">
+                                       {formatDate(
+                                          new Date(message.createdAt),
+                                          { timeStyle: "short" },
+                                       )}
+                                    </span>
                                  )}
+                                 <MessageComponent
+                                    message={message}
+                                    isMine={
+                                       currentUserId === message.sender?.id
+                                    }
+                                    isLastInSenderGroup={isLastInSenderGroup}
+                                    isFirstInSenderGroup={isFirstInSenderGroup}
+                                 />
                               </div>
-                           </MessageGroup>
-                        ))}
+                           )
+                        })}
                      </div>
-                  ))
-               )}
+                  </div>
+               ))}
             </div>
             <div ref={scroll} />
          </ScrollArea>
@@ -356,9 +316,9 @@ function RouteComponent() {
                            "😑",
                            "😑",
                            "😑",
-                        ].map((emoji, index) => (
+                        ].map((emoji, idx) => (
                            <Button
-                              key={index}
+                              key={idx}
                               variant={"menu-item"}
                               size={"sm"}
                               kind={"icon"}
@@ -424,13 +384,13 @@ function RouteComponent() {
                >
                   {files?.length ? (
                      <div className="mb-4 flex flex-wrap gap-2">
-                        {files?.map((file, index) => (
+                        {files?.map((file, idx) => (
                            <FileCard
-                              key={index}
+                              key={idx}
                               file={file}
                               onRemove={() =>
                                  setFiles((prev) =>
-                                    prev.filter((_, i) => i !== index),
+                                    prev.filter((_, i) => i !== idx),
                                  )
                               }
                            />
@@ -492,77 +452,106 @@ function RouteComponent() {
 function MessageComponent({
    message,
    isMine,
-   state,
+   isLastInSenderGroup,
+   isFirstInSenderGroup,
 }: {
    message: (typeof fakeMessages)[number]
    isMine: boolean
-   state: "first" | "last" | "single" | null
+   isLastInSenderGroup: boolean
+   isFirstInSenderGroup: boolean
 }) {
    const [editingMessageId, setEditingMessageId] = useAtom(editingMessageIdAtom)
    const setContent = useSetAtom(contentAtom)
+   const currentUserId = "1"
+
+   const state =
+      isFirstInSenderGroup && isLastInSenderGroup
+         ? "single"
+         : isFirstInSenderGroup
+           ? "first"
+           : isLastInSenderGroup
+             ? "last"
+             : "middle"
 
    return (
-      <Message
-         isMine={isMine}
-         data-highlighted={editingMessageId === message.id ? "" : undefined}
-         className={cn(
-            "data-[highlighted]:opacity-100 group-data-[editing]/container:opacity-30",
+      <MessageGroup isMine={isMine}>
+         {currentUserId === message.sender.id ? null : (
+            <UserAvatar
+               className={cn(
+                  "group-data-[editing]/container:opacity-30",
+                  "mt-auto mb-[3px]",
+                  isLastInSenderGroup ? "" : "invisible",
+               )}
+               user={message.sender}
+            >
+               <OnlineIndicator
+                  className={cn(isLastInSenderGroup ? "" : "hidden")}
+               />
+            </UserAvatar>
          )}
-      >
-         <MessageActions>
-            <Menu>
-               <MenuTrigger
-                  className={cn(
-                     buttonVariants({
-                        variant: "ghost",
-                        size: "sm",
-                        kind: "icon",
-                        shape: "circle",
-                     }),
-                  )}
-               >
-                  <Icons.ellipsisHorizontal className="size-[22px]" />
-               </MenuTrigger>
-               <MenuPopup align={isMine ? "end" : "start"}>
-                  <MenuItem
-                     onClick={() => {
-                        setEditingMessageId(message.id)
-                        setContent(message.content)
-                        // contentRef.current?.focus()
-                     }}
+         <Message
+            isMine={isMine}
+            data-highlighted={editingMessageId === message.id ? "" : undefined}
+            className={cn(
+               "data-[highlighted]:opacity-100 group-data-[editing]/container:opacity-30",
+               state === "first" || state === "single" ? "mt-4" : "",
+            )}
+         >
+            <MessageActions>
+               <Menu>
+                  <MenuTrigger
+                     className={cn(
+                        buttonVariants({
+                           variant: "ghost",
+                           size: "sm",
+                           kind: "icon",
+                           shape: "circle",
+                        }),
+                     )}
                   >
-                     <Icons.pencil />
-                     Edit
-                  </MenuItem>
-                  <MenuItem
-                     destructive
-                     onClick={() => toast("deleted message (fake)")}
-                  >
-                     <Icons.trash />
-                     Delete
-                  </MenuItem>
-               </MenuPopup>
-            </Menu>
-         </MessageActions>
-         <Tooltip>
-            <TooltipTrigger
-               render={
-                  <MessageContent
-                     className="hyphens-auto"
-                     isMine={isMine}
-                     state={state}
-                  >
-                     {message.content}
-                  </MessageContent>
-               }
-            />
-            <TooltipPopup align={isMine ? "end" : "start"}>
-               {formatDate(message.createdAt, {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-               })}
-            </TooltipPopup>
-         </Tooltip>
-      </Message>
+                     <Icons.ellipsisHorizontal className="size-[22px]" />
+                  </MenuTrigger>
+                  <MenuPopup align={isMine ? "end" : "start"}>
+                     <MenuItem
+                        onClick={() => {
+                           setEditingMessageId(message.id)
+                           setContent(message.content)
+                           // contentRef.current?.focus()
+                        }}
+                     >
+                        <Icons.pencil />
+                        Edit
+                     </MenuItem>
+                     <MenuItem
+                        destructive
+                        onClick={() => toast("deleted message (fake)")}
+                     >
+                        <Icons.trash />
+                        Delete
+                     </MenuItem>
+                  </MenuPopup>
+               </Menu>
+            </MessageActions>
+            <Tooltip>
+               <TooltipTrigger
+                  render={
+                     <MessageContent
+                        className="hyphens-auto"
+                        isMine={isMine}
+                        state={state}
+                     >
+                        {message.content}
+                     </MessageContent>
+                  }
+               />
+               <TooltipPopup align={isMine ? "end" : "start"}>
+                  {formatDate(message.createdAt, {
+                     dateStyle: "medium",
+                     timeStyle: "short",
+                  })}
+               </TooltipPopup>
+            </Tooltip>
+         </Message>
+      </MessageGroup>
    )
 }

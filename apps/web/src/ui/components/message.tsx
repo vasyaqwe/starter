@@ -87,7 +87,7 @@ export function MessageContent({
    ...props
 }: React.ComponentProps<"div"> & {
    isMine: boolean
-   state: "first" | "last" | "single" | null
+   state: "first" | "last" | "single" | "middle"
 }) {
    return (
       <div

@@ -4,10 +4,6 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./src/*.ts"
-    },
     "./components/*": {
       "types": "./dist/components/*.d.ts",
       "default": "./src/components/*.tsx"
@@ -16,9 +12,20 @@
       "types": "./dist/hooks/*.d.ts",
       "default": "./src/hooks/*.ts"
     },
+    "./constants": {
+      "types": "./dist/constants.ts",
+      "default": "./src/constants.ts"
+    },
+    "./store": {
+      "types": "./dist/store.ts",
+      "default": "./src/store.ts"
+    },
     "./styles": {
-      "types": "./dist/styles.css",
       "default": "./src/styles.css"
+    },
+    "./utils": {
+      "types": "./dist/utils.ts",
+      "default": "./src/utils.ts"
     }
   },
   "scripts": {
