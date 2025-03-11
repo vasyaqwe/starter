@@ -1,7 +1,7 @@
 import baseX from "base-x"
 const b58 = baseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
-export const PREFIXES = {
+export const ID_PREFIXES = {
    user: "usr",
    verification_request: "vr",
    oauth_account: "oa",
@@ -9,7 +9,7 @@ export const PREFIXES = {
    file: "file",
 } as const
 
-export const generate = (prefix: keyof typeof PREFIXES) => {
+export const id_generate = (prefix: keyof typeof ID_PREFIXES) => {
    const buf = crypto.getRandomValues(new Uint8Array(20))
 
    /**
@@ -26,5 +26,5 @@ export const generate = (prefix: keyof typeof PREFIXES) => {
    buf[2] = (t >>> 8) & 255
    buf[3] = t & 255
 
-   return `${PREFIXES[prefix]}_${b58.encode(buf)}` as const
+   return `${ID_PREFIXES[prefix]}_${b58.encode(buf)}` as const
 }

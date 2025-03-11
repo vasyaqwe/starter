@@ -37,11 +37,11 @@ export class TimeSpan {
    }
 }
 
-export function isWithinExpirationDate(date: Date): boolean {
+export const date_isWithinExpiration = (date: Date) => {
    return Date.now() < date.getTime()
 }
 
-export function createDate(timeSpan: TimeSpan): Date {
+export const date_create = (timeSpan: TimeSpan) => {
    return new Date(Date.now() + timeSpan.milliseconds())
 }
 

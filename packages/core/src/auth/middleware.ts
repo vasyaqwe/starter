@@ -1,19 +1,19 @@
 import { sha256 } from "@oslojs/crypto/sha2"
 import { encodeHexLowerCase } from "@oslojs/encoding"
-import type { Api } from "@project/core/api"
+import type { AuthedHonoEnv, HonoEnv } from "@project/core/api/types"
 import { session, user } from "@project/core/user/schema"
 import { eq } from "drizzle-orm"
 import type { Context } from "hono"
 import { createMiddleware } from "hono/factory"
 import { HTTPException } from "hono/http-exception"
-import { SESSION_EXPIRATION_SECONDS } from "./constants"
 import {
-   deleteSessionTokenCookie,
-   getSessionTokenCookie,
-   setSessionTokenCookie,
-} from "./core"
+   auth_deleteSessionTokenCookie,
+   auth_getSessionTokenCookie,
+   auth_setSessionTokenCookie,
+} from "./"
+import { SESSION_EXPIRATION_SECONDS } from "./constants"
 
-const validateSessionToken = async (c: Context<Api.HonoEnv>, token: string) => {
+const validateSessionToken = async (c: Context<HonoEnv>, token: string) => {
    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 
    const [found] = await c.var.db
@@ -45,15 +45,15 @@ const validateSessionToken = async (c: Context<Api.HonoEnv>, token: string) => {
             expiresAt: foundSession.expiresAt,
          })
          .where(eq(session.id, foundSession.id))
-      setSessionTokenCookie(c, token)
+      auth_setSessionTokenCookie(c, token)
    }
 
    return { session: foundSession, user: foundUser }
 }
 
-export const middleware = createMiddleware<Api.AuthedHonoEnv>(
+export const auth_middleware = createMiddleware<AuthedHonoEnv>(
    async (c, next) => {
-      const sessionToken = getSessionTokenCookie(c)
+      const sessionToken = auth_getSessionTokenCookie(c)
       if (!sessionToken) {
          throw new HTTPException(401, {
             message: "Unauthorized",
@@ -65,7 +65,7 @@ export const middleware = createMiddleware<Api.AuthedHonoEnv>(
          sessionToken,
       )
       if (!session || !user) {
-         deleteSessionTokenCookie(c)
+         auth_deleteSessionTokenCookie(c)
          throw new HTTPException(401, {
             message: "Unauthorized",
          })

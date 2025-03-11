@@ -1,4 +1,4 @@
-import { Database as d } from "@project/core/database"
+import { d } from "@project/core/database"
 import { type InferSelectModel, relations } from "drizzle-orm"
 
 export const user = d.table(
@@ -79,5 +79,5 @@ export const session = d.table(
 )
 
 export type SessionSchema = InferSelectModel<typeof session>
-export type Schema = InferSelectModel<typeof user>
+export type UserSchema = InferSelectModel<typeof user>
 export type OauthProvider = (typeof oauthProviders)[number]

@@ -1,20 +1,20 @@
 import { WebhookVerificationError, validateEvent } from "@polar-sh/sdk/webhooks"
-import { Api } from "@project/core/api"
-import { Auth } from "@project/core/auth"
+import { api_createRouter } from "@project/core/api/utils"
+import { auth_middleware } from "@project/core/auth/middleware"
 import { subscription } from "@project/core/billing/schema"
 import { ApiError } from "@project/core/error"
 import { and, eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 
-export const route = Api.createRouter()
-   .get("/subscription", Auth.middleware, async (c) => {
+export const billing_route = api_createRouter()
+   .get("/subscription", auth_middleware, async (c) => {
       const foundSubscription = await c.var.db.query.subscription.findFirst({
          where: eq(subscription.userId, c.var.user.id),
       })
 
       return c.json(foundSubscription ?? null)
    })
-   .get("/checkout", Auth.middleware, async (c) => {
+   .get("/checkout", auth_middleware, async (c) => {
       const checkout = await c.var.payment.checkouts.custom.create({
          productPriceId: "c07ab064-b153-4f04-83f5-185ed4e5a43b",
          customerEmail: c.var.user.email,
@@ -25,7 +25,7 @@ export const route = Api.createRouter()
       })
       return c.redirect(checkout.url)
    })
-   .post("/cancel", Auth.middleware, async (c) => {
+   .post("/cancel", auth_middleware, async (c) => {
       const foundSubscription = await c.var.db.query.subscription.findFirst({
          where: and(
             eq(subscription.userId, c.var.user.id),

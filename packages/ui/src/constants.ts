@@ -20,18 +20,18 @@ export const dialogStyles = {
 export const popupStyles = {
    transition:
       "origin-(--transform-origin) transition-[transform_150ms_var(--ease-vaul),opacity_150ms_var(--ease-vaul)] data-[ending-style]:scale-95 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 data-[instant]:duration-0",
-   base: "rounded-xl bg-primary-12 text-white shadow-md outline-1 outline-transparent outline-offset-0 dark:bg-primary-3 dark:shadow-lg dark:shadow-black/35 dark:outline-primary-6",
+   base: "[--popup-radius:var(--radius-2xl)] rounded-(--popup-radius) md:[--popup-radius:var(--radius-xl)] bg-primary-12 text-white shadow-md outline-1 outline-transparent outline-offset-0 dark:bg-primary-3 dark:shadow-lg dark:shadow-black/35 dark:outline-primary-6",
    separator:
       "-mx-(--padding) mt-0.5 mb-1 h-px w-[calc(100%+calc(var(--padding)*2))] bg-black shadow-[0px_1px_0px_var(--color-white-a3)] dark:bg-primary-2 dark:shadow-[0px_1px_0px_var(--color-primary-6)]",
    groupLabel: "my-1 ml-2 text-sm text-white/75 uppercase",
 }
 
 export const tooltipStyles = {
-   base: "flex items-center gap-px rounded-[9px] px-2 py-[3px] text-sm",
+   base: "flex items-center gap-px rounded-md px-2 py-[3px] text-sm has-[[data-kbd]]:pr-1",
 }
 
 export const menuItemStyles = {
-   base: "cursor-(--cursor) text-base md:text-sm h-10 md:h-8 flex items-center select-none gap-2 rounded-[calc(var(--radius-xl)-var(--padding))] px-2 py-[5px] focus-visible:border-transparent [&>svg]:size-[22px] md:[&>svg]:size-5 [&>svg]:text-primary-8 hover:[&>svg]:text-white focus:[&>svg]:text-white dark:[&>svg]:text-primary-11 hover:bg-primary-11 hover:shadow-sm focus-visible:outline-none focus-visible:outline-hidden focus-visible:bg-primary-11 shadow-black/20 focus-visible:shadow-sm dark:hover:bg-primary-6 dark:focus-visible:bg-primary-6",
+   base: "cursor-(--cursor) text-base md:text-sm h-10 md:h-8 flex items-center select-none gap-2 rounded-[calc(var(--popup-radius)-var(--padding))] px-2 py-[5px] focus-visible:border-transparent [&>svg]:size-[22px] md:[&>svg]:size-5 [&>svg]:text-primary-8 hover:[&>svg]:text-white focus:[&>svg]:text-white dark:[&>svg]:text-primary-11 hover:bg-primary-11 hover:shadow-sm focus-visible:outline-none focus-visible:outline-hidden focus-visible:bg-primary-11 shadow-black/20 focus-visible:shadow-sm dark:hover:bg-primary-6 dark:focus-visible:bg-primary-6",
    destructive:
       "hover:bg-red-9 focus-visible:bg-red-9 dark:focus-visible:bg-red-9 dark:hover:bg-red-9",
 }

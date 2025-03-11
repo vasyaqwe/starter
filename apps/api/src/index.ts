@@ -1,10 +1,10 @@
-import { Api } from "@project/core/api"
-import { Logger } from "@project/core/logger"
+import { routes } from "@project/core/api"
+import { logger } from "@project/infra/logger"
 
 const server = Bun.serve({
    port: 8080,
    hostname: "0.0.0.0",
-   fetch: Api.routes.fetch,
+   fetch: routes.fetch,
 })
 
-Logger.info("server running", server.port)
+logger.info("server running", server.port)

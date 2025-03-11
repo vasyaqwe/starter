@@ -1,5 +1,5 @@
 import type { SubscriptionStatus } from "@polar-sh/sdk/src/models/components"
-import { Database as d } from "@project/core/database"
+import { d } from "@project/core/database"
 import { user } from "@project/core/user/schema"
 
 export const subscriptionStatuses = [

@@ -1,10 +1,10 @@
-import { Id } from "@project/core/id"
+import { type ID_PREFIXES, id_generate } from "@project/core/id"
 import { customType, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-export const id = (prefix: keyof typeof Id.PREFIXES) =>
+export const id = (prefix: keyof typeof ID_PREFIXES) =>
    text("id")
       .primaryKey()
-      .$defaultFn(() => Id.generate(prefix))
+      .$defaultFn(() => id_generate(prefix))
 
 export const table = pgTable
 

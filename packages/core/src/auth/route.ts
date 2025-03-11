@@ -19,47 +19,54 @@ import {
    parseAuthenticatorData,
    parseClientDataJSON,
 } from "@oslojs/webauthn"
-import { Api } from "@project/core/api"
+import { api_createRouter, api_zValidator } from "@project/core/api/utils"
 import {
-   createSession,
-   generateEmailOTP,
-   loginOtpEmail,
-   verifyEmailOTP,
-} from "@project/core/auth/core"
+   auth_createSession,
+   auth_generateEmailOTP,
+   auth_verifyEmailOTP,
+} from "@project/core/auth"
+import { auth_loginOtpEmail } from "@project/core/auth/email"
 import { COOKIE_OPTIONS } from "@project/core/cookie/constants"
 import { ApiError } from "@project/core/error"
-import { Logger } from "@project/core/logger"
-import { Passkey } from "@project/core/passkey"
 import { passkeyCredential } from "@project/core/passkey/schema"
-import { RateLimit } from "@project/core/rate-limit"
+import {
+   passkey_challengeRateLimitBucket,
+   passkey_createChallenge,
+   passkey_verifyChallenge,
+} from "@project/core/passkey/utils"
 import {
    emailVerificationRequest,
    oauthProviders,
    user as userSchema,
 } from "@project/core/user/schema"
-import { Email } from "@project/infra/email"
+import { EMAIL_FROM } from "@project/infra/email"
+import { logger } from "@project/infra/logger"
+import {
+   ExpiringTokenBucket,
+   RefillingTokenBucket,
+} from "@project/infra/rate-limit"
 import { generateCodeVerifier, generateState } from "arctic"
 import { eq } from "drizzle-orm"
 import { createSelectSchema } from "drizzle-zod"
 import { getCookie, setCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"
 import { z } from "zod"
-import { createGoogleSession, googleClient } from "./google"
+import { auth_googleClient, createGoogleSession } from "./google"
 
-const sendOtpBucket = new RateLimit.ExpiringTokenBucket<string>(3, 60)
-const verifyOtpBucket = new RateLimit.RefillingTokenBucket<string>(5, 60)
+const sendOtpBucket = new ExpiringTokenBucket<string>(3, 60)
+const verifyOtpBucket = new RefillingTokenBucket<string>(5, 60)
 
-export const route = Api.createRouter()
+export const auth_route = api_createRouter()
    .post("/passkey/challenge", async (c) => {
       const ip = c.req.header("x-forwarded-for")
-      if (ip && !Passkey.challengeRateLimitBucket.consume(ip, 1))
+      if (ip && !passkey_challengeRateLimitBucket.consume(ip, 1))
          throw new HTTPException(429, { message: "Too many requests" })
 
-      return c.json(encodeBase64(Passkey.createChallenge()))
+      return c.json(encodeBase64(passkey_createChallenge()))
    })
    .post(
       "/passkey/login",
-      Api.zValidator(
+      api_zValidator(
          "json",
          z.object({
             authenticatorData: z.string(),
@@ -93,7 +100,7 @@ export const route = Api.createRouter()
 
          if (
             parsedClientData.type !== ClientDataType.Get ||
-            !Passkey.verifyChallenge(parsedClientData.challenge) ||
+            !passkey_verifyChallenge(parsedClientData.challenge) ||
             parsedClientData.origin !== c.var.env.WEB_DOMAIN ||
             (parsedClientData.crossOrigin !== null &&
                parsedClientData.crossOrigin)
@@ -153,13 +160,13 @@ export const route = Api.createRouter()
          if (!validSignature)
             throw new HTTPException(400, { message: "Invalid signature" })
 
-         await createSession(c, credential.userId)
+         await auth_createSession(c, credential.userId)
          return c.json({ status: "ok" })
       },
    )
    .post(
       "/send-login-otp",
-      Api.zValidator(
+      api_zValidator(
          "json",
          z.object({
             email: z.string(),
@@ -200,20 +207,20 @@ export const route = Api.createRouter()
                user = existingUser
             }
 
-            const otp = await generateEmailOTP({
+            const otp = await auth_generateEmailOTP({
                tx: tx as never,
                userId: user.id,
                email,
             })
 
             if (c.var.env.NODE_ENV === "development") {
-               Logger.info(`OTP: ${otp}`)
+               logger.info(`OTP: ${otp}`)
             } else {
                const res = await c.var.email.emails.send({
-                  from: Email.FROM,
+                  from: EMAIL_FROM,
                   to: email,
                   subject: `Project one-time password`,
-                  html: loginOtpEmail(otp),
+                  html: auth_loginOtpEmail(otp),
                })
                if (res.error)
                   throw new HTTPException(500, {
@@ -227,7 +234,7 @@ export const route = Api.createRouter()
    )
    .post(
       "/verify-login-otp",
-      Api.zValidator(
+      api_zValidator(
          "json",
          createSelectSchema(emailVerificationRequest).pick({
             code: true,
@@ -242,7 +249,7 @@ export const route = Api.createRouter()
                message: "Too many requests. Please try again later.",
             })
 
-         const { userId } = await verifyEmailOTP(c.var.db, email, code)
+         const { userId } = await auth_verifyEmailOTP(c.var.db, email, code)
 
          if (!userId)
             throw new HTTPException(400, {
@@ -255,15 +262,15 @@ export const route = Api.createRouter()
             .set({ emailVerified: true })
             .where(eq(userSchema.email, email))
 
-         await createSession(c, userId)
+         await auth_createSession(c, userId)
 
          return c.json({ status: "ok" })
       },
    )
    .get(
       "/:provider",
-      Api.zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
-      Api.zValidator(
+      api_zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
+      api_zValidator(
          "query",
          z.object({
             redirect: z.string().optional(),
@@ -285,7 +292,7 @@ export const route = Api.createRouter()
          if (provider === "google") {
             const codeVerifier = generateCodeVerifier()
 
-            const url = googleClient(c).createAuthorizationURL(
+            const url = auth_googleClient(c).createAuthorizationURL(
                state,
                codeVerifier,
                ["profile", "email"],
@@ -305,8 +312,8 @@ export const route = Api.createRouter()
    )
    .get(
       "/:provider/callback",
-      Api.zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
-      Api.zValidator(
+      api_zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
+      api_zValidator(
          "query",
          z.object({
             code: z.string(),
@@ -400,7 +407,7 @@ export const route = Api.createRouter()
       if (!redirect) return ApiError.handle(error, c)
 
       // c.var.sentry.captureException(error)
-      Logger.error("auth error:", error)
+      logger.error("auth error:", error)
 
       // redirect back to login page if not logged in
       const newRedirectUrl = new URL(`${redirect}/login`)

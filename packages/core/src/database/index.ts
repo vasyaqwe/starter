@@ -1,1 +1,1 @@
-export * as Database from "./core"
+export * as d from "./core"

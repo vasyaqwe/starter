@@ -1,7 +1,7 @@
-import { EmailHtml } from "@project/core/email-html"
+import { email_bodyHtml } from "@project/infra/email/html"
 
-export const loginOtpEmail = (code: string) =>
-   EmailHtml.body({
+export const auth_loginOtpEmail = (code: string) =>
+   email_bodyHtml({
       title: "Project one-time password",
       preheader: "Use this code to log in to Project",
       children: `

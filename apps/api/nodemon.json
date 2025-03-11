@@ -1,5 +1,5 @@
 {
-   "watch": ["../../packages/api", "../../packages/db", "."],
+   "watch": ["../../packages/core", "../../packages/infra", "."],
    "ext": "ts,json",
    "exec": "bun run --env-file=../../.env src/index.ts"
 }

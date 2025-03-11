@@ -34,8 +34,10 @@ const loggerFactory = (method: Method) => {
    }
 }
 
-export const info = loggerFactory("info")
-export const warn = loggerFactory("warn")
-export const error = loggerFactory("error")
-export const success = loggerFactory("success")
-export const loading = loggerFactory("loading")
+export const logger: Record<Method, (...message: unknown[]) => void> = {
+   info: loggerFactory("info"),
+   warn: loggerFactory("warn"),
+   error: loggerFactory("error"),
+   success: loggerFactory("success"),
+   loading: loggerFactory("loading"),
+}

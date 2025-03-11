@@ -1,12 +1,12 @@
-import { Api } from "@project/core/api"
-import { Auth } from "@project/core/auth"
+import { api_createRouter, api_zValidator } from "@project/core/api/utils"
+import { auth_middleware } from "@project/core/auth/middleware"
 import { z } from "zod"
 
-export const route = Api.createRouter()
-   .use(Auth.middleware)
+export const post_route = api_createRouter()
+   .use(auth_middleware)
    .get(
       "/:id",
-      Api.zValidator(
+      api_zValidator(
          "param",
          z.object({
             id: z.string(),
@@ -21,7 +21,7 @@ export const route = Api.createRouter()
    )
    .post(
       "/",
-      Api.zValidator(
+      api_zValidator(
          "json",
          z.object({
             someData: z.string(),

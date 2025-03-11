@@ -1,5 +1,5 @@
-import type { Api } from "@project/core/api"
-import { createSession } from "@project/core/auth/core"
+import type { HonoEnv } from "@project/core/api/types"
+import { auth_createSession } from "@project/core/auth"
 import { oauthAccount, user } from "@project/core/user/schema"
 import { Google } from "arctic"
 import { eq } from "drizzle-orm"
@@ -7,7 +7,7 @@ import type { Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import ky from "ky"
 
-export const googleClient = (c: Context<Api.HonoEnv>) =>
+export const auth_googleClient = (c: Context<HonoEnv>) =>
    new Google(
       c.var.env.GOOGLE_CLIENT_ID,
       c.var.env.GOOGLE_CLIENT_SECRET,
@@ -19,11 +19,11 @@ export const createGoogleSession = async ({
    code,
    codeVerifier,
 }: {
-   c: Context<Api.HonoEnv>
+   c: Context<HonoEnv>
    code: string
    codeVerifier: string
 }) => {
-   const tokens = await googleClient(c).validateAuthorizationCode(
+   const tokens = await auth_googleClient(c).validateAuthorizationCode(
       code,
       codeVerifier,
    )
@@ -70,11 +70,11 @@ export const createGoogleSession = async ({
          userId: existingUser.id,
       })
 
-      return await createSession(c, existingUser.id)
+      return await auth_createSession(c, existingUser.id)
    }
 
    if (existingOauthAccount) {
-      return await createSession(c, existingOauthAccount.userId)
+      return await auth_createSession(c, existingOauthAccount.userId)
    }
 
    const created = await c.var.db.transaction(async (tx) => {
@@ -99,5 +99,5 @@ export const createGoogleSession = async ({
       return created
    })
 
-   return await createSession(c, created.userId)
+   return await auth_createSession(c, created.userId)
 }

@@ -1,5 +1,5 @@
-import type { Api } from "@project/core/api"
-import { Logger } from "@project/core/logger"
+import type { HonoEnv } from "@project/core/api/types"
+import { logger } from "@project/infra/logger"
 import type { Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import { ZodError, type ZodIssue, z } from "zod"
@@ -86,10 +86,10 @@ export const parseZodErrorIssues = (issues: ZodIssue[]): string => {
       .join("; ")
 }
 
-export const handle = (error: Error, c: Context<Api.HonoEnv>) => {
+export const handle = (error: Error, c: Context<HonoEnv>) => {
    if (error instanceof ZodError) {
       const message = parseZodErrorIssues(error.issues)
-      Logger.error(400, message)
+      logger.error(400, message)
       return c.json(
          {
             code: statusToCode(400),
@@ -100,7 +100,7 @@ export const handle = (error: Error, c: Context<Api.HonoEnv>) => {
    }
 
    if (error instanceof HTTPException) {
-      Logger.error(error.status, error.message)
+      logger.error(error.status, error.message)
       return c.json(
          {
             code: statusToCode(error.status),
@@ -111,7 +111,7 @@ export const handle = (error: Error, c: Context<Api.HonoEnv>) => {
    }
 
    const message = error.message ?? "Unknown error"
-   Logger.error(500, message)
+   logger.error(500, message)
    return c.json(
       {
          code: statusToCode(500),

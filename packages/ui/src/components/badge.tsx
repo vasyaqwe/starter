@@ -9,7 +9,7 @@ const badgeVariants = cva(
             default: `shadow-xs bg-background border-neutral text-foreground/95 dark:shadow-md dark:border-primary-5 dark:bg-primary-4`,
          },
          size: {
-            default: "h-8 rounded-[10px] px-3 text-sm",
+            default: "h-8 rounded-md px-3 text-sm",
             sm: "h-[29px] rounded-lg px-2.5 text-xs",
          },
       },

@@ -1,7 +1,7 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { Api } from "@project/core/api"
-import { Id } from "@project/core/id"
+import { api_createRouter, api_zValidator } from "@project/core/api/utils"
+import { id_generate } from "@project/core/id"
 import { Env } from "@project/infra/env"
 import { HTTPException } from "hono/http-exception"
 import ky from "ky"
@@ -23,9 +23,9 @@ const S3 = new S3Client({
    },
 })
 
-export const route = Api.createRouter().post(
+export const storage_route = api_createRouter().post(
    "/",
-   Api.zValidator(
+   api_zValidator(
       "json",
       z.object({
          files: z.array(
@@ -49,7 +49,7 @@ export const route = Api.createRouter().post(
                   S3,
                   new PutObjectCommand({
                      Bucket: "storage-bucket",
-                     Key: `${PATH}${Id.generate("file")}`,
+                     Key: `${PATH}${id_generate("file")}`,
                      ContentType: file.type,
                   }),
                   { expiresIn: 30 },

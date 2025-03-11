@@ -36,8 +36,13 @@
    --color-destructive: var(--color-red-11);
    --color-neutral: var(--color-primary-4);
 
-   --radius-xl: 0.825rem;
-   --radius-3xl: 1.25rem;
+   --radius-scale: 0.12rem;
+   --radius-xs: calc(2 * var(--radius-scale));
+   --radius-sm: calc(3 * var(--radius-scale));
+   --radius-md: calc(4 * var(--radius-scale));
+   --radius-lg: calc(5 * var(--radius-scale));
+   --radius-xl: calc(6 * var(--radius-scale));
+   --radius-2xl: calc(7 * var(--radius-scale));
 
    --font-weight-normal: 450;
    --font-weight-medium: 525;
@@ -272,17 +277,6 @@
    display: none !important;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-   -webkit-appearance: none;
-   margin: 0;
-}
-
-input[type="number"] {
-   -moz-appearance: textfield;
-   appearance: textfield;
-}
-
 h1,
 h2,
 h3,
@@ -290,6 +284,6 @@ h4 {
    text-wrap: balance;
 }
 
-p {
+p:not(.prose) {
    text-wrap: pretty;
 }

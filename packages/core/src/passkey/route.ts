@@ -1,5 +1,3 @@
-export * from "./schema"
-export * from "./utils"
 import { ECDSAPublicKey, p256 } from "@oslojs/crypto/ecdsa"
 import { RSAPublicKey } from "@oslojs/crypto/rsa"
 import {
@@ -16,23 +14,23 @@ import {
    parseAttestationObject,
    parseClientDataJSON,
 } from "@oslojs/webauthn"
-import { Api } from "@project/core/api"
-import { Auth } from "@project/core/auth"
+import { api_createRouter, api_zValidator } from "@project/core/api/utils"
+import { auth_middleware } from "@project/core/auth/middleware"
 import {
-   type Credential,
+   type PasskeyCredential,
    passkeyCredential,
 } from "@project/core/passkey/schema"
 import {
-   challengeRateLimitBucket,
-   createChallenge,
-   verifyChallenge,
+   passkey_challengeRateLimitBucket,
+   passkey_createChallenge,
+   passkey_verifyChallenge,
 } from "@project/core/passkey/utils"
 import { and, desc, eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { z } from "zod"
 
-export const route = Api.createRouter()
-   .use(Auth.middleware)
+export const passkey_route = api_createRouter()
+   .use(auth_middleware)
    .get("/", async (c) => {
       const credentials = await c.var.db.query.passkeyCredential.findMany({
          where: eq(passkeyCredential.userId, c.var.user.id),
@@ -45,7 +43,7 @@ export const route = Api.createRouter()
       return c.json(credentials)
    })
    .post("/challenge", async (c) => {
-      if (!challengeRateLimitBucket.consume(c.var.user.id, 1))
+      if (!passkey_challengeRateLimitBucket.consume(c.var.user.id, 1))
          throw new HTTPException(429, { message: "Too many requests" })
 
       const credentials = await c.var.db.query.passkeyCredential.findMany({
@@ -61,14 +59,14 @@ export const route = Api.createRouter()
       const encodedCredentialUserId = encodeBase64(credentialUserId)
 
       return c.json({
-         challenge: encodeBase64(createChallenge()),
+         challenge: encodeBase64(passkey_createChallenge()),
          credentialIds: credentials.map((c) => encodeBase64(c.id)).join(","),
          credentialUserId: encodedCredentialUserId,
       })
    })
    .post(
       "/",
-      Api.zValidator(
+      api_zValidator(
          "json",
          z.object({
             name: z.string(),
@@ -100,14 +98,14 @@ export const route = Api.createRouter()
 
          if (
             parsedClientData.type !== ClientDataType.Create ||
-            !verifyChallenge(parsedClientData.challenge) ||
+            !passkey_verifyChallenge(parsedClientData.challenge) ||
             parsedClientData.origin !== c.var.env.WEB_DOMAIN ||
             (parsedClientData.crossOrigin !== null &&
                parsedClientData.crossOrigin)
          )
             throw new HTTPException(400, { message: "Invalid data" })
 
-         let credential: Omit<Credential, "createdAt" | "updatedAt">
+         let credential: Omit<PasskeyCredential, "createdAt" | "updatedAt">
          if (
             authenticatorData.credential.publicKey.algorithm() ===
             coseAlgorithmES256
@@ -172,7 +170,7 @@ export const route = Api.createRouter()
    )
    .delete(
       "/:id",
-      Api.zValidator(
+      api_zValidator(
          "param",
          z.object({
             id: z.any(),

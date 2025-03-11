@@ -9,7 +9,7 @@ import {
    type ErrorComponentProps,
    Link,
    RouterProvider,
-   createRouter as createTanStackRouter,
+   createRouter,
    rootRouteId,
    useMatch,
    useRouter,
@@ -39,7 +39,7 @@ const queryClient = new QueryClient({
    },
 })
 
-const router = createTanStackRouter({
+const router = createRouter({
    routeTree,
    scrollRestoration: true,
    context: { queryClient },

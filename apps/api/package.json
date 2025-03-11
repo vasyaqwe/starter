@@ -6,6 +6,7 @@
       "typecheck": "tsc --noEmit"
    },
    "dependencies": {
+      "@project/infra": "workspace:*",
       "@project/core": "workspace:*"
    },
    "devDependencies": {

@@ -4,7 +4,7 @@ import { cn } from "../utils"
 import { Loading } from "./loading"
 
 const buttonVariants = cva(
-   `inline-flex cursor-(--cursor) items-center justify-center whitespace-nowrap 
+   `inline-flex cursor-(--cursor) items-center justify-center whitespace-nowrap
     disabled:opacity-70 disabled:cursor-not-allowed border overflow-hidden relative`,
    {
       variants: {
@@ -24,16 +24,16 @@ const buttonVariants = cva(
             ),
          },
          size: {
+            xs: "h-10 rounded-md md:h-6 md:rounded-sm",
+            sm: "h-10 rounded-xl text-base md:h-7 md:rounded-md md:text-sm",
             default:
-               "h-10 rounded-[12px] px-3 text-base md:h-8 md:rounded-[10px] md:text-sm",
-            xs: "h-9 rounded-[10px] md:h-7 md:rounded-[9px]",
-            sm: "h-9 rounded-[10px] px-2.5 text-base md:h-8 md:text-sm",
-            lg: "h-10 gap-2 rounded-xl px-4 text-base",
-            xl: "h-11 gap-3 rounded-xl px-4 text-base",
+               "h-10 rounded-xl text-base md:h-8 md:rounded-lg md:text-sm",
+            lg: "h-10 rounded-xl text-base md:h-9",
+            xl: "h-10 rounded-xl text-base",
          },
          kind: {
-            default: "gap-2",
-            icon: "aspect-square w-auto justify-center gap-0 px-0",
+            default: "gap-1.5 px-3 md:px-2.5",
+            icon: "aspect-square w-auto justify-center",
          },
          shape: {
             default: "",
@@ -48,6 +48,11 @@ const buttonVariants = cva(
             kind: "icon",
             size: "default",
             className: "md:h-9",
+         },
+         {
+            kind: "icon",
+            size: "sm",
+            className: "md:h-8",
          },
       ],
       defaultVariants: {
