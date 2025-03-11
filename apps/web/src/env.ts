@@ -1,4 +1,4 @@
-import { clientEnv } from "@project/env/client"
+import { clientEnv } from "@project/infra/env/client"
 
 const metaEnv = import.meta.env
 

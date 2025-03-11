@@ -10,12 +10,10 @@
         "typescript": "^5.7.2",
       },
     },
-    "apps/server": {
-      "name": "@project/server",
+    "apps/api": {
+      "name": "@project/api",
       "dependencies": {
-        "@project/api": "workspace:*",
-        "@project/db": "workspace:*",
-        "@project/misc": "workspace:*",
+        "@project/core": "workspace:*",
       },
       "devDependencies": {
         "@project/tsconfig": "workspace:*",
@@ -28,8 +26,8 @@
       "dependencies": {
         "@base-ui-components/react": "^1.0.0-alpha.4",
         "@oslojs/encoding": "^1.1.0",
-        "@project/env": "workspace:*",
-        "@project/misc": "workspace:*",
+        "@project/core": "workspace:*",
+        "@project/infra": "workspace:*",
         "@project/ui": "workspace:*",
         "@tanstack/react-query": "^5.66.0",
         "@tanstack/react-router": "^1.99.0",
@@ -58,8 +56,6 @@
         "zod": "^3.24.1",
       },
       "devDependencies": {
-        "@project/api": "workspace:*",
-        "@project/db": "workspace:*",
         "@project/tsconfig": "workspace:*",
         "@tauri-apps/cli": "^2.2.2",
         "@types/node": "^20.17.16",
@@ -81,84 +77,38 @@
         "prettier-plugin-astro": "^0.14.1",
       },
     },
-    "packages/api": {
-      "name": "@project/api",
-      "version": "0.1.0",
+    "packages/core": {
+      "name": "@project/core",
       "dependencies": {
         "@aws-sdk/client-s3": "^3.723.0",
         "@aws-sdk/s3-request-presigner": "^3.723.0",
         "@oslojs/crypto": "^1.0.1",
         "@oslojs/encoding": "^1.1.0",
         "@oslojs/webauthn": "^1.0.0",
-        "@project/db": "workspace:*",
-        "@project/email": "workspace:*",
-        "@project/env": "workspace:*",
-        "@project/misc": "workspace:*",
-        "@project/payment": "workspace:*",
+        "@project/infra": "workspace:*",
+        "ansi-colors": "^4.1.3",
         "arctic": "^2.3.3",
-        "hono": "^4.6.12",
-        "ky": "^1.7.4",
-        "remeda": "^2.17.4",
-        "zod": "^3.23.8",
-      },
-      "devDependencies": {
-        "@project/tsconfig": "workspace:*",
-      },
-    },
-    "packages/db": {
-      "name": "@project/db",
-      "version": "0.1.0",
-      "dependencies": {
-        "@project/env": "workspace:*",
         "base-x": "^5.0.0",
         "drizzle-orm": "^0.38.3",
         "drizzle-zod": "^0.6.1",
+        "hono": "^4.6.12",
+        "ky": "^1.7.4",
         "postgres": "^3.4.5",
-        "zod": "^3.23.8",
+        "remeda": "^2.17.4",
+        "zod": "^3.24.1",
       },
       "devDependencies": {
         "@project/tsconfig": "workspace:*",
         "drizzle-kit": "^0.30.1",
       },
     },
-    "packages/email": {
-      "name": "@project/email",
-      "version": "0.1.0",
-      "dependencies": {
-        "@project/env": "workspace:*",
-        "resend": "^4.0.1",
-      },
-      "devDependencies": {
-        "@project/tsconfig": "workspace:*",
-      },
-    },
-    "packages/env": {
-      "name": "@project/env",
-      "version": "0.1.0",
-      "dependencies": {
-        "@t3-oss/env-core": "^0.11.1",
-        "zod": "^3.23.8",
-      },
-      "devDependencies": {
-        "@project/tsconfig": "workspace:*",
-      },
-    },
-    "packages/misc": {
-      "name": "@project/misc",
-      "version": "0.1.0",
-      "dependencies": {
-        "ansi-colors": "^4.1.3",
-      },
-      "devDependencies": {
-        "@project/tsconfig": "workspace:*",
-      },
-    },
-    "packages/payment": {
-      "name": "@project/payment",
-      "version": "0.1.0",
+    "packages/infra": {
+      "name": "@project/infra",
       "dependencies": {
         "@polar-sh/sdk": "^0.20.0",
-        "@project/env": "workspace:*",
+        "@t3-oss/env-core": "^0.11.1",
+        "resend": "^4.0.1",
+        "zod": "^3.24.1",
       },
       "devDependencies": {
         "@project/tsconfig": "workspace:*",
@@ -511,21 +461,13 @@
 
     "@polar-sh/sdk": ["@polar-sh/sdk@0.20.2", "", { "dependencies": { "standardwebhooks": "^1.0.0" }, "peerDependencies": { "zod": ">= 3" } }, "sha512-Rrqt2jyg1VhO9Gfy3WpLF9bST5yxXGnNJ1a/vHw/N4CXWZNbafKjKVGI2f7t1emCosvzkT2BpIBf+b19CpUTiw=="],
 
-    "@project/api": ["@project/api@workspace:packages/api"],
+    "@project/api": ["@project/api@workspace:apps/api"],
 
-    "@project/db": ["@project/db@workspace:packages/db"],
-
-    "@project/email": ["@project/email@workspace:packages/email"],
-
-    "@project/env": ["@project/env@workspace:packages/env"],
+    "@project/core": ["@project/core@workspace:packages/core"],
 
     "@project/github": ["@project/github@workspace:tooling/github"],
 
-    "@project/misc": ["@project/misc@workspace:packages/misc"],
-
-    "@project/payment": ["@project/payment@workspace:packages/payment"],
-
-    "@project/server": ["@project/server@workspace:apps/server"],
+    "@project/infra": ["@project/infra@workspace:packages/infra"],
 
     "@project/tsconfig": ["@project/tsconfig@workspace:tooling/typescript"],
 
@@ -817,7 +759,7 @@
 
     "@types/babel__traverse": ["@types/babel__traverse@7.20.6", "", { "dependencies": { "@babel/types": "^7.20.7" } }, "sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg=="],
 
-    "@types/bun": ["@types/bun@1.2.2", "", { "dependencies": { "bun-types": "1.2.2" } }, "sha512-tr74gdku+AEDN5ergNiBnplr7hpDp3V1h7fqI2GcR/rsUaM39jpSeKH0TFibRvU0KwniRx5POgaYnaXbk0hU+w=="],
+    "@types/bun": ["@types/bun@1.2.5", "", { "dependencies": { "bun-types": "1.2.5" } }, "sha512-w2OZTzrZTVtbnJew1pdFmgV99H0/L+Pvw+z1P67HaR18MHOzYnTYOi6qzErhK8HyT+DB782ADVPPE92Xu2/Opg=="],
 
     "@types/cookie": ["@types/cookie@0.6.0", "", {}, "sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA=="],
 
@@ -925,7 +867,7 @@
 
     "buffer-from": ["buffer-from@1.1.2", "", {}, "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="],
 
-    "bun-types": ["bun-types@1.2.2", "", { "dependencies": { "@types/node": "*", "@types/ws": "~8.5.10" } }, "sha512-RCbMH5elr9gjgDGDhkTTugA21XtJAy/9jkKe/G3WR2q17VPGhcquf9Sir6uay9iW+7P/BV0CAHA1XlHXMAVKHg=="],
+    "bun-types": ["bun-types@1.2.5", "", { "dependencies": { "@types/node": "*", "@types/ws": "~8.5.10" } }, "sha512-3oO6LVGGRRKI4kHINx5PIdIgnLRb7l/SprhzqXapmoYkFl5m4j6EvALvbDVuuBFaamB46Ap6HCUxIXNLCGy+tg=="],
 
     "camelcase": ["camelcase@8.0.0", "", {}, "sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA=="],
 

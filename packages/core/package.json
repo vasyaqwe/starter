@@ -1,0 +1,45 @@
+{
+  "name": "@project/core",
+  "type": "module",
+  "exports": {
+    "./api": {
+      "types": "./dist/api/index.d.ts",
+      "default": "./src/api/index.ts"
+    },
+    "./error": {
+      "types": "./dist/error/index.d.ts",
+      "default": "./src/error/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .turbo node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "db:drop": "bun run --env-file ../../.env drizzle-kit drop",
+    "db:generate": "bun run --env-file ../../.env drizzle-kit generate",
+    "db:migrate": "bun run --env-file ../../.env drizzle-kit migrate",
+    "db:studio": "bun run --env-file ../../.env drizzle-kit studio"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.723.0",
+    "@aws-sdk/s3-request-presigner": "^3.723.0",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "@oslojs/webauthn": "^1.0.0",
+    "@project/infra": "workspace:*",
+    "arctic": "^2.3.3",
+    "hono": "^4.6.12",
+    "ky": "^1.7.4",
+    "remeda": "^2.17.4",
+    "zod": "^3.24.1",
+    "base-x": "^5.0.0",
+    "postgres": "^3.4.5",
+    "drizzle-orm": "^0.38.3",
+    "drizzle-zod": "^0.6.1",
+    "ansi-colors": "^4.1.3"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.30.1",
+    "@project/tsconfig": "workspace:*"
+  }
+}

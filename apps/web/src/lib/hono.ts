@@ -1,10 +1,10 @@
 import { env } from "@/env"
-import type { AppRoutes } from "@project/api"
-import type { ErrorCode } from "@project/api/error/schema"
+import type { Api } from "@project/core/api"
+import type { ApiError } from "@project/core/error"
 import { type ClientResponse, hc as honoClient } from "hono/client"
 import type { StatusCode } from "hono/utils/http-status"
 
-export const hc = honoClient<AppRoutes>(env.SERVER_DOMAIN, {
+export const hc = honoClient<Api.Routes>(env.SERVER_DOMAIN, {
    init: {
       credentials: "include",
    },
@@ -28,6 +28,6 @@ export const honoMutationFn = async <T>(
 }
 
 export type HonoError = {
-   code: ErrorCode
+   code: ApiError.Code
    message: string
 }

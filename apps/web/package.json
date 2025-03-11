@@ -16,8 +16,8 @@
   "dependencies": {
     "@base-ui-components/react": "^1.0.0-alpha.4",
     "@oslojs/encoding": "^1.1.0",
-    "@project/env": "workspace:*",
-    "@project/misc": "workspace:*",
+    "@project/core": "workspace:*",
+    "@project/infra": "workspace:*",
     "@project/ui": "workspace:*",
     "@tanstack/react-query": "^5.66.0",
     "@tanstack/react-router": "^1.99.0",
@@ -46,8 +46,6 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@project/api": "workspace:*",
-    "@project/db": "workspace:*",
     "@project/tsconfig": "workspace:*",
     "@tauri-apps/cli": "^2.2.2",
     "@types/node": "^20.17.16",

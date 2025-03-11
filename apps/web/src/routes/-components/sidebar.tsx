@@ -3,7 +3,6 @@ import { useCanGoForward } from "@/interactions/use-can-go-forward"
 import { useLocalStorage } from "@/interactions/use-local-storage"
 import { UserAvatar } from "@/ui/components/user-avatar"
 import { useAuth } from "@/user/hooks"
-import { logger } from "@project/misc/logger"
 import {
    Accordion,
    AccordionItem,
@@ -342,7 +341,7 @@ function NotificationPermissionCard() {
                      "Your browser doesn't support notifications",
                   )
                } catch (error) {
-                  logger.error(
+                  console.error(
                      "Error requesting notification permission:",
                      error,
                   )

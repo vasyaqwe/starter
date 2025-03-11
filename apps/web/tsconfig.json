@@ -4,7 +4,7 @@
       "lib": ["ESNext", "DOM", "DOM.iterable"],
       "baseUrl": ".",
       "paths": {
-         "@project/api/*": ["../../packages/api/src/*"],
+         "@project/core/*": ["../../packages/core/src/*"],
          "@/*": ["./src/*"]
       },
       "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"

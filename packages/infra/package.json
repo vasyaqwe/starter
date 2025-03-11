@@ -1,0 +1,36 @@
+{
+   "name": "@project/infra",
+   "type": "module",
+   "exports": {
+      "./env": {
+         "types": "./dist/env/index.d.ts",
+         "default": "./src/env/index.ts"
+      },
+      "./env/client": {
+         "types": "./dist/env/client.d.ts",
+         "default": "./src/env/client.ts"
+      },
+      "./email": {
+         "types": "./dist/email.d.ts",
+         "default": "./src/email.ts"
+      },
+      "./payment": {
+         "types": "./dist/payment.d.ts",
+         "default": "./src/payment.ts"
+      }
+   },
+   "scripts": {
+      "build": "tsc",
+      "clean": "rm -rf .turbo node_modules",
+      "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+   },
+   "dependencies": {
+      "resend": "^4.0.1",
+      "@polar-sh/sdk": "^0.20.0",
+      "@t3-oss/env-core": "^0.11.1",
+      "zod": "^3.24.1"
+   },
+   "devDependencies": {
+      "@project/tsconfig": "workspace:*"
+   }
+}

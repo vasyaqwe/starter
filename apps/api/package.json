@@ -1,0 +1,15 @@
+{
+   "name": "@project/api",
+   "scripts": {
+      "dev": "nodemon",
+      "start": "bun run --env-file=../../.env ./src/index.ts",
+      "typecheck": "tsc --noEmit"
+   },
+   "dependencies": {
+      "@project/core": "workspace:*"
+   },
+   "devDependencies": {
+      "@types/bun": "latest",
+      "@project/tsconfig": "workspace:*"
+   }
+}

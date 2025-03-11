@@ -1,4 +1,4 @@
-import type { User } from "@project/db/schema/user"
+import type { User } from "@project/core/user"
 import { cn } from "@project/ui/utils"
 
 export function UserAvatar({
@@ -7,7 +7,7 @@ export function UserAvatar({
    children,
    ...props
 }: React.ComponentProps<"div"> & {
-   user: Partial<Omit<User, "createdAt" | "updatedAt">>
+   user: Partial<Omit<User.Schema, "createdAt" | "updatedAt">>
 }) {
    const name =
       user.name && user.name !== ""

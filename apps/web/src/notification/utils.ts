@@ -1,4 +1,3 @@
-import { logger } from "@project/misc/logger"
 import { isNative } from "@project/ui/constants"
 
 export async function sendNotification({
@@ -15,6 +14,6 @@ export async function sendNotification({
          new Notification(title, { body })
       }
    } catch (error) {
-      logger.error("Failed to send notification:", error)
+      console.error("Failed to send notification:", error)
    }
 }

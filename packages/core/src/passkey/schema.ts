@@ -1,0 +1,21 @@
+import { Database as d } from "@project/core/database"
+import { user } from "@project/core/user/schema"
+import type { InferSelectModel } from "drizzle-orm"
+
+export const passkeyCredential = d.table(
+   "passkey_credential",
+   {
+      id: d.bytea().primaryKey(),
+      userId: d
+         .text()
+         .notNull()
+         .references(() => user.id, { onDelete: "cascade" }),
+      name: d.text().notNull(),
+      algorithm: d.integer().notNull(),
+      publicKey: d.bytea().notNull(),
+      ...d.timestamps,
+   },
+   (table) => [d.index("passkey_credential_user_id_idx").on(table.userId)],
+)
+
+export type Credential = InferSelectModel<typeof passkeyCredential>
