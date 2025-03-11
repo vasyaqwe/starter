@@ -7,7 +7,7 @@ import { post_route } from "@project/core/post/route"
 import { storage_route } from "@project/core/storage/route"
 import { user_route } from "@project/core/user/route"
 import { email_client } from "@project/infra/email"
-import { Env } from "@project/infra/env"
+import { env } from "@project/infra/env"
 import { payment_client } from "@project/infra/payment"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
@@ -16,7 +16,7 @@ import { logger } from "hono/logger"
 const app = api_createRouter()
    .use(logger())
    .use(async (c, next) => {
-      c.set("env", Env)
+      c.set("env", env)
       c.set("db", database_client(c))
       c.set("email", email_client(c))
       c.set("payment", payment_client(c))

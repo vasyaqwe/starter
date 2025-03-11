@@ -1,8 +1,8 @@
-import { clientEnv } from "@project/infra/env/client"
+import { env_client } from "@project/infra/env/client"
 
 const metaEnv = import.meta.env
 
 export const env = {
    ...metaEnv,
-   ...clientEnv[metaEnv.MODE as "development" | "production"],
+   ...env_client[metaEnv.MODE as "development" | "production"],
 }

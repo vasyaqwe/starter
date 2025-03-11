@@ -1,6 +1,6 @@
 import { createEnv } from "@t3-oss/env-core"
 import { z } from "zod"
-import { clientEnv } from "./client"
+import { env_client } from "./client"
 
 const server = createEnv({
    server: {
@@ -29,20 +29,17 @@ const server = createEnv({
    },
 })
 
-const env = {
+const all = {
    development: {
       ...server,
-      ...clientEnv.development,
+      ...env_client.development,
    },
    production: {
       ...server,
-      ...clientEnv.production,
+      ...env_client.production,
    },
 } as const
 
-export const Env = {
-   ...env[server.NODE_ENV],
-   clientEnv,
-}
+export const env = all[server.NODE_ENV]
 
-export type Env = typeof Env
+export type Env = typeof env

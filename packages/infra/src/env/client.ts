@@ -1,4 +1,4 @@
-export const clientEnv = {
+export const env_client = {
    development: {
       STORAGE_DOMAIN: "https://pub-adc2676146514653aefef032cae1fc9d.r2.dev",
       SERVER_DOMAIN: "http://localhost:8080",
