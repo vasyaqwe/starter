@@ -1,6 +1,6 @@
 {
   "name": "starter",
-  "packageManager": "bun@1.1.15",
+  "packageManager": "bun@1.2.4",
   "scripts": {
     "build": "turbo build",
     "build:desktop": "turbo build --filter=@project/web && bun --cwd apps/web tauri build",

@@ -6,7 +6,7 @@ runs:
   steps:
     - uses: oven-sh/setup-bun@v1
       with:
-        version: 1.1.15
+        version: 1.2.4
     - shell: bash
       run: bun add -g turbo
 
