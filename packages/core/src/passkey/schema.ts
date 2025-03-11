@@ -1,6 +1,5 @@
 import { d } from "@project/core/database"
 import { user } from "@project/core/user/schema"
-import type { InferSelectModel } from "drizzle-orm"
 
 export const passkeyCredential = d.table(
    "passkey_credential",
@@ -17,5 +16,3 @@ export const passkeyCredential = d.table(
    },
    (table) => [d.index("passkey_credential_user_id_idx").on(table.userId)],
 )
-
-export type PasskeyCredential = InferSelectModel<typeof passkeyCredential>

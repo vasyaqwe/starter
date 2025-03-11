@@ -16,10 +16,8 @@ import {
 } from "@oslojs/webauthn"
 import { api_createRouter, api_zValidator } from "@project/core/api/utils"
 import { auth_middleware } from "@project/core/auth/middleware"
-import {
-   type PasskeyCredential,
-   passkeyCredential,
-} from "@project/core/passkey/schema"
+import { passkeyCredential } from "@project/core/passkey/schema"
+import type { PasskeyCredential } from "@project/core/passkey/types"
 import {
    passkey_challengeRateLimitBucket,
    passkey_createChallenge,

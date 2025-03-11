@@ -1,6 +1,7 @@
 import type { HonoEnv } from "@project/core/api/types"
 import { auth_createSession } from "@project/core/auth"
-import { oauthAccount, user } from "@project/core/user/schema"
+import { oauthAccount } from "@project/core/database/schema"
+import { user } from "@project/core/user/schema"
 import { Google } from "arctic"
 import { eq } from "drizzle-orm"
 import type { Context } from "hono"
@@ -11,7 +12,7 @@ export const auth_googleClient = (c: Context<HonoEnv>) =>
    new Google(
       c.var.env.GOOGLE_CLIENT_ID,
       c.var.env.GOOGLE_CLIENT_SECRET,
-      `${c.var.env.SERVER_DOMAIN}/auth/google/callback`,
+      `${c.var.env.API_DOMAIN}/auth/google/callback`,
    )
 
 export const createGoogleSession = async ({

@@ -1,6 +1,7 @@
 import type { routes } from "@project/core/api"
+import type { Session } from "@project/core/auth/types"
 import type { DatabaseClient } from "@project/core/database/core"
-import type { SessionSchema, UserSchema } from "@project/core/database/schema"
+import type { User } from "@project/core/user/types"
 import type { EmailClient } from "@project/infra/email"
 import type { Env } from "@project/infra/env"
 import type { PaymentClient } from "@project/infra/payment"
@@ -13,8 +14,8 @@ type Variables = {
 }
 
 type AuthVariables = Variables & {
-   user: UserSchema
-   session: SessionSchema
+   user: User
+   session: Session
 }
 
 export type HonoEnv = {

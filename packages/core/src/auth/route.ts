@@ -27,6 +27,10 @@ import {
 } from "@project/core/auth"
 import { auth_loginOtpEmail } from "@project/core/auth/email"
 import { COOKIE_OPTIONS } from "@project/core/cookie/constants"
+import {
+   emailVerificationRequest,
+   oauthProviders,
+} from "@project/core/database/schema"
 import { ApiError } from "@project/core/error"
 import { passkeyCredential } from "@project/core/passkey/schema"
 import {
@@ -34,11 +38,7 @@ import {
    passkey_createChallenge,
    passkey_verifyChallenge,
 } from "@project/core/passkey/utils"
-import {
-   emailVerificationRequest,
-   oauthProviders,
-   user as userSchema,
-} from "@project/core/user/schema"
+import { user as userSchema } from "@project/core/user/schema"
 import { EMAIL_FROM } from "@project/infra/email"
 import { logger } from "@project/infra/logger"
 import {

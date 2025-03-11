@@ -4,7 +4,7 @@ import type { ApiError } from "@project/core/error"
 import { type ClientResponse, hc as honoClient } from "hono/client"
 import type { StatusCode } from "hono/utils/http-status"
 
-export const hc = honoClient<ApiRoutes>(env.SERVER_DOMAIN, {
+export const hc = honoClient<ApiRoutes>(env.API_DOMAIN, {
    init: {
       credentials: "include",
    },

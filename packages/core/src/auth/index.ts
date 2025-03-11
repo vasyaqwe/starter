@@ -8,11 +8,14 @@ import type { AuthedHonoEnv, HonoEnv } from "@project/core/api/types"
 import { COOKIE_OPTIONS } from "@project/core/cookie/constants"
 import type { DatabaseClient } from "@project/core/database/core"
 import {
+   emailVerificationRequest,
+   session,
+} from "@project/core/database/schema"
+import {
    TimeSpan,
    date_create,
    date_isWithinExpiration,
 } from "@project/core/date"
-import { emailVerificationRequest, session } from "@project/core/user/schema"
 import { eq } from "drizzle-orm"
 import type { Context } from "hono"
 import { getCookie, setCookie } from "hono/cookie"
