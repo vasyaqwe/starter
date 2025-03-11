@@ -1,6 +1,5 @@
 {
   "name": "starter",
-  "private": true,
   "packageManager": "bun@1.1.15",
   "scripts": {
     "build": "turbo build",
