@@ -9,7 +9,7 @@ export const ID_PREFIXES = {
    file: "file",
 } as const
 
-export const id_generate = (prefix: keyof typeof ID_PREFIXES) => {
+export const createID = (prefix: keyof typeof ID_PREFIXES) => {
    const buf = crypto.getRandomValues(new Uint8Array(20))
 
    /**

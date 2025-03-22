@@ -1,30 +1,32 @@
-import { api_createRouter } from "@project/core/api/utils"
-import { auth_route } from "@project/core/auth/route"
-import { billing_route } from "@project/core/billing/route"
-import { database_client } from "@project/core/database/core"
+import { trpcServer } from "@hono/trpc-server"
+import { createRouter } from "@project/core/api/utils"
+import { authMiddleware } from "@project/core/auth/middleware"
+import { authRoute } from "@project/core/auth/route"
+import { billingRoute } from "@project/core/billing/route"
+import { d } from "@project/core/database"
 import { ApiError } from "@project/core/error"
-import { post_route } from "@project/core/post/route"
-import { storage_route } from "@project/core/storage/route"
-import { user_route } from "@project/core/user/route"
-import { email_client } from "@project/infra/email"
+import { storageRoute } from "@project/core/storage/route"
+import { appRouter } from "@project/core/trpc"
+import type { TRPCContext } from "@project/core/trpc/context"
+import { emailClient } from "@project/infra/email"
 import { env } from "@project/infra/env"
-import { payment_client } from "@project/infra/payment"
+import { paymentClient } from "@project/infra/payment"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
 import { logger } from "hono/logger"
 
-const app = api_createRouter()
+const app = createRouter()
    .use(logger())
    .use(async (c, next) => {
       c.set("env", env)
-      c.set("db", database_client(c))
-      c.set("email", email_client(c))
-      c.set("payment", payment_client(c))
+      c.set("db", d.client(c))
+      c.set("email", emailClient(c))
+      c.set("payment", paymentClient(c))
       await next()
    })
    .use((c, next) => {
       const handler = cors({
-         origin: [c.var.env.WEB_DOMAIN],
+         origin: [c.var.env.WEB_URL],
          credentials: true,
          maxAge: 600,
       })
@@ -32,24 +34,42 @@ const app = api_createRouter()
    })
    .onError(ApiError.handle)
 
-const base = api_createRouter()
+const base = createRouter()
    .get("/health", (c) => {
       return c.json({
          message: "Healthy",
       })
    })
-   .route("/billing", billing_route)
-   .route("/storage", storage_route)
-   .route("/user", user_route)
-   .route("/post", post_route)
+   .route("/billing", billingRoute)
+   .route("/storage", storageRoute)
 
-const auth = api_createRouter()
+const auth = createRouter()
    .use((c, next) => {
       const handler = csrf({
-         origin: [c.var.env.WEB_DOMAIN],
+         origin: [c.var.env.WEB_URL],
       })
       return handler(c, next)
    })
-   .route("/", auth_route)
+   .route("/", authRoute)
 
-export const routes = app.route("/auth", auth).route("/", base)
+export const routes = app
+   .use(
+      "/trpc/*",
+      authMiddleware,
+      trpcServer({
+         router: appRouter,
+         createContext: async (opts, c) => {
+            return {
+               vars: c.var.env,
+               db: c.var.db,
+               email: c.var.email,
+               payment: c.var.payment,
+               user: c.var.user,
+               session: c.var.session,
+               host: opts.req.headers.get("host"),
+            } satisfies TRPCContext
+         },
+      }),
+   )
+   .route("/auth", auth)
+   .route("/", base)

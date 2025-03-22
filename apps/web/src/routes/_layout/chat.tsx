@@ -189,7 +189,7 @@ function RouteComponent() {
       if (e.key.length === 1) contentRef.current?.focus()
    })
 
-   const currentUserId = "1"
+   const currentUserID = "1"
 
    return (
       <>
@@ -247,7 +247,7 @@ function RouteComponent() {
                                  <MessageComponent
                                     message={message}
                                     isMine={
-                                       currentUserId === message.sender?.id
+                                       currentUserID === message.sender?.id
                                     }
                                     isLastInSenderGroup={isLastInSenderGroup}
                                     isFirstInSenderGroup={isFirstInSenderGroup}
@@ -462,7 +462,7 @@ function MessageComponent({
 }) {
    const [editingMessageId, setEditingMessageId] = useAtom(editingMessageIdAtom)
    const setContent = useSetAtom(contentAtom)
-   const currentUserId = "1"
+   const currentUserID = "1"
 
    const state =
       isFirstInSenderGroup && isLastInSenderGroup
@@ -475,7 +475,7 @@ function MessageComponent({
 
    return (
       <MessageGroup isMine={isMine}>
-         {currentUserId === message.sender.id ? null : (
+         {currentUserID === message.sender.id ? null : (
             <UserAvatar
                className={cn(
                   "group-data-[editing]/container:opacity-30",

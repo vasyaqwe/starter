@@ -1,34 +1,27 @@
 import { WebhookVerificationError, validateEvent } from "@polar-sh/sdk/webhooks"
-import { api_createRouter } from "@project/core/api/utils"
-import { auth_middleware } from "@project/core/auth/middleware"
+import { createRouter } from "@project/core/api/utils"
+import { authMiddleware } from "@project/core/auth/middleware"
 import { subscription } from "@project/core/billing/schema"
 import { ApiError } from "@project/core/error"
 import { and, eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 
-export const billing_route = api_createRouter()
-   .get("/subscription", auth_middleware, async (c) => {
-      const foundSubscription = await c.var.db.query.subscription.findFirst({
-         where: eq(subscription.userId, c.var.user.id),
-      })
-
-      return c.json(foundSubscription ?? null)
-   })
-   .get("/checkout", auth_middleware, async (c) => {
+export const billingRoute = createRouter()
+   .get("/checkout", authMiddleware, async (c) => {
       const checkout = await c.var.payment.checkouts.custom.create({
          productPriceId: "c07ab064-b153-4f04-83f5-185ed4e5a43b",
          customerEmail: c.var.user.email,
          customerName: c.var.user.name,
          metadata: {
-            userId: c.var.user.id,
+            userID: c.var.user.id,
          },
       })
       return c.redirect(checkout.url)
    })
-   .post("/cancel", auth_middleware, async (c) => {
+   .post("/cancel", authMiddleware, async (c) => {
       const foundSubscription = await c.var.db.query.subscription.findFirst({
          where: and(
-            eq(subscription.userId, c.var.user.id),
+            eq(subscription.userID, c.var.user.id),
             eq(subscription.status, "active"),
             eq(subscription.cancelAtPeriodEnd, false),
          ),
@@ -64,21 +57,21 @@ export const billing_route = api_createRouter()
          )
 
          if (event.type === "subscription.created") {
-            const userId = event.data.metadata.userId
-            if (!userId || typeof userId !== "string")
+            const userID = event.data.metadata.userID
+            if (!userID || typeof userID !== "string")
                throw new HTTPException(400, {
-                  message: "userId missing in metadata",
+                  message: "userID missing in metadata",
                })
 
             await c.var.db
                .insert(subscription)
                .values({
                   id: event.data.id,
-                  userId,
+                  userID,
                   status: event.data.status,
                   customerId: event.data.customerId,
-                  priceId: event.data.priceId,
-                  productId: event.data.productId,
+                  priceID: event.data.priceId,
+                  productID: event.data.productId,
                   currentPeriodStart: event.data.currentPeriodStart,
                   currentPeriodEnd: event.data.currentPeriodEnd,
                })
@@ -86,13 +79,13 @@ export const billing_route = api_createRouter()
                   set: {
                      id: event.data.id,
                      status: event.data.status,
-                     priceId: event.data.priceId,
-                     productId: event.data.productId,
+                     priceID: event.data.priceId,
+                     productID: event.data.productId,
                      currentPeriodStart: event.data.currentPeriodStart,
                      currentPeriodEnd: event.data.currentPeriodEnd,
                      cancelAtPeriodEnd: false,
                   },
-                  target: [subscription.userId, subscription.productId],
+                  target: [subscription.userID, subscription.productID],
                })
 
             return c.json({ status: "ok", message: "subscription created" })

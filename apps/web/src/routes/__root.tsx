@@ -1,5 +1,6 @@
 import { Toolbar } from "@/dev/components/toolbar"
 import { useLocalStorage } from "@/interactions/use-local-storage"
+import type { AppRouter } from "@project/core/trpc"
 import { Toaster } from "@project/ui/components/toast/index"
 import { MOBILE_BREAKPOINT } from "@project/ui/constants"
 import { isMobileAtom } from "@project/ui/store"
@@ -9,12 +10,14 @@ import {
    createRootRouteWithContext,
    useMatches,
 } from "@tanstack/react-router"
+import type { TRPCOptionsProxy } from "@trpc/tanstack-react-query"
 import { useSetAtom } from "jotai"
 import { useTheme } from "next-themes"
 import * as React from "react"
 
 export const Route = createRootRouteWithContext<{
    queryClient: QueryClient
+   trpc: TRPCOptionsProxy<AppRouter>
 }>()({
    component: RootComponent,
 })
@@ -54,7 +57,6 @@ function RootComponent() {
 
    return (
       <Meta>
-         {/* <ModalProvider /> */}
          <Toolbar />
          <Toaster />
          <Outlet />

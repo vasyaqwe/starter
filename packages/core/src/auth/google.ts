@@ -1,5 +1,5 @@
 import type { HonoEnv } from "@project/core/api/types"
-import { auth_createSession } from "@project/core/auth"
+import { createAuthSession } from "@project/core/auth"
 import { oauthAccount } from "@project/core/database/schema"
 import { user } from "@project/core/user/schema"
 import { Google } from "arctic"
@@ -8,11 +8,11 @@ import type { Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import ky from "ky"
 
-export const auth_googleClient = (c: Context<HonoEnv>) =>
+export const googleClient = (c: Context<HonoEnv>) =>
    new Google(
       c.var.env.GOOGLE_CLIENT_ID,
       c.var.env.GOOGLE_CLIENT_SECRET,
-      `${c.var.env.API_DOMAIN}/auth/google/callback`,
+      `${c.var.env.API_URL}/auth/google/callback`,
    )
 
 export const createGoogleSession = async ({
@@ -24,7 +24,7 @@ export const createGoogleSession = async ({
    code: string
    codeVerifier: string
 }) => {
-   const tokens = await auth_googleClient(c).validateAuthorizationCode(
+   const tokens = await googleClient(c).validateAuthorizationCode(
       code,
       codeVerifier,
    )
@@ -54,10 +54,10 @@ export const createGoogleSession = async ({
       verified_email: boolean
    }>()
 
-   const googleUserId = googleUserResponse.id.toString()
+   const googleUserID = googleUserResponse.id.toString()
 
    const existingOauthAccount = await c.var.db.query.oauthAccount.findFirst({
-      where: (account) => eq(account.providerUserId, googleUserId),
+      where: (account) => eq(account.providerUserID, googleUserID),
    })
 
    const existingUser = await c.var.db.query.user.findFirst({
@@ -66,16 +66,16 @@ export const createGoogleSession = async ({
 
    if (existingUser?.id && !existingOauthAccount) {
       await c.var.db.insert(oauthAccount).values({
-         providerUserId: googleUserId,
-         providerId: "google",
-         userId: existingUser.id,
+         providerUserID: googleUserID,
+         providerID: "google",
+         userID: existingUser.id,
       })
 
-      return await auth_createSession(c, existingUser.id)
+      return await createAuthSession(c, existingUser.id)
    }
 
    if (existingOauthAccount) {
-      return await auth_createSession(c, existingOauthAccount.userId)
+      return await createAuthSession(c, existingOauthAccount.userID)
    }
 
    const created = await c.var.db.transaction(async (tx) => {
@@ -87,18 +87,18 @@ export const createGoogleSession = async ({
             email: googleUserResponse.email,
             emailVerified: true,
          })
-         .returning({ userId: user.id })
+         .returning({ userID: user.id })
 
       if (!created) throw new Error("Error creating user")
 
       await tx.insert(oauthAccount).values({
-         providerUserId: googleUserId,
-         providerId: "google",
-         userId: created.userId,
+         providerUserID: googleUserID,
+         providerID: "google",
+         userID: created.userID,
       })
 
       return created
    })
 
-   return await auth_createSession(c, created.userId)
+   return await createAuthSession(c, created.userID)
 }

@@ -1,4 +1,4 @@
-export const email_bodyHtml = ({
+export const email = ({
    children,
    title,
    preheader,

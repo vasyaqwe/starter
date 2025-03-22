@@ -6,9 +6,9 @@ import { Hono } from "hono"
 import { validator } from "hono/validator"
 import { ZodError, type ZodSchema, type z } from "zod"
 
-export const api_createRouter = () => new Hono<HonoEnv>()
+export const createRouter = () => new Hono<HonoEnv>()
 
-export const api_zValidator = <
+export const zValidator = <
    T extends ZodSchema,
    Target extends keyof ValidationTargets,
 >(

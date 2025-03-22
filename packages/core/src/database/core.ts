@@ -5,7 +5,7 @@ import { type PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import * as schema from "./schema"
 
-export const database_client = (c: {
+export const client = (c: {
    var: { env: Env }
 }) => {
    const client = postgres(c.var.env.DATABASE_URL)

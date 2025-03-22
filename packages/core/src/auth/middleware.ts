@@ -8,9 +8,9 @@ import type { Context } from "hono"
 import { createMiddleware } from "hono/factory"
 import { HTTPException } from "hono/http-exception"
 import {
-   auth_deleteSessionTokenCookie,
-   auth_getSessionTokenCookie,
-   auth_setSessionTokenCookie,
+   deleteSessionTokenCookie,
+   getSessionTokenCookie,
+   setSessionTokenCookie,
 } from "./"
 import { SESSION_EXPIRATION_SECONDS } from "./constants"
 
@@ -20,7 +20,7 @@ const validateSessionToken = async (c: Context<HonoEnv>, token: string) => {
    const [found] = await c.var.db
       .select({ foundUser: user, foundSession: session })
       .from(session)
-      .innerJoin(user, eq(session.userId, user.id))
+      .innerJoin(user, eq(session.userID, user.id))
       .where(eq(session.id, sessionId))
 
    if (!found) return { session: null, user: null }
@@ -46,15 +46,15 @@ const validateSessionToken = async (c: Context<HonoEnv>, token: string) => {
             expiresAt: foundSession.expiresAt,
          })
          .where(eq(session.id, foundSession.id))
-      auth_setSessionTokenCookie(c, token)
+      setSessionTokenCookie(c, token)
    }
 
    return { session: foundSession, user: foundUser }
 }
 
-export const auth_middleware = createMiddleware<AuthedHonoEnv>(
+export const authMiddleware = createMiddleware<AuthedHonoEnv>(
    async (c, next) => {
-      const sessionToken = auth_getSessionTokenCookie(c)
+      const sessionToken = getSessionTokenCookie(c)
       if (!sessionToken) {
          throw new HTTPException(401, {
             message: "Unauthorized",
@@ -66,7 +66,7 @@ export const auth_middleware = createMiddleware<AuthedHonoEnv>(
          sessionToken,
       )
       if (!session || !user) {
-         auth_deleteSessionTokenCookie(c)
+         deleteSessionTokenCookie(c)
          throw new HTTPException(401, {
             message: "Unauthorized",
          })

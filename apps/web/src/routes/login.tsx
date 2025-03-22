@@ -1,6 +1,6 @@
+import { api } from "@/api"
 import { useMountError } from "@/interactions/use-mount-error"
 import { useCountdownTimer } from "@/interactions/use-timer"
-import { hc, honoMutationFn } from "@/lib/hono"
 import { decodeBase64, encodeBase64 } from "@oslojs/encoding"
 import { AnimatedStack } from "@project/ui/components/animated-stack"
 import { Button, buttonVariants } from "@project/ui/components/button"
@@ -23,7 +23,6 @@ import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
 import { onOpenUrl } from "@tauri-apps/plugin-deep-link"
 import { open } from "@tauri-apps/plugin-shell"
-import type { InferRequestType } from "hono"
 import { useAtomValue } from "jotai"
 import * as React from "react"
 import { toast } from "sonner"
@@ -56,7 +55,7 @@ function RouteComponent() {
                   const code_verifier =
                      url.searchParams.get("code_verifier") ?? ""
 
-                  const res = await hc.auth[":provider"].callback.$get({
+                  const res = await api.auth[":provider"].callback.$get({
                      param: { provider: "google" },
                      query: { client: "native", code, state, code_verifier },
                   })
@@ -87,16 +86,12 @@ function RouteComponent() {
    })
 
    const sendLoginCode = useMutation({
-      mutationFn: async (
-         data: InferRequestType<
-            (typeof hc.auth)["send-login-otp"]["$post"]
-         >["json"],
-      ) =>
-         honoMutationFn(await hc.auth["send-login-otp"].$post({ json: data })),
+      mutationFn: api.auth["send-login-otp"].$post,
       onMutate: () => {
          timer.start()
       },
-      onSuccess: ({ email }) => {
+      onSuccess: async (data) => {
+         const { email } = await data.json()
          navigate({ to: ".", search: { otp: true, email } }).then(() =>
             otpInputRef.current?.focus(),
          )
@@ -108,14 +103,7 @@ function RouteComponent() {
    })
 
    const verifyLoginCode = useMutation({
-      mutationFn: async (
-         data: InferRequestType<
-            (typeof hc.auth)["verify-login-otp"]["$post"]
-         >["json"],
-      ) =>
-         honoMutationFn(
-            await hc.auth["verify-login-otp"].$post({ json: data }),
-         ),
+      mutationFn: api.auth["verify-login-otp"].$post,
       onError: () => undefined,
       onSuccess: () => {
          navigate({ to: "/" })
@@ -126,7 +114,7 @@ function RouteComponent() {
    })
 
    const onVerifyCode = ({ code }: { code: string }) => {
-      toast.promise(verifyLoginCode.mutateAsync({ code, email }), {
+      toast.promise(verifyLoginCode.mutateAsync({ json: { code, email } }), {
          id: "otp",
          loading: "Verifying code...",
          success: () => "Code is valid",
@@ -137,7 +125,7 @@ function RouteComponent() {
 
    const loginWithGoogle = useMutation({
       mutationFn: async () => {
-         const url = hc.auth[":provider"]
+         const url = api.auth[":provider"]
             .$url({
                param: { provider: "google" },
                query: {
@@ -155,19 +143,16 @@ function RouteComponent() {
    })
 
    const loginWithPasskey = useMutation({
-      mutationFn: async (
-         json: InferRequestType<typeof hc.auth.passkey.login.$post>["json"],
-      ) => honoMutationFn(await hc.auth.passkey.login.$post({ json })),
+      mutationFn: api.auth.passkey.login.$post,
       onSuccess: () => {
          navigate({ to: "/" })
       },
    })
 
    const requestChallenge = useMutation({
-      mutationFn: async () =>
-         honoMutationFn(await hc.auth.passkey.challenge.$post()),
+      mutationFn: api.auth.passkey.challenge.$post,
       onSuccess: async (data) => {
-         const challenge = decodeBase64(data)
+         const challenge = decodeBase64(await data.json())
 
          const credential = await navigator.credentials.get({
             publicKey: {
@@ -182,16 +167,18 @@ function RouteComponent() {
             throw new Error("Unexpected error")
 
          loginWithPasskey.mutate({
-            credentialId: encodeBase64(new Uint8Array(credential.rawId)),
-            signature: encodeBase64(
-               new Uint8Array(credential.response.signature),
-            ),
-            authenticatorData: encodeBase64(
-               new Uint8Array(credential.response.authenticatorData),
-            ),
-            clientData: encodeBase64(
-               new Uint8Array(credential.response.clientDataJSON),
-            ),
+            json: {
+               credentialID: encodeBase64(new Uint8Array(credential.rawId)),
+               signature: encodeBase64(
+                  new Uint8Array(credential.response.signature),
+               ),
+               authenticatorData: encodeBase64(
+                  new Uint8Array(credential.response.authenticatorData),
+               ),
+               clientData: encodeBase64(
+                  new Uint8Array(credential.response.clientDataJSON),
+               ),
+            },
          })
       },
       onError: (error) => {
@@ -229,7 +216,9 @@ function RouteComponent() {
                               ).entries(),
                            ) as { email: string }
                            sendLoginCode.mutate({
-                              email: formData.email,
+                              json: {
+                                 email: formData.email,
+                              },
                            })
                         }}
                      >
@@ -274,7 +263,7 @@ function RouteComponent() {
                         }
                         variant={"secondary"}
                         className="mb-2 w-full"
-                        onClick={() => requestChallenge.mutate()}
+                        onClick={() => requestChallenge.mutate({})}
                      >
                         {requestChallenge.isPending ||
                         loginWithPasskey.isPending ||
@@ -401,7 +390,9 @@ function RouteComponent() {
                                  disabled={timer.timeLeft > 0}
                                  onClick={() => {
                                     sendLoginCode.mutate({
-                                       email,
+                                       json: {
+                                          email,
+                                       },
                                     })
                                  }}
                                  className="ml-0.5 cursor-pointer underline enabled:hover:text-foreground/90 disabled:cursor-not-allowed"

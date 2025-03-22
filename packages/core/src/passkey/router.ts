@@ -14,66 +14,40 @@ import {
    parseAttestationObject,
    parseClientDataJSON,
 } from "@oslojs/webauthn"
-import { api_createRouter, api_zValidator } from "@project/core/api/utils"
-import { auth_middleware } from "@project/core/auth/middleware"
 import { passkeyCredential } from "@project/core/passkey/schema"
 import type { PasskeyCredential } from "@project/core/passkey/types"
 import {
-   passkey_challengeRateLimitBucket,
-   passkey_createChallenge,
-   passkey_verifyChallenge,
+   createPasskeyChallenge,
+   passkeyChallengeRateLimitBucket,
 } from "@project/core/passkey/utils"
+import { verifyPasskeyChallenge } from "@project/core/passkey/utils"
+import { procedure, router } from "@project/core/trpc/context"
+import { TRPCError } from "@trpc/server"
 import { and, desc, eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { z } from "zod"
 
-export const passkey_route = api_createRouter()
-   .use(auth_middleware)
-   .get("/", async (c) => {
-      const credentials = await c.var.db.query.passkeyCredential.findMany({
-         where: eq(passkeyCredential.userId, c.var.user.id),
+export const passkeyRouter = router({
+   list: procedure.query(async ({ ctx }) => {
+      return await ctx.db.query.passkeyCredential.findMany({
+         where: eq(passkeyCredential.userID, ctx.user.id),
          columns: {
             id: true,
             name: true,
          },
          orderBy: (data) => desc(data.createdAt),
       })
-      return c.json(credentials)
-   })
-   .post("/challenge", async (c) => {
-      if (!passkey_challengeRateLimitBucket.consume(c.var.user.id, 1))
-         throw new HTTPException(429, { message: "Too many requests" })
-
-      const credentials = await c.var.db.query.passkeyCredential.findMany({
-         where: eq(passkeyCredential.userId, c.var.user.id),
-         columns: {
-            id: true,
-         },
-      })
-
-      const credentialUserId = new TextEncoder()
-         .encode(c.var.user.id)
-         .slice(0, 8)
-      const encodedCredentialUserId = encodeBase64(credentialUserId)
-
-      return c.json({
-         challenge: encodeBase64(passkey_createChallenge()),
-         credentialIds: credentials.map((c) => encodeBase64(c.id)).join(","),
-         credentialUserId: encodedCredentialUserId,
-      })
-   })
-   .post(
-      "/",
-      api_zValidator(
-         "json",
+   }),
+   create: procedure
+      .input(
          z.object({
             name: z.string(),
             attestation: z.string(),
             clientData: z.string(),
          }),
-      ),
-      async (c) => {
-         const { name, attestation, clientData } = c.req.valid("json")
+      )
+      .mutation(async ({ ctx, input }) => {
+         const { name, attestation, clientData } = input
          const decodedAttestation = decodeBase64(attestation)
          const decodedClientData = decodeBase64(clientData)
 
@@ -81,7 +55,7 @@ export const passkey_route = api_createRouter()
          const attestationStatement = attestationObject.attestationStatement
          const authenticatorData = attestationObject.authenticatorData
 
-         const host = c.req.header("host")?.split(":")[0] ?? ""
+         const host = ctx.host?.split(":")[0] ?? ""
 
          if (
             attestationStatement.format !== AttestationStatementFormat.None ||
@@ -96,8 +70,8 @@ export const passkey_route = api_createRouter()
 
          if (
             parsedClientData.type !== ClientDataType.Create ||
-            !passkey_verifyChallenge(parsedClientData.challenge) ||
-            parsedClientData.origin !== c.var.env.WEB_DOMAIN ||
+            !verifyPasskeyChallenge(parsedClientData.challenge) ||
+            parsedClientData.origin !== ctx.vars.WEB_URL ||
             (parsedClientData.crossOrigin !== null &&
                parsedClientData.crossOrigin)
          )
@@ -123,7 +97,7 @@ export const passkey_route = api_createRouter()
 
             credential = {
                id: authenticatorData.credential.id,
-               userId: c.var.user.id,
+               userID: ctx.user.id,
                algorithm: coseAlgorithmES256,
                name,
                publicKey: encodedPublicKey,
@@ -141,54 +115,52 @@ export const passkey_route = api_createRouter()
 
             credential = {
                id: authenticatorData.credential.id,
-               userId: c.var.user.id,
+               userID: ctx.user.id,
                algorithm: coseAlgorithmRS256,
                name,
                publicKey: encodedPublicKey,
             }
          } else {
-            throw new HTTPException(400, { message: "Unsupported algorithm" })
+            throw new TRPCError({
+               code: "BAD_REQUEST",
+               message: "Unsupported algorithm",
+            })
          }
 
-         await c.var.db.transaction(async (tx) => {
-            const credentials = await tx.query.passkeyCredential.findMany({
-               where: eq(passkeyCredential.userId, c.var.user.id),
-            })
+         await ctx.db.insert(passkeyCredential).values(credential)
+      }),
+   createChallenge: procedure.mutation(async ({ ctx }) => {
+      if (!passkeyChallengeRateLimitBucket.consume(ctx.user.id, 1))
+         throw new TRPCError({ code: "TOO_MANY_REQUESTS" })
 
-            if (credentials.length >= 5)
-               throw new HTTPException(400, { message: "Too many credentials" })
+      const credentials = await ctx.db.query.passkeyCredential.findMany({
+         where: eq(passkeyCredential.userID, ctx.user.id),
+         columns: {
+            id: true,
+         },
+      })
 
-            await tx.insert(passkeyCredential).values(credential)
-         })
+      const credentialUserID = new TextEncoder().encode(ctx.user.id).slice(0, 8)
+      const encodedCredentialUserID = encodeBase64(credentialUserID)
 
-         return c.json({
-            status: "ok",
-         })
-      },
-   )
-   .delete(
-      "/:id",
-      api_zValidator(
-         "param",
-         z.object({
-            id: z.any(),
-         }),
-      ),
-      async (c) => {
-         const { id } = c.req.valid("param")
-         const decodedId = decodeBase64urlIgnorePadding(id)
+      return {
+         challenge: encodeBase64(createPasskeyChallenge()),
+         credentialIds: credentials.map((c) => encodeBase64(c.id)).join(","),
+         credentialUserID: encodedCredentialUserID,
+      }
+   }),
+   delete: procedure
+      .input(z.object({ id: z.any() }))
+      .mutation(async ({ ctx, input }) => {
+         const decodedId = decodeBase64urlIgnorePadding(input.id)
 
-         await c.var.db
+         await ctx.db
             .delete(passkeyCredential)
             .where(
                and(
-                  eq(passkeyCredential.userId, c.var.user.id),
+                  eq(passkeyCredential.userID, ctx.user.id),
                   eq(passkeyCredential.id, decodedId),
                ),
             )
-
-         return c.json({
-            status: "ok",
-         })
-      },
-   )
+      }),
+})

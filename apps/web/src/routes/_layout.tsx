@@ -1,6 +1,6 @@
 import { BottomNavigation } from "@/routes/-components/bottom-navigation"
 import { Sidebar } from "@/routes/-components/sidebar"
-import { userMeQuery } from "@/user/queries"
+import { trpc } from "@/trpc"
 import { historyLengthAtom } from "@project/ui/store"
 import { cn } from "@project/ui/utils"
 import {
@@ -16,7 +16,12 @@ export const Route = createFileRoute("/_layout")({
    component: RouteComponent,
    beforeLoad: async ({ context }) => {
       const user = await context.queryClient
-         .ensureQueryData(userMeQuery())
+         .ensureQueryData(
+            trpc.user.me.queryOptions(undefined, {
+               staleTime: Infinity,
+               retry: false,
+            }),
+         )
          .catch(() => {
             throw redirect({ to: "/login" })
          })

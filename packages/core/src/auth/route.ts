@@ -19,13 +19,16 @@ import {
    parseAuthenticatorData,
    parseClientDataJSON,
 } from "@oslojs/webauthn"
-import { api_createRouter, api_zValidator } from "@project/core/api/utils"
+import { createRouter, zValidator } from "@project/core/api/utils"
 import {
-   auth_createSession,
-   auth_generateEmailOTP,
-   auth_verifyEmailOTP,
+   createAuthSession,
+   createEmailOTP,
+   deleteSessionTokenCookie,
+   invalidateAuthSession,
+   verifyEmailOTP,
 } from "@project/core/auth"
-import { auth_loginOtpEmail } from "@project/core/auth/email"
+import { loginEmail } from "@project/core/auth/email"
+import { authMiddleware } from "@project/core/auth/middleware"
 import { COOKIE_OPTIONS } from "@project/core/cookie/constants"
 import {
    emailVerificationRequest,
@@ -34,9 +37,9 @@ import {
 import { ApiError } from "@project/core/error"
 import { passkeyCredential } from "@project/core/passkey/schema"
 import {
-   passkey_challengeRateLimitBucket,
-   passkey_createChallenge,
-   passkey_verifyChallenge,
+   createPasskeyChallenge,
+   passkeyChallengeRateLimitBucket,
+   verifyPasskeyChallenge,
 } from "@project/core/passkey/utils"
 import { user as userSchema } from "@project/core/user/schema"
 import { EMAIL_FROM } from "@project/infra/email"
@@ -51,36 +54,36 @@ import { createSelectSchema } from "drizzle-zod"
 import { getCookie, setCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"
 import { z } from "zod"
-import { auth_googleClient, createGoogleSession } from "./google"
+import { createGoogleSession, googleClient } from "./google"
 
 const sendOtpBucket = new ExpiringTokenBucket<string>(3, 60)
 const verifyOtpBucket = new RefillingTokenBucket<string>(5, 60)
 
-export const auth_route = api_createRouter()
+export const authRoute = createRouter()
    .post("/passkey/challenge", async (c) => {
       const ip = c.req.header("x-forwarded-for")
-      if (ip && !passkey_challengeRateLimitBucket.consume(ip, 1))
+      if (ip && !passkeyChallengeRateLimitBucket.consume(ip, 1))
          throw new HTTPException(429, { message: "Too many requests" })
 
-      return c.json(encodeBase64(passkey_createChallenge()))
+      return c.json(encodeBase64(createPasskeyChallenge()))
    })
    .post(
       "/passkey/login",
-      api_zValidator(
+      zValidator(
          "json",
          z.object({
             authenticatorData: z.string(),
             clientData: z.string(),
-            credentialId: z.string(),
+            credentialID: z.string(),
             signature: z.string(),
          }),
       ),
       async (c) => {
-         const { authenticatorData, clientData, credentialId, signature } =
+         const { authenticatorData, clientData, credentialID, signature } =
             c.req.valid("json")
          const decodedAuthenticatorData = decodeBase64(authenticatorData)
          const decodedClientData = decodeBase64(clientData)
-         const decodedCredentialId = decodeBase64(credentialId)
+         const decodedCredentialID = decodeBase64(credentialID)
          const decodedSignature = decodeBase64(signature)
 
          const parsedAuthenticatorData = parseAuthenticatorData(
@@ -100,18 +103,18 @@ export const auth_route = api_createRouter()
 
          if (
             parsedClientData.type !== ClientDataType.Get ||
-            !passkey_verifyChallenge(parsedClientData.challenge) ||
-            parsedClientData.origin !== c.var.env.WEB_DOMAIN ||
+            !verifyPasskeyChallenge(parsedClientData.challenge) ||
+            parsedClientData.origin !== c.var.env.WEB_URL ||
             (parsedClientData.crossOrigin !== null &&
                parsedClientData.crossOrigin)
          )
             throw new HTTPException(400, { message: "Invalid data" })
 
          const credential = await c.var.db.query.passkeyCredential.findFirst({
-            where: eq(passkeyCredential.id, decodedCredentialId),
+            where: eq(passkeyCredential.id, decodedCredentialID),
             columns: {
                id: true,
-               userId: true,
+               userID: true,
                name: true,
                algorithm: true,
                publicKey: true,
@@ -160,13 +163,13 @@ export const auth_route = api_createRouter()
          if (!validSignature)
             throw new HTTPException(400, { message: "Invalid signature" })
 
-         await auth_createSession(c, credential.userId)
+         await createAuthSession(c, credential.userID)
          return c.json({ status: "ok" })
       },
    )
    .post(
       "/send-login-otp",
-      api_zValidator(
+      zValidator(
          "json",
          z.object({
             email: z.string(),
@@ -207,9 +210,9 @@ export const auth_route = api_createRouter()
                user = existingUser
             }
 
-            const otp = await auth_generateEmailOTP({
+            const otp = await createEmailOTP({
                tx: tx as never,
-               userId: user.id,
+               userID: user.id,
                email,
             })
 
@@ -220,7 +223,7 @@ export const auth_route = api_createRouter()
                   from: EMAIL_FROM,
                   to: email,
                   subject: `Project one-time password`,
-                  html: auth_loginOtpEmail(otp),
+                  html: loginEmail(otp),
                })
                if (res.error)
                   throw new HTTPException(500, {
@@ -234,7 +237,7 @@ export const auth_route = api_createRouter()
    )
    .post(
       "/verify-login-otp",
-      api_zValidator(
+      zValidator(
          "json",
          createSelectSchema(emailVerificationRequest).pick({
             code: true,
@@ -249,9 +252,9 @@ export const auth_route = api_createRouter()
                message: "Too many requests. Please try again later.",
             })
 
-         const { userId } = await auth_verifyEmailOTP(c.var.db, email, code)
+         const { userID } = await verifyEmailOTP(c.var.db, email, code)
 
-         if (!userId)
+         if (!userID)
             throw new HTTPException(400, {
                message: "Code is invalid or expired",
             })
@@ -262,15 +265,15 @@ export const auth_route = api_createRouter()
             .set({ emailVerified: true })
             .where(eq(userSchema.email, email))
 
-         await auth_createSession(c, userId)
+         await createAuthSession(c, userID)
 
          return c.json({ status: "ok" })
       },
    )
    .get(
       "/:provider",
-      api_zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
-      api_zValidator(
+      zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
+      zValidator(
          "query",
          z.object({
             redirect: z.string().optional(),
@@ -278,7 +281,7 @@ export const auth_route = api_createRouter()
       ),
       async (c) => {
          const provider = c.req.valid("param").provider
-         const redirect = c.req.valid("query").redirect ?? c.var.env.WEB_DOMAIN
+         const redirect = c.req.valid("query").redirect ?? c.var.env.WEB_URL
 
          setCookie(c, "redirect", redirect, COOKIE_OPTIONS)
 
@@ -292,7 +295,7 @@ export const auth_route = api_createRouter()
          if (provider === "google") {
             const codeVerifier = generateCodeVerifier()
 
-            const url = auth_googleClient(c).createAuthorizationURL(
+            const url = googleClient(c).createAuthorizationURL(
                state,
                codeVerifier,
                ["profile", "email"],
@@ -312,8 +315,8 @@ export const auth_route = api_createRouter()
    )
    .get(
       "/:provider/callback",
-      api_zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
-      api_zValidator(
+      zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
+      zValidator(
          "query",
          z.object({
             code: z.string(),
@@ -323,7 +326,7 @@ export const auth_route = api_createRouter()
          }),
       ),
       async (c) => {
-         const redirect = getCookie(c, "redirect") ?? c.var.env.WEB_DOMAIN
+         const redirect = getCookie(c, "redirect") ?? c.var.env.WEB_URL
          const redirectUrl = new URL(redirect).toString()
 
          const provider = c.req.valid("param").provider
@@ -402,6 +405,11 @@ export const auth_route = api_createRouter()
          }
       },
    )
+   .post("/logout", authMiddleware, async (c) => {
+      deleteSessionTokenCookie(c)
+      await invalidateAuthSession(c, c.var.session.id)
+      return c.json({ message: "OK" })
+   })
    .onError((error, c) => {
       const redirect = getCookie(c, "redirect")
       if (!redirect) return ApiError.handle(error, c)

@@ -1,9 +1,8 @@
-import { subscriptionByUserIdQuery } from "@/billing/queries"
+import { api } from "@/api"
 import { useCssVariable } from "@/interactions/use-css-variable"
-import { hc, honoMutationFn } from "@/lib/hono"
 import { Main } from "@/routes/-components/main"
+import { trpc } from "@/trpc"
 import { useAuth } from "@/user/hooks"
-import { passkeyListQuery } from "@/user/queries"
 import {
    decodeBase64,
    encodeBase64,
@@ -29,7 +28,6 @@ import { Tabs, TabsList, TabsPanel, TabsTab } from "@project/ui/components/tabs"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
-import type { InferRequestType } from "hono"
 import * as React from "react"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -51,18 +49,18 @@ export const Route = createFileRoute("/_layout/settings")({
 
 function BillingPanel() {
    const queryClient = useQueryClient()
-   const query = useQuery(subscriptionByUserIdQuery())
+   const query = useQuery(trpc.subscription.one.queryOptions())
    const subscription = query.data
    const subscribe = useMutation({
       mutationFn: async () => {
-         window.location.href = hc.billing.checkout.$url().toString()
+         window.location.href = api.billing.checkout.$url().toString()
       },
    })
    const cancel = useMutation({
-      mutationFn: async () => honoMutationFn(await hc.billing.cancel.$post()),
+      mutationFn: api.billing.cancel.$post,
       onSuccess: () => {
          toast("Canceled subscription")
-         queryClient.invalidateQueries(subscriptionByUserIdQuery())
+         queryClient.invalidateQueries(trpc.subscription.one.queryOptions())
       },
    })
 
@@ -99,7 +97,7 @@ function BillingPanel() {
             <Button
                isPending={cancel.isPending}
                disabled={cancel.isPending}
-               onClick={() => cancel.mutate()}
+               onClick={() => cancel.mutate({})}
             >
                Cancel
             </Button>
@@ -116,90 +114,96 @@ function RouteComponent() {
    const navigate = useNavigate()
    const [cursor, setCursor] = useCssVariable("cursor", "default")
    const { user } = useAuth()
-   const query = useQuery(passkeyListQuery())
+   const query = useQuery(trpc.passkey.list.queryOptions())
 
    const [createPasskeyOpen, setCreatePasskeyOpen] = React.useState(false)
    const [attestation, setAttestation] = React.useState("")
    const [clientData, setClientData] = React.useState("")
 
-   const requestChallenge = useMutation({
-      mutationFn: async () =>
-         honoMutationFn(await hc.user.passkey.challenge.$post()),
-      onSuccess: async (data) => {
-         const challenge = decodeBase64(data.challenge)
-         const credentialUserId = decodeBase64(data.credentialUserId)
-         const credentialIds = data.credentialIds
-            .split(",")
-            .map((i) => decodeBase64(i))
+   const createChallenge = useMutation(
+      trpc.passkey.createChallenge.mutationOptions({
+         onSuccess: async (data) => {
+            const challenge = decodeBase64(data.challenge)
+            const credentialUserID = decodeBase64(data.credentialUserID)
+            const credentialIds = data.credentialIds
+               .split(",")
+               .map((i) => decodeBase64(i))
 
-         const credential = await navigator.credentials.create({
-            publicKey: {
-               challenge,
-               user: {
-                  displayName: user.name,
-                  id: credentialUserId,
-                  name: user.email,
-               },
-               rp: {
-                  name: "Project",
-               },
-               pubKeyCredParams: [
-                  {
-                     alg: -7,
-                     type: "public-key",
+            const credential = await navigator.credentials.create({
+               publicKey: {
+                  challenge,
+                  user: {
+                     displayName: user.name,
+                     id: credentialUserID,
+                     name: user.email,
                   },
-                  {
-                     alg: -257,
-                     type: "public-key",
+                  rp: {
+                     name: "Project",
                   },
-               ],
-               attestation: "none",
-               authenticatorSelection: {
-                  userVerification: "required",
-                  residentKey: "required",
-                  requireResidentKey: true,
+                  pubKeyCredParams: [
+                     {
+                        alg: -7,
+                        type: "public-key",
+                     },
+                     {
+                        alg: -257,
+                        type: "public-key",
+                     },
+                  ],
+                  attestation: "none",
+                  authenticatorSelection: {
+                     userVerification: "required",
+                     residentKey: "required",
+                     requireResidentKey: true,
+                  },
+                  excludeCredentials: credentialIds
+                     .filter((id) => id && id.length > 0) // Filter out empty or invalid IDs
+                     .map((id) => ({
+                        id,
+                        type: "public-key",
+                     })),
                },
-               excludeCredentials: credentialIds
-                  .filter((id) => id && id.length > 0) // Filter out empty or invalid IDs
-                  .map((id) => ({
-                     id,
-                     type: "public-key",
-                  })),
-            },
-         })
+            })
 
-         if (!(credential instanceof PublicKeyCredential))
-            throw new Error("Failed to create public key")
-         if (!(credential.response instanceof AuthenticatorAttestationResponse))
-            throw new Error("Unexpected error")
+            if (!(credential instanceof PublicKeyCredential))
+               throw new Error("Failed to create public key")
+            if (
+               !(
+                  credential.response instanceof
+                  AuthenticatorAttestationResponse
+               )
+            )
+               throw new Error("Unexpected error")
 
-         setAttestation(
-            encodeBase64(new Uint8Array(credential.response.attestationObject)),
-         )
-         setClientData(
-            encodeBase64(new Uint8Array(credential.response.clientDataJSON)),
-         )
-         setCreatePasskeyOpen(true)
-      },
-      onError: (error) => {
-         if (error instanceof DOMException)
-            return toast("Request was cancelled")
-         toast.error(error.message)
-      },
-   })
+            setAttestation(
+               encodeBase64(
+                  new Uint8Array(credential.response.attestationObject),
+               ),
+            )
+            setClientData(
+               encodeBase64(new Uint8Array(credential.response.clientDataJSON)),
+            )
+            setCreatePasskeyOpen(true)
+         },
+         onError: (error) => {
+            if (error instanceof DOMException)
+               return toast("Request was cancelled")
+            toast.error(error.message)
+         },
+      }),
+   )
 
-   const insertPasskey = useMutation({
-      mutationFn: async (
-         json: InferRequestType<typeof hc.user.passkey.$post>["json"],
-      ) => honoMutationFn(await hc.user.passkey.$post({ json })),
-      onSuccess: () => {
-         queryClient.invalidateQueries(passkeyListQuery())
-         setCreatePasskeyOpen(false)
-         setTimeout(() => {
-            insertPasskey.reset()
-         }, 100)
-      },
-   })
+   const create = useMutation(
+      trpc.passkey.create.mutationOptions({
+         onSuccess: () => {
+            queryClient.invalidateQueries(trpc.passkey.list.queryOptions())
+            setCreatePasskeyOpen(false)
+            setTimeout(() => {
+               create.reset()
+            }, 100)
+         },
+      }),
+   )
 
    const passkeys = query.data ?? []
 
@@ -267,10 +271,10 @@ function RouteComponent() {
                   )}
                   <Button
                      className="mt-5"
-                     disabled={requestChallenge.isPending}
-                     onClick={() => requestChallenge.mutate()}
+                     disabled={createChallenge.isPending}
+                     onClick={() => createChallenge.mutate()}
                   >
-                     {requestChallenge.isPending ? (
+                     {createChallenge.isPending ? (
                         "Confirm passkey.."
                      ) : (
                         <>
@@ -294,7 +298,7 @@ function RouteComponent() {
                                     ).entries(),
                                  ) as { name: string }
 
-                                 insertPasskey.mutate({
+                                 create.mutate({
                                     name,
                                     attestation,
                                     clientData,
@@ -318,14 +322,8 @@ function RouteComponent() {
                         <DialogFooter>
                            <Button
                               className="w-full"
-                              isPending={
-                                 insertPasskey.isPending ||
-                                 insertPasskey.isSuccess
-                              }
-                              disabled={
-                                 insertPasskey.isPending ||
-                                 insertPasskey.isSuccess
-                              }
+                              isPending={create.isPending || create.isSuccess}
+                              disabled={create.isPending || create.isSuccess}
                            >
                               Confirm
                            </Button>
@@ -371,16 +369,13 @@ function RouteComponent() {
 
 function PasskeyItem({ name, id }: { name: string; id: string }) {
    const queryClient = useQueryClient()
-   const deletePasskey = useMutation({
-      mutationFn: async (
-         param: InferRequestType<
-            (typeof hc.user.passkey)[":id"]["$delete"]
-         >["param"],
-      ) => honoMutationFn(await hc.user.passkey[":id"].$delete({ param })),
-      onSuccess: () => {
-         queryClient.invalidateQueries(passkeyListQuery())
-      },
-   })
+   const deletePasskey = useMutation(
+      trpc.passkey.delete.mutationOptions({
+         onSuccess: () => {
+            queryClient.invalidateQueries(trpc.passkey.list.queryOptions())
+         },
+      }),
+   )
 
    return (
       <li className="flex items-center">

@@ -1,9 +1,10 @@
 import "@project/ui/styles"
+import type { APIClientError } from "@/api"
 import { env } from "@/env"
-import type { HonoError } from "@/lib/hono"
+import { queryClient, trpc } from "@/trpc"
 import { Button, buttonVariants } from "@project/ui/components/button"
 import { TooltipProvider } from "@project/ui/components/tooltip"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClientProvider } from "@tanstack/react-query"
 import {
    ErrorComponent,
    type ErrorComponentProps,
@@ -15,34 +16,16 @@ import {
    useRouter,
 } from "@tanstack/react-router"
 import type * as TauriAPI from "@tauri-apps/api"
+import {} from "@trpc/client"
 import { ThemeProvider } from "next-themes"
 import * as React from "react"
 import ReactDOM from "react-dom/client"
-import { toast } from "sonner"
 import { routeTree } from "./routeTree.gen"
-
-const queryClient = new QueryClient({
-   defaultOptions: {
-      queries: {
-         retry(failureCount) {
-            // 2 max
-            return failureCount < 1
-         },
-         // 15 min
-         staleTime: 900 * 1000,
-      },
-      mutations: {
-         onError: (error) => {
-            return toast.error(error.message)
-         },
-      },
-   },
-})
 
 const router = createRouter({
    routeTree,
    scrollRestoration: true,
-   context: { queryClient },
+   context: { queryClient, trpc },
    defaultPreload: "intent",
    defaultPendingMs: 150,
    defaultPendingMinMs: 200,
@@ -111,7 +94,7 @@ declare module "@tanstack/react-router" {
 
 declare module "@tanstack/react-query" {
    interface Register {
-      defaultError: HonoError
+      defaultError: APIClientError
    }
 }
 

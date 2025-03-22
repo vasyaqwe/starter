@@ -11,21 +11,17 @@ import {
    emailVerificationRequest,
    session,
 } from "@project/core/database/schema"
-import {
-   TimeSpan,
-   date_create,
-   date_isWithinExpiration,
-} from "@project/core/date"
+import { TimeSpan, createDate, isWithinExpiration } from "@project/core/date"
 import { eq } from "drizzle-orm"
 import type { Context } from "hono"
 import { getCookie, setCookie } from "hono/cookie"
 import { SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS } from "./constants"
 
-export const auth_createSession = async (
+export const createAuthSession = async (
    c: Context<HonoEnv>,
-   userId: string,
+   userID: string,
 ) => {
-   const token = auth_generateSessionToken()
+   const token = createSessionToken()
    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 
    await c
@@ -33,49 +29,49 @@ export const auth_createSession = async (
       .insert(session)
       .values({
          id: sessionId,
-         userId: userId,
+         userID: userID,
          expiresAt: new Date(Date.now() + 1000 * SESSION_EXPIRATION_SECONDS),
       })
 
-   auth_setSessionTokenCookie(c, token)
+   setSessionTokenCookie(c, token)
 }
 
-export const auth_getSessionTokenCookie = (c: Context) =>
+export const getSessionTokenCookie = (c: Context) =>
    getCookie(c, SESSION_COOKIE_NAME)
 
-export const auth_setSessionTokenCookie = (c: Context, token: string) => {
+export const setSessionTokenCookie = (c: Context, token: string) => {
    setCookie(c, SESSION_COOKIE_NAME, token, {
       ...COOKIE_OPTIONS,
       maxAge: SESSION_EXPIRATION_SECONDS,
    })
 }
 
-export const auth_deleteSessionTokenCookie = (c: Context) => {
+export const deleteSessionTokenCookie = (c: Context) => {
    setCookie(c, SESSION_COOKIE_NAME, "", {
       ...COOKIE_OPTIONS,
       maxAge: 0,
    })
 }
 
-export const auth_generateSessionToken = () => {
+export const createSessionToken = () => {
    const bytes = new Uint8Array(20)
    crypto.getRandomValues(bytes)
    const token = encodeBase32LowerCaseNoPadding(bytes)
    return token
 }
 
-export const auth_invalidateSession = async (
+export const invalidateAuthSession = async (
    c: Context<AuthedHonoEnv>,
    sessionId: string,
 ) => await c.var.db.delete(session).where(eq(session.id, sessionId))
 
-export const auth_generateEmailOTP = async ({
+export const createEmailOTP = async ({
    tx,
-   userId,
+   userID,
    email,
 }: {
    tx: DatabaseClient
-   userId: string
+   userID: string
    email: string
 }) => {
    await tx
@@ -91,16 +87,16 @@ export const auth_generateEmailOTP = async ({
    const code = generateRandomString(random, "0123456789", 6)
 
    await tx.insert(emailVerificationRequest).values({
-      userId,
+      userID,
       email,
       code,
-      expiresAt: date_create(new TimeSpan(5, "m")),
+      expiresAt: createDate(new TimeSpan(5, "m")),
    })
 
    return code
 }
 
-export const auth_verifyEmailOTP = async (
+export const verifyEmailOTP = async (
    db: DatabaseClient,
    email: string,
    code: string,
@@ -119,7 +115,7 @@ export const auth_verifyEmailOTP = async (
 
       if (
          databaseCode &&
-         !date_isWithinExpiration(new Date(databaseCode.expiresAt))
+         !isWithinExpiration(new Date(databaseCode.expiresAt))
       ) {
          isValid = false
       }
@@ -137,5 +133,5 @@ export const auth_verifyEmailOTP = async (
          .where(eq(emailVerificationRequest.id, databaseCode.id))
    }
 
-   return { userId: isValid ? databaseCode?.userId : null }
+   return { userID: isValid ? databaseCode?.userID : null }
 }
