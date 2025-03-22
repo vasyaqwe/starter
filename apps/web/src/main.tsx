@@ -1,5 +1,5 @@
 import "@project/ui/styles"
-import type { APIClientError } from "@/api"
+import type { ApiClientError } from "@/api"
 import { env } from "@/env"
 import { queryClient, trpc } from "@/trpc"
 import { Button, buttonVariants } from "@project/ui/components/button"
@@ -94,7 +94,7 @@ declare module "@tanstack/react-router" {
 
 declare module "@tanstack/react-query" {
    interface Register {
-      defaultError: APIClientError
+      defaultError: ApiClientError
    }
 }
 

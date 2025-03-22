@@ -7,26 +7,26 @@ export const oauthProviders = ["google", "github"] as const
 export const oauthAccount = d.table(
    "oauth_account",
    {
-      userID: d
+      userId: d
          .text()
          .notNull()
          .references(() => user.id, { onDelete: "cascade" }),
-      providerID: d
+      providerId: d
          .text({
             enum: oauthProviders,
          })
          .notNull(),
-      providerUserID: d.text().notNull().unique(),
+      providerUserId: d.text().notNull().unique(),
       ...d.timestamps,
    },
    (table) => [
-      d.primaryKey({ columns: [table.providerID, table.providerUserID] }),
+      d.primaryKey({ columns: [table.providerId, table.providerUserId] }),
    ],
 )
 
 export const oauthAccountRelations = relations(oauthAccount, ({ one }) => ({
    user: one(user, {
-      fields: [oauthAccount.userID],
+      fields: [oauthAccount.userId],
       references: [user.id],
    }),
 }))
@@ -35,7 +35,7 @@ export const emailVerificationRequest = d.table(
    "email_verification_request",
    {
       id: d.id("verification_request"),
-      userID: d
+      userId: d
          .text()
          .notNull()
          .references(() => user.id, { onDelete: "cascade" }),
@@ -44,7 +44,7 @@ export const emailVerificationRequest = d.table(
       expiresAt: d.timestamp().notNull(),
    },
    (table) => [
-      d.index("email_verification_request_user_id_idx").on(table.userID),
+      d.index("email_verification_request_user_id_idx").on(table.userId),
    ],
 )
 
@@ -53,12 +53,12 @@ export const session = d.table(
    {
       id: d.text().primaryKey(),
       expiresAt: d.timestamp().notNull(),
-      userID: d
+      userId: d
          .text()
          .notNull()
          .references(() => user.id, { onDelete: "cascade" }),
    },
-   (table) => [d.index("session_user_id_idx").on(table.userID)],
+   (table) => [d.index("session_user_id_idx").on(table.userId)],
 )
 
 export type OauthProvider = (typeof oauthProviders)[number]

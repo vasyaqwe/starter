@@ -6,14 +6,14 @@ import { ApiError } from "@project/core/error"
 import { and, eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 
-export const billingRoute = createRouter()
+export const billingRouter = createRouter()
    .get("/checkout", authMiddleware, async (c) => {
       const checkout = await c.var.payment.checkouts.custom.create({
          productPriceId: "c07ab064-b153-4f04-83f5-185ed4e5a43b",
          customerEmail: c.var.user.email,
          customerName: c.var.user.name,
          metadata: {
-            userID: c.var.user.id,
+            userId: c.var.user.id,
          },
       })
       return c.redirect(checkout.url)
@@ -21,7 +21,7 @@ export const billingRoute = createRouter()
    .post("/cancel", authMiddleware, async (c) => {
       const foundSubscription = await c.var.db.query.subscription.findFirst({
          where: and(
-            eq(subscription.userID, c.var.user.id),
+            eq(subscription.userId, c.var.user.id),
             eq(subscription.status, "active"),
             eq(subscription.cancelAtPeriodEnd, false),
          ),
@@ -57,21 +57,21 @@ export const billingRoute = createRouter()
          )
 
          if (event.type === "subscription.created") {
-            const userID = event.data.metadata.userID
-            if (!userID || typeof userID !== "string")
+            const userId = event.data.metadata.userId
+            if (!userId || typeof userId !== "string")
                throw new HTTPException(400, {
-                  message: "userID missing in metadata",
+                  message: "userId missing in metadata",
                })
 
             await c.var.db
                .insert(subscription)
                .values({
                   id: event.data.id,
-                  userID,
+                  userId,
                   status: event.data.status,
                   customerId: event.data.customerId,
-                  priceID: event.data.priceId,
-                  productID: event.data.productId,
+                  priceId: event.data.priceId,
+                  productId: event.data.productId,
                   currentPeriodStart: event.data.currentPeriodStart,
                   currentPeriodEnd: event.data.currentPeriodEnd,
                })
@@ -79,13 +79,13 @@ export const billingRoute = createRouter()
                   set: {
                      id: event.data.id,
                      status: event.data.status,
-                     priceID: event.data.priceId,
-                     productID: event.data.productId,
+                     priceId: event.data.priceId,
+                     productId: event.data.productId,
                      currentPeriodStart: event.data.currentPeriodStart,
                      currentPeriodEnd: event.data.currentPeriodEnd,
                      cancelAtPeriodEnd: false,
                   },
-                  target: [subscription.userID, subscription.productID],
+                  target: [subscription.userId, subscription.productId],
                })
 
             return c.json({ status: "ok", message: "subscription created" })

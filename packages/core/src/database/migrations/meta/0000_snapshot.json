@@ -226,8 +226,8 @@
         }
       },
       "uniqueConstraints": {
-        "oauth_account_providerUserID_unique": {
-          "name": "oauth_account_providerUserID_unique",
+        "oauth_account_providerUserId_unique": {
+          "name": "oauth_account_providerUserId_unique",
           "nullsNotDistinct": false,
           "columns": [
             "provider_user_id"

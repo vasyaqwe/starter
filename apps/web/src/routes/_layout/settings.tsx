@@ -124,7 +124,7 @@ function RouteComponent() {
       trpc.passkey.createChallenge.mutationOptions({
          onSuccess: async (data) => {
             const challenge = decodeBase64(data.challenge)
-            const credentialUserID = decodeBase64(data.credentialUserID)
+            const credentialUserId = decodeBase64(data.credentialUserId)
             const credentialIds = data.credentialIds
                .split(",")
                .map((i) => decodeBase64(i))
@@ -134,7 +134,7 @@ function RouteComponent() {
                   challenge,
                   user: {
                      displayName: user.name,
-                     id: credentialUserID,
+                     id: credentialUserId,
                      name: user.email,
                   },
                   rp: {

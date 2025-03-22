@@ -19,7 +19,7 @@ import { SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS } from "./constants"
 
 export const createAuthSession = async (
    c: Context<HonoEnv>,
-   userID: string,
+   userId: string,
 ) => {
    const token = createSessionToken()
    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
@@ -29,7 +29,7 @@ export const createAuthSession = async (
       .insert(session)
       .values({
          id: sessionId,
-         userID: userID,
+         userId: userId,
          expiresAt: new Date(Date.now() + 1000 * SESSION_EXPIRATION_SECONDS),
       })
 
@@ -67,11 +67,11 @@ export const invalidateAuthSession = async (
 
 export const createEmailOTP = async ({
    tx,
-   userID,
+   userId,
    email,
 }: {
    tx: DatabaseClient
-   userID: string
+   userId: string
    email: string
 }) => {
    await tx
@@ -87,7 +87,7 @@ export const createEmailOTP = async ({
    const code = generateRandomString(random, "0123456789", 6)
 
    await tx.insert(emailVerificationRequest).values({
-      userID,
+      userId,
       email,
       code,
       expiresAt: createDate(new TimeSpan(5, "m")),
@@ -133,5 +133,5 @@ export const verifyEmailOTP = async (
          .where(eq(emailVerificationRequest.id, databaseCode.id))
    }
 
-   return { userID: isValid ? databaseCode?.userID : null }
+   return { userId: isValid ? databaseCode?.userId : null }
 }

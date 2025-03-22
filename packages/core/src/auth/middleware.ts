@@ -20,7 +20,7 @@ const validateSessionToken = async (c: Context<HonoEnv>, token: string) => {
    const [found] = await c.var.db
       .select({ foundUser: user, foundSession: session })
       .from(session)
-      .innerJoin(user, eq(session.userID, user.id))
+      .innerJoin(user, eq(session.userId, user.id))
       .where(eq(session.id, sessionId))
 
    if (!found) return { session: null, user: null }

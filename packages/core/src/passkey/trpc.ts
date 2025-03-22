@@ -30,7 +30,7 @@ import { z } from "zod"
 export const passkeyRouter = router({
    list: procedure.query(async ({ ctx }) => {
       return await ctx.db.query.passkeyCredential.findMany({
-         where: eq(passkeyCredential.userID, ctx.user.id),
+         where: eq(passkeyCredential.userId, ctx.user.id),
          columns: {
             id: true,
             name: true,
@@ -97,7 +97,7 @@ export const passkeyRouter = router({
 
             credential = {
                id: authenticatorData.credential.id,
-               userID: ctx.user.id,
+               userId: ctx.user.id,
                algorithm: coseAlgorithmES256,
                name,
                publicKey: encodedPublicKey,
@@ -115,7 +115,7 @@ export const passkeyRouter = router({
 
             credential = {
                id: authenticatorData.credential.id,
-               userID: ctx.user.id,
+               userId: ctx.user.id,
                algorithm: coseAlgorithmRS256,
                name,
                publicKey: encodedPublicKey,
@@ -134,19 +134,19 @@ export const passkeyRouter = router({
          throw new TRPCError({ code: "TOO_MANY_REQUESTS" })
 
       const credentials = await ctx.db.query.passkeyCredential.findMany({
-         where: eq(passkeyCredential.userID, ctx.user.id),
+         where: eq(passkeyCredential.userId, ctx.user.id),
          columns: {
             id: true,
          },
       })
 
-      const credentialUserID = new TextEncoder().encode(ctx.user.id).slice(0, 8)
-      const encodedCredentialUserID = encodeBase64(credentialUserID)
+      const credentialUserId = new TextEncoder().encode(ctx.user.id).slice(0, 8)
+      const encodedCredentialUserId = encodeBase64(credentialUserId)
 
       return {
          challenge: encodeBase64(createPasskeyChallenge()),
          credentialIds: credentials.map((c) => encodeBase64(c.id)).join(","),
-         credentialUserID: encodedCredentialUserID,
+         credentialUserId: encodedCredentialUserId,
       }
    }),
    delete: procedure
@@ -158,7 +158,7 @@ export const passkeyRouter = router({
             .delete(passkeyCredential)
             .where(
                and(
-                  eq(passkeyCredential.userID, ctx.user.id),
+                  eq(passkeyCredential.userId, ctx.user.id),
                   eq(passkeyCredential.id, decodedId),
                ),
             )

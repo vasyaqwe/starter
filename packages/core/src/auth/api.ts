@@ -59,7 +59,7 @@ import { createGoogleSession, googleClient } from "./google"
 const sendOtpBucket = new ExpiringTokenBucket<string>(3, 60)
 const verifyOtpBucket = new RefillingTokenBucket<string>(5, 60)
 
-export const authRoute = createRouter()
+export const authRouter = createRouter()
    .post("/passkey/challenge", async (c) => {
       const ip = c.req.header("x-forwarded-for")
       if (ip && !passkeyChallengeRateLimitBucket.consume(ip, 1))
@@ -74,16 +74,16 @@ export const authRoute = createRouter()
          z.object({
             authenticatorData: z.string(),
             clientData: z.string(),
-            credentialID: z.string(),
+            credentialId: z.string(),
             signature: z.string(),
          }),
       ),
       async (c) => {
-         const { authenticatorData, clientData, credentialID, signature } =
+         const { authenticatorData, clientData, credentialId, signature } =
             c.req.valid("json")
          const decodedAuthenticatorData = decodeBase64(authenticatorData)
          const decodedClientData = decodeBase64(clientData)
-         const decodedCredentialID = decodeBase64(credentialID)
+         const decodedCredentialID = decodeBase64(credentialId)
          const decodedSignature = decodeBase64(signature)
 
          const parsedAuthenticatorData = parseAuthenticatorData(
@@ -114,7 +114,7 @@ export const authRoute = createRouter()
             where: eq(passkeyCredential.id, decodedCredentialID),
             columns: {
                id: true,
-               userID: true,
+               userId: true,
                name: true,
                algorithm: true,
                publicKey: true,
@@ -163,7 +163,7 @@ export const authRoute = createRouter()
          if (!validSignature)
             throw new HTTPException(400, { message: "Invalid signature" })
 
-         await createAuthSession(c, credential.userID)
+         await createAuthSession(c, credential.userId)
          return c.json({ status: "ok" })
       },
    )
@@ -212,7 +212,7 @@ export const authRoute = createRouter()
 
             const otp = await createEmailOTP({
                tx: tx as never,
-               userID: user.id,
+               userId: user.id,
                email,
             })
 
@@ -252,9 +252,9 @@ export const authRoute = createRouter()
                message: "Too many requests. Please try again later.",
             })
 
-         const { userID } = await verifyEmailOTP(c.var.db, email, code)
+         const { userId } = await verifyEmailOTP(c.var.db, email, code)
 
-         if (!userID)
+         if (!userId)
             throw new HTTPException(400, {
                message: "Code is invalid or expired",
             })
@@ -265,7 +265,7 @@ export const authRoute = createRouter()
             .set({ emailVerified: true })
             .where(eq(userSchema.email, email))
 
-         await createAuthSession(c, userID)
+         await createAuthSession(c, userId)
 
          return c.json({ status: "ok" })
       },

@@ -16,7 +16,7 @@ export const subscription = d.table(
    "subscription",
    {
       id: d.text().notNull().primaryKey(),
-      userID: d
+      userId: d
          .text()
          .notNull()
          .references(() => user.id, { onDelete: "cascade" }),
@@ -26,17 +26,17 @@ export const subscription = d.table(
          })
          .notNull(),
       customerId: d.text().notNull(),
-      priceID: d.text().notNull(),
-      productID: d.text().notNull(),
+      priceId: d.text().notNull(),
+      productId: d.text().notNull(),
       currentPeriodStart: d.timestamp().notNull(),
       currentPeriodEnd: d.timestamp(),
       cancelAtPeriodEnd: d.boolean().default(false),
       ...d.timestamps,
    },
    (table) => [
-      d.index("subscription_user_id_idx").on(table.userID),
+      d.index("subscription_user_id_idx").on(table.userId),
       d
          .unique("subscription_user_id_product_id_idx")
-         .on(table.userID, table.productID),
+         .on(table.userId, table.productId),
    ],
 )

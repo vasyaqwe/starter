@@ -20,7 +20,7 @@ export const query =
       return Promise.reject(await res.json())
    }
 
-export type APIClientError = {
+export type ApiClientError = {
    code: ApiError.Code
    message: string
 }

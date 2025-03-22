@@ -168,7 +168,7 @@ function RouteComponent() {
 
          loginWithPasskey.mutate({
             json: {
-               credentialID: encodeBase64(new Uint8Array(credential.rawId)),
+               credentialId: encodeBase64(new Uint8Array(credential.rawId)),
                signature: encodeBase64(
                   new Uint8Array(credential.response.signature),
                ),

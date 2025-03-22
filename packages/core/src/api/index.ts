@@ -1,11 +1,11 @@
 import { trpcServer } from "@hono/trpc-server"
 import { createRouter } from "@project/core/api/utils"
+import { authRouter } from "@project/core/auth/api"
 import { authMiddleware } from "@project/core/auth/middleware"
-import { authRoute } from "@project/core/auth/route"
-import { billingRoute } from "@project/core/billing/route"
+import { billingRouter } from "@project/core/billing/api"
 import { d } from "@project/core/database"
 import { ApiError } from "@project/core/error"
-import { storageRoute } from "@project/core/storage/route"
+import { storageRouter } from "@project/core/storage/api"
 import { appRouter } from "@project/core/trpc"
 import type { TRPCContext } from "@project/core/trpc/context"
 import { emailClient } from "@project/infra/email"
@@ -40,8 +40,8 @@ const base = createRouter()
          message: "Healthy",
       })
    })
-   .route("/billing", billingRoute)
-   .route("/storage", storageRoute)
+   .route("/billing", billingRouter)
+   .route("/storage", storageRouter)
 
 const auth = createRouter()
    .use((c, next) => {
@@ -50,7 +50,7 @@ const auth = createRouter()
       })
       return handler(c, next)
    })
-   .route("/", authRoute)
+   .route("/", authRouter)
 
 export const routes = app
    .use(

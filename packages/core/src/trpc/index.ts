@@ -1,12 +1,12 @@
-import { subscriptionRouter } from "@project/core/billing/router"
-import { passkeyRouter } from "@project/core/passkey/router"
+import { billingRouter } from "@project/core/billing/trpc"
+import { passkeyRouter } from "@project/core/passkey/trpc"
 import { router } from "@project/core/trpc/context"
-import { userRouter } from "@project/core/user/router"
+import { userRouter } from "@project/core/user/trpc"
 
 export const appRouter = router({
    user: userRouter,
    passkey: passkeyRouter,
-   subscription: subscriptionRouter,
+   subscription: billingRouter,
 })
 
 export type AppRouter = typeof appRouter

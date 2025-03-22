@@ -25,7 +25,7 @@ CREATE TABLE "oauth_account" (
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL,
 	CONSTRAINT "oauth_account_provider_id_provider_user_id_pk" PRIMARY KEY("provider_id","provider_user_id"),
-	CONSTRAINT "oauth_account_providerUserID_unique" UNIQUE("provider_user_id")
+	CONSTRAINT "oauth_account_providerUserId_unique" UNIQUE("provider_user_id")
 );
 --> statement-breakpoint
 CREATE TABLE "session" (

@@ -5,7 +5,7 @@ export const passkeyCredential = d.table(
    "passkey_credential",
    {
       id: d.bytea().primaryKey(),
-      userID: d
+      userId: d
          .text()
          .notNull()
          .references(() => user.id, { onDelete: "cascade" }),
@@ -14,5 +14,5 @@ export const passkeyCredential = d.table(
       publicKey: d.bytea().notNull(),
       ...d.timestamps,
    },
-   (table) => [d.index("passkey_credential_user_id_idx").on(table.userID)],
+   (table) => [d.index("passkey_credential_user_id_idx").on(table.userId)],
 )
