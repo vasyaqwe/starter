@@ -11,7 +11,7 @@ COPY packages/core/package.json packages/core/
 COPY packages/infra/package.json packages/infra/
 COPY apps/api/package.json apps/api/
 
-RUN bun install --production && bun install turbo@^2.3.3 -g
+RUN bun install && bun install turbo@^2.3.3 -g
 
 COPY tooling/typescript tooling/typescript
 COPY packages/ packages/
