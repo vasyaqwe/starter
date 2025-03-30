@@ -1,3 +1,4 @@
+import crypto from "node:crypto"
 import { type RandomReader, generateRandomString } from "@oslojs/crypto/random"
 import { sha256 } from "@oslojs/crypto/sha2"
 import {

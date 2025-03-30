@@ -1,3 +1,4 @@
+import crypto from "node:crypto"
 import baseX from "base-x"
 const b58 = baseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
