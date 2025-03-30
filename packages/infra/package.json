@@ -44,6 +44,7 @@
       "zod": "^3.24.1"
    },
    "devDependencies": {
-      "@project/tsconfig": "workspace:*"
+      "@project/tsconfig": "workspace:*",
+      "@types/node": "^22.13.14"
    }
 }
