@@ -26,9 +26,13 @@ const app = createRouter()
    })
    .use((c, next) => {
       const handler = cors({
-         origin: [c.var.env.WEB_URL],
          credentials: true,
          maxAge: 600,
+         origin: (origin: string) => {
+            const hostname = new URL(c.var.env.WEB_URL).hostname
+            const regex = new RegExp(`^https?:\/\/([a-z0-9-]+\\.)?${hostname}$`)
+            return regex.test(origin) ? origin : null
+         },
       })
       return handler(c, next)
    })
@@ -46,7 +50,11 @@ const base = createRouter()
 const auth = createRouter()
    .use((c, next) => {
       const handler = csrf({
-         origin: [c.var.env.WEB_URL],
+         origin: (origin: string) => {
+            const hostname = new URL(c.var.env.WEB_URL).hostname
+            const regex = new RegExp(`^https?:\/\/([a-z0-9-]+\\.)?${hostname}$`)
+            return regex.test(origin)
+         },
       })
       return handler(c, next)
    })
