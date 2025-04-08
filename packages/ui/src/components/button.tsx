@@ -64,8 +64,11 @@ const buttonVariants = cva(
    },
 )
 
-type ButtonProps = React.ComponentProps<"button"> &
-   VariantProps<typeof buttonVariants>
+interface ButtonProps
+   extends React.ComponentProps<"button">,
+      VariantProps<typeof buttonVariants> {
+   isPending?: boolean | undefined
+}
 
 function Button({
    className,
@@ -76,7 +79,7 @@ function Button({
    children,
    isPending,
    ...props
-}: ButtonProps & { isPending?: boolean | undefined }) {
+}: ButtonProps) {
    return (
       <button
          className={cn(

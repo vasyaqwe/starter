@@ -38,10 +38,10 @@ export const storageRouter = createRouter().post(
       }),
    ),
    async (c) => {
-      const { files } = c.req.valid("json")
+      const json = c.req.valid("json")
 
       const uploded = await Promise.all(
-         files.map(async (file) => {
+         json.files.map(async (file) => {
             try {
                const PATH = "files/"
 

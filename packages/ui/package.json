@@ -1,27 +1,6 @@
 {
   "name": "@project/ui",
   "type": "module",
-  "exports": {
-    "./components/*": {
-      "types": "./dist/components/*.d.ts",
-      "default": "./src/components/*.tsx"
-    },
-    "./constants": {
-      "types": "./dist/constants.ts",
-      "default": "./src/constants.ts"
-    },
-    "./store": {
-      "types": "./dist/store.ts",
-      "default": "./src/store.ts"
-    },
-    "./styles": {
-      "default": "./src/styles.css"
-    },
-    "./utils": {
-      "types": "./dist/utils.ts",
-      "default": "./src/utils.ts"
-    }
-  },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf .turbo node_modules",

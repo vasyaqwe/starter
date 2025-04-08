@@ -1,8 +1,8 @@
 import { WebhookVerificationError, validateEvent } from "@polar-sh/sdk/webhooks"
+import { statusToCode } from "@project/core/api/error"
 import { createRouter } from "@project/core/api/utils"
 import { authMiddleware } from "@project/core/auth/middleware"
 import { subscription } from "@project/core/billing/schema"
-import { ApiError } from "@project/core/error"
 import { and, eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 
@@ -122,7 +122,7 @@ export const billingRouter = createRouter()
          if (error instanceof WebhookVerificationError) {
             c.json(
                {
-                  code: ApiError.statusToCode(403),
+                  code: statusToCode(403),
                   message: error.message,
                },
                403,

@@ -1,4 +1,4 @@
-import "@project/ui/styles"
+import "@project/ui/styles.css"
 import type { ApiClientError } from "@/api"
 import { env } from "@/env"
 import { queryClient, trpc } from "@/trpc"

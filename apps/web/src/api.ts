@@ -1,6 +1,6 @@
 import { env } from "@/env"
+import type { ApiErrorCode } from "@project/core/api/error"
 import type { ApiRoutes } from "@project/core/api/types"
-import type { ApiError } from "@project/core/error"
 import { type ClientResponse, hc } from "hono/client"
 import type { StatusCode } from "hono/utils/http-status"
 
@@ -21,7 +21,7 @@ export const query =
    }
 
 export type ApiClientError = {
-   code: ApiError.Code
+   code: ApiErrorCode
    message: string
 }
 

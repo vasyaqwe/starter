@@ -5,6 +5,7 @@
       "baseUrl": ".",
       "paths": {
          "@project/core/*": ["../../packages/core/src/*"],
+         "@project/ui/*": ["../../packages/ui/src/*"],
          "@/*": ["./src/*"]
       },
       "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"

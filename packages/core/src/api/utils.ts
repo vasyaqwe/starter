@@ -1,5 +1,5 @@
+import { parseZodErrorIssues, statusToCode } from "@project/core/api/error"
 import type { HonoEnv } from "@project/core/api/types"
-import { ApiError } from "@project/core/error"
 import { logger } from "@project/infra/logger"
 import type { ValidationTargets } from "hono"
 import { Hono } from "hono"
@@ -20,11 +20,11 @@ export const zValidator = <
          return (await schema.parseAsync(value)) as z.infer<T>
       } catch (error) {
          if (error instanceof ZodError) {
-            const message = ApiError.parseZodErrorIssues(error.issues)
+            const message = parseZodErrorIssues(error.issues)
             logger.error(400, message)
             return c.json(
                {
-                  code: ApiError.statusToCode(400),
+                  code: statusToCode(400),
                   message,
                },
                400,
@@ -39,7 +39,7 @@ export const zValidator = <
          logger.error(500, message)
          return c.json(
             {
-               code: ApiError.statusToCode(500),
+               code: statusToCode(500),
                message,
             },
             500,

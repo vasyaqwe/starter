@@ -1,14 +1,11 @@
 import type { User } from "@project/core/user/types"
 import { cn } from "@project/ui/utils"
 
-export function UserAvatar({
-   user,
-   className,
-   children,
-   ...props
-}: React.ComponentProps<"div"> & {
+interface Props extends React.ComponentProps<"div"> {
    user: Partial<Omit<User, "createdAt" | "updatedAt">>
-}) {
+}
+
+export function UserAvatar({ user, className, children, ...props }: Props) {
    const name =
       user.name && user.name !== ""
          ? user.name[0]?.toUpperCase()

@@ -1,12 +1,16 @@
 import * as React from "react"
 import { cn } from "../utils"
 
+interface Props extends React.ComponentProps<"div"> {
+   render?: React.ElementType
+}
+
 export function TransitionHeight({
    children,
    className,
    render: Component = "div",
    ...props
-}: React.ComponentProps<"div"> & { render?: React.ElementType }) {
+}: Props) {
    const containerRef = React.useRef<HTMLDivElement | null>(null)
    const [height, setHeight] = React.useState<number | "auto">("auto")
 

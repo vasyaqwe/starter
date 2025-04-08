@@ -7,16 +7,18 @@ import { Kbd } from "./kbd"
 
 export const FILE_TRIGGER_HOTKEY = "mod+shift+f"
 
+interface Props extends Omit<React.ComponentProps<typeof Button>, "onChange"> {
+   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+   multiple?: boolean
+}
+
 export function FileTrigger({
    children,
    onClick,
    onChange,
    multiple = true,
    ...props
-}: Omit<React.ComponentProps<typeof Button>, "onChange"> & {
-   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-   multiple?: boolean
-}) {
+}: Props) {
    const setFileTriggerOpen = useSetAtom(fileTriggerOpenAtom)
    const inputRef = React.useRef<HTMLInputElement>(null)
 

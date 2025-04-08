@@ -29,11 +29,11 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
    )
 }
 
-function InputOTPSlot({
-   index,
-   className,
-   ...props
-}: React.ComponentProps<"div"> & { index: number }) {
+interface Props extends React.ComponentProps<"div"> {
+   index: number
+}
+
+function InputOTPSlot({ index, className, ...props }: Props) {
    const inputOTPContext = React.useContext(OTPInputContext)
    const context = inputOTPContext.slots[index]
    if (!context) return null

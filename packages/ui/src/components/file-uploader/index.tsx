@@ -35,7 +35,7 @@ export type NativeDragDropEvent =
         type: "cancel"
      }
 
-type FileUploaderProps = React.ComponentProps<"div"> & {
+interface FileUploaderProps extends React.ComponentProps<"div"> {
    /**
     * Value of the uploader.
     * @type File[]

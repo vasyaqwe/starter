@@ -19,6 +19,7 @@ import {
    parseAuthenticatorData,
    parseClientDataJSON,
 } from "@oslojs/webauthn"
+import { handleApiError } from "@project/core/api/error"
 import { createRouter, zValidator } from "@project/core/api/utils"
 import {
    createAuthSession,
@@ -34,7 +35,6 @@ import {
    emailVerificationRequest,
    oauthProviders,
 } from "@project/core/database/schema"
-import { ApiError } from "@project/core/error"
 import { passkeyCredential } from "@project/core/passkey/schema"
 import {
    createPasskeyChallenge,
@@ -176,9 +176,9 @@ export const authRouter = createRouter()
          }),
       ),
       async (c) => {
-         const { email } = c.req.valid("json")
+         const json = c.req.valid("json")
 
-         if (!sendOtpBucket.consume(email, 1))
+         if (!sendOtpBucket.consume(json.email, 1))
             throw new HTTPException(429, {
                message: "Too many requests. Please try again later.",
             })
@@ -189,7 +189,7 @@ export const authRouter = createRouter()
             const [createdUser] = await tx
                .insert(userSchema)
                .values({
-                  email,
+                  email: json.email,
                })
                .returning({ id: userSchema.id })
                .onConflictDoNothing({ target: userSchema.email })
@@ -200,7 +200,7 @@ export const authRouter = createRouter()
                const [existingUser] = await tx
                   .select({ id: userSchema.id })
                   .from(userSchema)
-                  .where(eq(userSchema.email, email))
+                  .where(eq(userSchema.email, json.email))
 
                if (!existingUser)
                   throw new HTTPException(500, {
@@ -213,7 +213,7 @@ export const authRouter = createRouter()
             const otp = await createEmailOTP({
                tx: tx as never,
                userId: user.id,
-               email,
+               email: json.email,
             })
 
             if (c.var.env.NODE_ENV === "development") {
@@ -221,7 +221,7 @@ export const authRouter = createRouter()
             } else {
                const res = await c.var.email.emails.send({
                   from: EMAIL_FROM,
-                  to: email,
+                  to: json.email,
                   subject: `Project one-time password`,
                   html: loginEmail(otp),
                })
@@ -232,7 +232,7 @@ export const authRouter = createRouter()
             }
          })
 
-         return c.json({ email })
+         return c.json({ status: "ok" })
       },
    )
    .post(
@@ -245,14 +245,18 @@ export const authRouter = createRouter()
          }),
       ),
       async (c) => {
-         const { code, email } = c.req.valid("json")
+         const json = c.req.valid("json")
 
-         if (!verifyOtpBucket.consume(email, 1))
+         if (!verifyOtpBucket.consume(json.email, 1))
             throw new HTTPException(429, {
                message: "Too many requests. Please try again later.",
             })
 
-         const { userId } = await verifyEmailOTP(c.var.db, email, code)
+         const { userId } = await verifyEmailOTP(
+            c.var.db,
+            json.email,
+            json.code,
+         )
 
          if (!userId)
             throw new HTTPException(400, {
@@ -263,7 +267,7 @@ export const authRouter = createRouter()
             .get("db")
             .update(userSchema)
             .set({ emailVerified: true })
-            .where(eq(userSchema.email, email))
+            .where(eq(userSchema.email, json.email))
 
          await createAuthSession(c, userId)
 
@@ -330,30 +334,24 @@ export const authRouter = createRouter()
          const redirectUrl = new URL(redirect).toString()
 
          const provider = c.req.valid("param").provider
-         const {
-            code,
-            state,
-            client,
-            code_verifier: queryCodeVerifier,
-         } = c.req.valid("query")
+         const query = c.req.valid("query")
 
          let codeVerifier: string
-         if (client === "native") {
-            // For native, use query
-            codeVerifier = queryCodeVerifier ?? ""
+         if (query.client === "native") {
+            codeVerifier = query.code_verifier ?? ""
          } else {
-            // For web, use cookies
             codeVerifier = getCookie(c, `${provider}_oauth_code_verifier`) ?? ""
          }
 
          const storedState = getCookie(c, `${provider}_oauth_state`)
 
          if (
-            !code ||
-            !state ||
+            !query.code ||
+            !query.state ||
             !codeVerifier ||
             // on web, compare state from query with state from cookies
-            (client === "web" && (!storedState || storedState !== state))
+            (query.client === "web" &&
+               (!storedState || storedState !== query.state))
          ) {
             throw new HTTPException(401, {
                message: "Invalid state",
@@ -366,17 +364,17 @@ export const authRouter = createRouter()
             })
 
          if (provider === "google") {
-            if (client === "native") {
+            if (query.client === "native") {
                await createGoogleSession({
                   c,
-                  code,
+                  code: query.code,
                   codeVerifier,
                })
                return c.json({ status: "ok" })
             }
 
             if (redirectUrl.startsWith("project")) {
-               const url = `project://finish-auth?code=${code}&state=${state}&code_verifier=${codeVerifier}`
+               const url = `project://finish-auth?code=${query.code}&state=${query.state}&code_verifier=${codeVerifier}`
 
                return c.html(`
                    <html>
@@ -397,7 +395,7 @@ export const authRouter = createRouter()
 
             await createGoogleSession({
                c,
-               code,
+               code: query.code,
                codeVerifier,
             })
 
@@ -408,11 +406,11 @@ export const authRouter = createRouter()
    .post("/logout", authMiddleware, async (c) => {
       deleteSessionTokenCookie(c)
       await invalidateAuthSession(c, c.var.session.id)
-      return c.json({ message: "OK" })
+      return c.json({ status: "ok" })
    })
    .onError((error, c) => {
       const redirect = getCookie(c, "redirect")
-      if (!redirect) return ApiError.handle(error, c)
+      if (!redirect) return handleApiError(error, c)
 
       // c.var.sentry.captureException(error)
       logger.error("auth error:", error)

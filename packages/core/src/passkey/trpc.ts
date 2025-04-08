@@ -46,8 +46,7 @@ export const passkeyRouter = router({
             clientData: z.string(),
          }),
       )
-      .mutation(async ({ ctx, input }) => {
-         const { name, attestation, clientData } = input
+      .mutation(async ({ ctx, input: { name, attestation, clientData } }) => {
          const decodedAttestation = decodeBase64(attestation)
          const decodedClientData = decodeBase64(clientData)
 

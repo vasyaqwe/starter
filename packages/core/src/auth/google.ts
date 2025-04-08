@@ -1,6 +1,7 @@
 import type { HonoEnv } from "@project/core/api/types"
 import { createAuthSession } from "@project/core/auth"
 import { oauthAccount } from "@project/core/database/schema"
+import invariant from "@project/core/invariant"
 import { user } from "@project/core/user/schema"
 import { Google } from "arctic"
 import { eq } from "drizzle-orm"
@@ -29,7 +30,7 @@ export const createGoogleSession = async ({
       codeVerifier,
    )
 
-   const googleUserResponse = await ky(
+   const googleUserProfile = await ky(
       "https://www.googleapis.com/oauth2/v2/userinfo",
       {
          headers: {
@@ -54,14 +55,14 @@ export const createGoogleSession = async ({
       verified_email: boolean
    }>()
 
-   const googleUserId = googleUserResponse.id.toString()
+   const googleUserId = googleUserProfile.id.toString()
 
    const existingOauthAccount = await c.var.db.query.oauthAccount.findFirst({
       where: (account) => eq(account.providerUserId, googleUserId),
    })
 
    const existingUser = await c.var.db.query.user.findFirst({
-      where: (u) => eq(u.email, googleUserResponse.email),
+      where: (u) => eq(u.email, googleUserProfile.email),
    })
 
    if (existingUser?.id && !existingOauthAccount) {
@@ -74,31 +75,44 @@ export const createGoogleSession = async ({
       return await createAuthSession(c, existingUser.id)
    }
 
-   if (existingOauthAccount) {
+   if (existingOauthAccount)
       return await createAuthSession(c, existingOauthAccount.userId)
-   }
 
-   const created = await c.var.db.transaction(async (tx) => {
-      const [created] = await tx
-         .insert(user)
+   const createdUser = await c.var.db.transaction(async (tx) => {
+      const [existingUser] = await tx
+         .select()
+         .from(user)
+         .where(eq(user.email, googleUserProfile.email))
+
+      let userId: string | undefined
+
+      if (existingUser) {
+         userId = existingUser.id
+      } else {
+         const [createdUser] = await tx
+            .insert(user)
+            .values({
+               email: googleUserProfile.email,
+               name: googleUserProfile.name,
+               avatarUrl: googleUserProfile.picture,
+            })
+            .returning({ id: user.id })
+
+         invariant(createdUser, "Failed to create user")
+         userId = createdUser.id
+      }
+
+      await tx
+         .insert(oauthAccount)
          .values({
-            name: googleUserResponse.name,
-            avatarUrl: googleUserResponse.picture,
-            email: googleUserResponse.email,
-            emailVerified: true,
+            providerUserId: googleUserId,
+            providerId: "google",
+            userId: createdUser.id,
          })
-         .returning({ userId: user.id })
+         .onConflictDoNothing()
 
-      if (!created) throw new Error("Error creating user")
-
-      await tx.insert(oauthAccount).values({
-         providerUserId: googleUserId,
-         providerId: "google",
-         userId: created.userId,
-      })
-
-      return created
+      return { id: userId }
    })
 
-   return await createAuthSession(c, created.userId)
+   return await createAuthSession(c, createdUser.id)
 }

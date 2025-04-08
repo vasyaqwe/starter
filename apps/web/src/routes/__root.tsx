@@ -23,9 +23,9 @@ export const Route = createRootRouteWithContext<{
 })
 
 function RootComponent() {
-   const { resolvedTheme } = useTheme()
+   const theme = useTheme()
    React.useEffect(() => {
-      if (resolvedTheme === "dark") {
+      if (theme.resolvedTheme === "dark") {
          document
             .querySelector('meta[name="theme-color"]')
             ?.setAttribute("content", "#0a0a0b")
@@ -34,7 +34,7 @@ function RootComponent() {
             .querySelector('meta[name="theme-color"]')
             ?.setAttribute("content", "#FFFFFF")
       }
-   }, [resolvedTheme])
+   }, [theme.resolvedTheme])
 
    const setIsMobile = useSetAtom(isMobileAtom)
    React.useEffect(() => {

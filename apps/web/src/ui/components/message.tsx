@@ -2,13 +2,11 @@ import { Badge } from "@project/ui/components/badge"
 import { Separator } from "@project/ui/components/separator"
 import { cn } from "@project/ui/utils"
 
-export function MessageGroup({
-   className,
-   isMine,
-   ...props
-}: React.ComponentProps<"div"> & {
+interface Props extends React.ComponentProps<"div"> {
    isMine: boolean
-}) {
+}
+
+export function MessageGroup({ className, isMine, ...props }: Props) {
    return (
       <div
          className={cn(
@@ -46,13 +44,11 @@ export function MessageGroupDate({
    )
 }
 
-export function Message({
-   className,
-   isMine,
-   ...props
-}: React.ComponentProps<"div"> & {
+interface MessageProps extends React.ComponentProps<"div"> {
    isMine: boolean
-}) {
+}
+
+export function Message({ className, isMine, ...props }: MessageProps) {
    return (
       <div
          className={cn(
@@ -80,15 +76,17 @@ export function MessageActions({
    )
 }
 
+interface MessageContentProps extends React.ComponentProps<"div"> {
+   isMine: boolean
+   state: "first" | "last" | "single" | "middle"
+}
+
 export function MessageContent({
    className,
    isMine,
    state,
    ...props
-}: React.ComponentProps<"div"> & {
-   isMine: boolean
-   state: "first" | "last" | "single" | "middle"
-}) {
+}: MessageContentProps) {
    return (
       <div
          className={cn(

@@ -1,10 +1,10 @@
 import { trpcServer } from "@hono/trpc-server"
+import { handleApiError } from "@project/core/api/error"
 import { createRouter } from "@project/core/api/utils"
 import { authRouter } from "@project/core/auth/api"
 import { authMiddleware } from "@project/core/auth/middleware"
 import { billingRouter } from "@project/core/billing/api"
 import { d } from "@project/core/database"
-import { ApiError } from "@project/core/error"
 import { storageRouter } from "@project/core/storage/api"
 import { appRouter } from "@project/core/trpc"
 import type { TRPCContext } from "@project/core/trpc/context"
@@ -28,15 +28,18 @@ const app = createRouter()
       const handler = cors({
          credentials: true,
          maxAge: 600,
-         origin: (origin: string) => {
-            const hostname = new URL(c.var.env.WEB_URL).hostname
-            const regex = new RegExp(`^https?:\/\/([a-z0-9-]+\\.)?${hostname}$`)
-            return regex.test(origin) ? origin : null
+         origin: (origin) => {
+            const ALLOWED_ORIGINS = [c.var.env.WEB_URL]
+            if (!origin || origin === "") return origin
+            const domain = new URL(origin).hostname
+            return ALLOWED_ORIGINS.some((allowed) => domain.endsWith(allowed))
+               ? origin
+               : null
          },
       })
       return handler(c, next)
    })
-   .onError(ApiError.handle)
+   .onError(handleApiError)
 
 const base = createRouter()
    .get("/health", (c) => {
@@ -50,10 +53,11 @@ const base = createRouter()
 const auth = createRouter()
    .use((c, next) => {
       const handler = csrf({
-         origin: (origin: string) => {
-            const hostname = new URL(c.var.env.WEB_URL).hostname
-            const regex = new RegExp(`^https?:\/\/([a-z0-9-]+\\.)?${hostname}$`)
-            return regex.test(origin)
+         origin: (origin) => {
+            const ALLOWED_ORIGINS = [c.var.env.WEB_URL]
+            if (!origin || origin === "") return true
+            const domain = new URL(origin).hostname
+            return ALLOWED_ORIGINS.some((allowed) => domain.endsWith(allowed))
          },
       })
       return handler(c, next)

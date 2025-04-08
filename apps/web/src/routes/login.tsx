@@ -1,6 +1,7 @@
 import { api } from "@/api"
 import { useMountError } from "@/interactions/use-mount-error"
 import { useCountdownTimer } from "@/interactions/use-timer"
+import { validator } from "@/validator"
 import { decodeBase64, encodeBase64 } from "@oslojs/encoding"
 import { AnimatedStack } from "@project/ui/components/animated-stack"
 import { Button, buttonVariants } from "@project/ui/components/button"
@@ -20,7 +21,6 @@ import { isMobileAtom } from "@project/ui/store"
 import { cn } from "@project/ui/utils"
 import { useMutation } from "@tanstack/react-query"
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
-import { zodValidator } from "@tanstack/zod-adapter"
 import { onOpenUrl } from "@tauri-apps/plugin-deep-link"
 import { open } from "@tauri-apps/plugin-shell"
 import { useAtomValue } from "jotai"
@@ -30,10 +30,9 @@ import { z } from "zod"
 
 export const Route = createFileRoute("/login")({
    component: RouteComponent,
-   validateSearch: zodValidator(
+   validateSearch: validator(
       z.object({
          otp: z.boolean().catch(false),
-         email: z.string().catch(""),
       }),
    ),
 })
@@ -75,9 +74,10 @@ function RouteComponent() {
       isMounted = true
    }, [])
 
+   const [email, setEmail] = React.useState("")
    const isMobile = useAtomValue(isMobileAtom)
 
-   const { otp, email } = Route.useSearch()
+   const search = Route.useSearch()
    const navigate = useNavigate()
 
    const otpInputRef = React.useRef<HTMLInputElement>(null)
@@ -90,9 +90,8 @@ function RouteComponent() {
       onMutate: () => {
          timer.start()
       },
-      onSuccess: async (data) => {
-         const { email } = await data.json()
-         navigate({ to: ".", search: { otp: true, email } }).then(() =>
+      onSuccess: async () => {
+         navigate({ to: ".", search: { otp: true } }).then(() =>
             otpInputRef.current?.focus(),
          )
       },
@@ -202,7 +201,7 @@ function RouteComponent() {
          </Link>
          <main className="grid h-svh w-full place-items-center">
             <div className="-mt-16 relative w-full max-w-[22rem]">
-               <AnimatedStack activeIndex={otp ? 1 : 0}>
+               <AnimatedStack activeIndex={search.otp ? 1 : 0}>
                   <Card className="relative p-6">
                      <h1 className="-mt-1.5 mb-4 font-semibold text-xl">
                         Sign in to your account
@@ -210,14 +209,9 @@ function RouteComponent() {
                      <form
                         onSubmit={(e) => {
                            e.preventDefault()
-                           const formData = Object.fromEntries(
-                              new FormData(
-                                 e.target as HTMLFormElement,
-                              ).entries(),
-                           ) as { email: string }
                            sendLoginCode.mutate({
                               json: {
-                                 email: formData.email,
+                                 email,
                               },
                            })
                         }}
@@ -225,7 +219,8 @@ function RouteComponent() {
                         <Field>
                            <FieldLabel>Email</FieldLabel>
                            <FieldControl
-                              defaultValue={email}
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
                               type="email"
                               name="email"
                               required
@@ -335,7 +330,7 @@ function RouteComponent() {
                      <Link
                         aria-label="Go back"
                         to="."
-                        search={{ otp: false, email }}
+                        search={{ otp: false }}
                         onClick={() => sendLoginCode.reset()}
                         className={cn(
                            buttonVariants({
@@ -354,11 +349,11 @@ function RouteComponent() {
                            </p>
                            <div className="my-8">
                               <InputOTP
-                                 key={otp.toString()}
+                                 key={search.otp.toString()}
                                  disabled={verifyLoginCode.isSuccess}
                                  ref={otpInputRef}
                                  containerClassName={
-                                    !otp
+                                    !search.otp
                                        ? "[&>div>input]:!pointer-events-none"
                                        : ""
                                  }

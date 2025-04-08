@@ -3,6 +3,7 @@ import { useCssVariable } from "@/interactions/use-css-variable"
 import { Main } from "@/routes/-components/main"
 import { trpc } from "@/trpc"
 import { useAuth } from "@/user/hooks"
+import { validator } from "@/validator"
 import {
    decodeBase64,
    encodeBase64,
@@ -27,7 +28,6 @@ import { Switch } from "@project/ui/components/switch"
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@project/ui/components/tabs"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { zodValidator } from "@tanstack/zod-adapter"
 import * as React from "react"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -36,12 +36,11 @@ const tabs = ["general", "preferences", "billing"] as const
 
 export const Route = createFileRoute("/_layout/settings")({
    component: RouteComponent,
-   validateSearch: zodValidator(
+   validateSearch: validator(
       z.object({
          tab: z.enum(tabs).catch("general"),
       }),
    ),
-   // loaderDeps: ({ search }) => ({ search }),
    head: () => ({
       meta: [{ title: "Settings" }],
    }),
@@ -113,7 +112,7 @@ function RouteComponent() {
    const search = Route.useSearch()
    const navigate = useNavigate()
    const [cursor, setCursor] = useCssVariable("cursor", "default")
-   const { user } = useAuth()
+   const auth = useAuth()
    const query = useQuery(trpc.passkey.list.queryOptions())
 
    const [createPasskeyOpen, setCreatePasskeyOpen] = React.useState(false)
@@ -133,9 +132,9 @@ function RouteComponent() {
                publicKey: {
                   challenge,
                   user: {
-                     displayName: user.name,
+                     displayName: auth.user.name,
                      id: credentialUserId,
-                     name: user.email,
+                     name: auth.user.email,
                   },
                   rp: {
                      name: "Project",

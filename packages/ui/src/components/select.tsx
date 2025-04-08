@@ -56,14 +56,16 @@ export function SelectTrigger({
    )
 }
 
+interface Props extends React.ComponentProps<typeof SelectPrimitive.Item> {
+   destructive?: boolean
+}
+
 export function SelectItem({
    className,
    destructive = false,
    children,
    ...props
-}: React.ComponentProps<typeof SelectPrimitive.Item> & {
-   destructive?: boolean
-}) {
+}: Props) {
    return (
       <SelectPrimitive.Item
          className={cn(

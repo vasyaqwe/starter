@@ -28,14 +28,16 @@ export function MenuGroupLabel({
    )
 }
 
+interface Props extends React.ComponentProps<typeof MenuPrimitive.Item> {
+   destructive?: boolean
+}
+
 export function MenuItem({
    className,
    destructive = false,
    children,
    ...props
-}: React.ComponentProps<typeof MenuPrimitive.Item> & {
-   destructive?: boolean
-}) {
+}: Props) {
    return (
       <MenuPrimitive.Item
          className={cn(
