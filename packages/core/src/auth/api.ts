@@ -28,13 +28,11 @@ import {
    invalidateAuthSession,
    verifyEmailOTP,
 } from "@project/core/auth"
+import { OAUTH_PROVIDERS } from "@project/core/auth/constants"
 import { loginEmail } from "@project/core/auth/email"
 import { authMiddleware } from "@project/core/auth/middleware"
 import { COOKIE_OPTIONS } from "@project/core/cookie/constants"
-import {
-   emailVerificationRequest,
-   oauthProviders,
-} from "@project/core/database/schema"
+import { emailVerificationRequest } from "@project/core/database/schema"
 import { passkeyCredential } from "@project/core/passkey/schema"
 import {
    createPasskeyChallenge,
@@ -276,7 +274,7 @@ export const authRouter = createRouter()
    )
    .get(
       "/:provider",
-      zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
+      zValidator("param", z.object({ provider: z.enum(OAUTH_PROVIDERS) })),
       zValidator(
          "query",
          z.object({
@@ -319,7 +317,7 @@ export const authRouter = createRouter()
    )
    .get(
       "/:provider/callback",
-      zValidator("param", z.object({ provider: z.enum(oauthProviders) })),
+      zValidator("param", z.object({ provider: z.enum(OAUTH_PROVIDERS) })),
       zValidator(
          "query",
          z.object({

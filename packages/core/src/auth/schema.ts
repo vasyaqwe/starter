@@ -1,8 +1,7 @@
+import { OAUTH_PROVIDERS } from "@project/core/auth/constants"
 import { d } from "@project/core/database"
 import { user } from "@project/core/user/schema"
 import { relations } from "drizzle-orm"
-
-export const oauthProviders = ["google", "github"] as const
 
 export const oauthAccount = d.table(
    "oauth_account",
@@ -13,7 +12,7 @@ export const oauthAccount = d.table(
          .references(() => user.id, { onDelete: "cascade" }),
       providerId: d
          .text({
-            enum: oauthProviders,
+            enum: OAUTH_PROVIDERS,
          })
          .notNull(),
       providerUserId: d.text().notNull().unique(),
@@ -60,5 +59,3 @@ export const session = d.table(
    },
    (table) => [d.index("session_user_id_idx").on(table.userId)],
 )
-
-export type OauthProvider = (typeof oauthProviders)[number]

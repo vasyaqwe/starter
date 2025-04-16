@@ -2,7 +2,7 @@ import type { SubscriptionStatus } from "@polar-sh/sdk/src/models/components"
 import { d } from "@project/core/database"
 import { user } from "@project/core/user/schema"
 
-export const SUBSCRIPTION_STATUSES = [
+const SUBSCRIPTION_STATUSES = [
    "active",
    "canceled",
    "incomplete",
